@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace Zeef.Sound 
 {
-	[CreateAssetMenu(menuName = "ScriptableObjectContainers/SoundEffect")]
-	public class SoundEffectObjects : ScriptableObject 
+	[CreateAssetMenu(menuName = "SOs Container/Sound Effect")]
+	public class SoundEffectObjectsContainer : ScriptableObject 
 	{
 		public List<SoundEffectObject> soundEffects;
 	}

@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace Zeef.GameManager 
 {
-	[CreateAssetMenu(menuName ="ScriptableObjectContainers/Entity")]
-	public class EntityObjects : ScriptableObject 
+	[CreateAssetMenu(menuName ="SOs Container/Entity")]
+	public class EntityObjectsContainer : ScriptableObject 
 	{
 		public List<EntityObject> entities;
 	}

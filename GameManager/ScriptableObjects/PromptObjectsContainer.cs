@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace Zeef.GameManager 
 {
-    [CreateAssetMenu(menuName ="ScriptableObjectContainers/Prompt")]
-	public class PromptObjects : ScriptableObject 
+    [CreateAssetMenu(menuName ="SOs Container/Prompt")]
+	public class PromptObjectsContainer : ScriptableObject 
 	{
 		public List<PromptObject> prompts;
 	}

@@ -7,8 +7,8 @@ namespace Zeef.GameManager {
     // Reference GameObjects never change their data at runtime
     [RequireComponent(typeof (SingleInstanceChild))]
     public class GameReference : MonoBehaviour {
-        [SerializeField] EntityObjects entityObjects;
-        [SerializeField] PromptObjects promptObjects;
+        [SerializeField] EntityObjectsContainer entityObjects;
+        [SerializeField] PromptObjectsContainer promptObjects;
 
         public static GameReference Main(){
             return SingleInstance.Main().GetComponentInChildren<GameReference>();

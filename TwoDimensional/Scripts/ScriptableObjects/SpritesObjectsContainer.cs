@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace Zeef.TwoDimensional 
 {
-    [CreateAssetMenu(menuName = "ScriptableObjectContainers/Sprites")]
-    public class SpritesObjectContainer : ScriptableObject
+    [CreateAssetMenu(menuName = "SOs Container/Sprites")]
+    public class SpritesObjectsContainer : ScriptableObject
     {   
         public List<SpritesObject> spritesObjects;
     }    

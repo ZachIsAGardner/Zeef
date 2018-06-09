@@ -31,12 +31,12 @@ namespace Zeef.TwoDimensional {
 		void Start () {
 			cam = GetComponent<Camera>();
 			game = FindObjectOfType<Game>(); 
+
 			normalZoom = cam.orthographicSize;
+
 			GetTarget();
 			GetBoundaries();
-		}
-
-		void OnEnable() {
+			
 			SceneManager.sceneLoaded += OnSceneLoaded;
 		}
 

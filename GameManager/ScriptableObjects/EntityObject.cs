@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Zeef.GameManager 
 {
-	[CreateAssetMenu(menuName ="ScriptableObjects/Entity")]
+	[CreateAssetMenu(menuName ="SO/Entity")]
 	public class EntityObject : ScriptableObject 
 	{
 		public EntityID id;

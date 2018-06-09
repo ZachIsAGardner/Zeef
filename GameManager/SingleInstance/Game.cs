@@ -33,8 +33,6 @@ namespace Zeef.GameManager
 
 		protected SceneInfo lastLoadedSceneInfo;
 
-		protected static Game game;
-
 		public enum GameState 
 		{
 			Play,
@@ -55,28 +53,27 @@ namespace Zeef.GameManager
 		#region Setup
 
 
-		void Awake() {
+		// ---
+
+		void Start() {
 			Setup();
 		}
 
 		protected virtual void Setup() {
-			if (!DestroyIfGameAlreadyExists()) {
-				Application.targetFrameRate = 60;
-				DontDestroyOnLoad(this);
-
-				game = this;
+			Application.targetFrameRate = 60;			
 				
-				GetComponents();
-			}
-		}
+			GetComponents();
+			GetPlatform();
 
-		// Upon entering a scene if there already exists a Game object destroy self
-		protected bool DestroyIfGameAlreadyExists() {
-			if (game == null) {
-				return false;
+			SceneManager.sceneLoaded += OnSceneLoaded;
+
+			// Start game from entry scene or just spawn player
+			if (SceneManager.GetActiveScene().name == entryScene) {
+				LoadScene(firstScene);
 			} else {
-				Destroy(gameObject);
-				return true;
+				SceneInfo info = new SceneInfo(SceneManager.GetActiveScene().name);
+				StartCoroutine(SpawnPlayer(info));
+				lastLoadedSceneInfo = info;
 			}
 		}
 
@@ -86,31 +83,16 @@ namespace Zeef.GameManager
 			songPlayer = AudioPlayer.Main();
 		}
 
-		void OnEnable() {
-			SceneManager.sceneLoaded += OnSceneLoaded;
-		}
-
-		protected virtual void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
-			// TODO
-		}
-
-		protected virtual void Start () {
-			if (SceneManager.GetActiveScene().name == entryScene) {
-				LoadScene(firstScene);
-			} else {
-				SceneInfo info = new SceneInfo(SceneManager.GetActiveScene().name);
-				StartCoroutine(SpawnPlayer(info));
-				lastLoadedSceneInfo = info;
-			}
-			GetPlatform();
-		}
-
 		void GetPlatform() {
 			platform = Application.platform;
 		}
 
 		void PrintPlatform() {
 			print(platform);
+		}
+
+		protected virtual void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+			// TODO
 		}
 
 		#endregion

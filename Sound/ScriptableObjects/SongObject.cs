@@ -3,7 +3,7 @@ using Zeef.GameManager;
 
 namespace Zeef.Sound 
 {
-    [CreateAssetMenu(menuName = "ScriptableObjects/Song")]
+    [CreateAssetMenu(menuName = "SO/Song")]
     public class SongObject : ScriptableObject 
     {
         public SongID id;

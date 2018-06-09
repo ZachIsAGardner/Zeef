@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Zeef.GameManager 
 {
-	[CreateAssetMenu(menuName ="ScriptableObjects/Prompt")]
+	[CreateAssetMenu(menuName ="SO/Prompt")]
 	public class PromptObject : ScriptableObject {
 		public PromptID id;
 		public GameObject prefab;

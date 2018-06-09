@@ -14,8 +14,8 @@ namespace Zeef.Sound
 		[SerializeField] float musicVolume = 0.5f;
 		[SerializeField] float soundEffectVolume = 1;
 
-		[SerializeField] SongObjects songObjects;	    
-		[SerializeField] SoundEffectObjects soundEffectsObjects;
+		[SerializeField] SongObjectsContainer songObjects;	    
+		[SerializeField] SoundEffectObjectsContainer soundEffects;
 
 		public static AudioReference Main() {
 			return SingleInstance.Main().GetComponentInChildren<AudioReference>(); 
@@ -49,13 +49,13 @@ namespace Zeef.Sound
 
 		public SoundEffectObject GetSoundEffect(SoundEffectID id) 
 		{
-			SoundEffectObject result = soundEffectsObjects.soundEffects.FirstOrDefault(s => s.id == id);
+			SoundEffectObject result = soundEffects.soundEffects.FirstOrDefault(s => s.id == id);
 			return result;
 		}
 
 		public SoundEffectObject GetSoundEffect(string name) 
 		{
-			SoundEffectObject result = soundEffectsObjects.soundEffects.FirstOrDefault(s => s.name == name);
+			SoundEffectObject result = soundEffects.soundEffects.FirstOrDefault(s => s.name == name);
 			return result;
 		}
 
