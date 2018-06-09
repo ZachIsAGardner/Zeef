@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Zeef.Extension {
+namespace Zeef {
     public static class TransformExtensions {
         public static void DestroyChildren (this Transform transform) {
             foreach (Transform child in transform)

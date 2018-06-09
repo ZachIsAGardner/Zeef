@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Zeef.Extension {
+namespace Zeef {
     public static class RectTransformExtensions {
 
         // Gets a ui elements anchored position relative to the canvas

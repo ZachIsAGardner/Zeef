@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Zeef.Extension {
+namespace Zeef {
     public static class StringExtensions {
 
         public static string Prepend(this string str, string prependStr) {

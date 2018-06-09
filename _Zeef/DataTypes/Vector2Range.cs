@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Zeef.GameManager {
+namespace Zeef {
     [Serializable]
     public class Vector2Range {
         public Vector2 min;

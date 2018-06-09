@@ -1,5 +1,7 @@
-namespace Zeef.Sound {
-    public enum SongID {
+namespace Zeef.Sound 
+{
+    public enum SongID 
+    {
         NoSong,
         City,
         Forest,
@@ -8,7 +10,8 @@ namespace Zeef.Sound {
         Fight
     }
 
-    public enum SoundEffectID {
+    public enum SoundEffectID 
+    {
         NoSoundEffect,
         Hit,
         EnemyAction,

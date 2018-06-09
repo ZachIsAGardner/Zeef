@@ -10,7 +10,7 @@ namespace Zeef.TwoDimensional {
     public class ParticleCreator : MonoBehaviour 
     {
         public Particle particle;
-        public IntegerRange lifeTime = new IntegerRange(1, 2);
+        public IntegerPair lifeTime = new IntegerPair(1, 2);
 
         public int amount = 5;
 

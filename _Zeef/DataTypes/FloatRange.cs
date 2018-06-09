@@ -1,6 +1,6 @@
 using System;
 
-namespace Zeef.GameManager {
+namespace Zeef {
     [Serializable]
     public class FloatRange 
     {

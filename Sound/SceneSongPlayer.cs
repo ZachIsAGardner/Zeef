@@ -1,5 +1,4 @@
 using UnityEngine;
-using Zeef.GameManager;
 
 namespace Zeef.Sound {
     public class SceneSongPlayer : MonoBehaviour {

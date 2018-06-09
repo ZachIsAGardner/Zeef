@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Zeef.GameManager;
 
 // this holds references to all the songObjects.songs and sfx
 namespace Zeef.Sound 

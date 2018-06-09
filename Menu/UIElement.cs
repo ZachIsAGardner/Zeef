@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Zeef.Menu
 {
-    public abstract class UIElement : MonoBehaviour 
+    public class UIElement : MonoBehaviour 
     {
         public Image image;
         Color color;

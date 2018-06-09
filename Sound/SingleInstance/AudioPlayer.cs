@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Zeef.GameManager;
 
 namespace Zeef.Sound {
 	
@@ -63,7 +62,6 @@ namespace Zeef.Sound {
 		#endregion
 
 		#region SFX
-
 
 		public void PlaySoundEffect(AudioSource source, SoundEffectObject obj) {
 			if (obj == null) return;

@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Zeef.GameManager {
+namespace Zeef {
     public class CoroutineWithData {
         public Coroutine coroutine { get; private set; }
         public object result;

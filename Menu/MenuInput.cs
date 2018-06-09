@@ -9,8 +9,11 @@ namespace Zeef.Menu
 {
     public static class MenuInput 
     {
-        // Console.ReadLine();
-        public static IEnumerator WaitForInput() {
+        #region SimpleInput
+
+        // like Console.ReadLine();
+        public static IEnumerator WaitForInput() 
+        {
             int? result = null;
             while (result == null)
             {
@@ -20,7 +23,8 @@ namespace Zeef.Menu
             yield return result;
         }
 
-        private static int? ReadKeyPressAsNumber() {
+        private static int? ReadKeyPressAsNumber() 
+        {
             int result = -1;
             if (Input.anyKeyDown) {
                 foreach (KeyCode key in System.Enum.GetValues(typeof(KeyCode)))
@@ -38,47 +42,26 @@ namespace Zeef.Menu
             }
         }
 
+        #endregion
+
         #region Matrix
 
-        static private void UnHighlightAllInMatrix(List<List<UIElement>> matrix) {
-            matrix.ForEach(m => {
-                m.ForEach(el => {
-                    el.UnHighlight();
-                });
-            });
-        }
-
-        static private void HighlightInMatrix(List<List<UIElement>> matrix, int row, int col) {
-            UnHighlightAllInMatrix(matrix);
-            matrix[row][col].Highlight();
-        }
-
         // Returns Coordinates
-        static public IEnumerator SelectFromMatrix(List<List<UIElement>> matrix) {
+        static public IEnumerator SelectFromMatrix(List<List<UIElement>> elements) 
+        {
             Coordinates result = null;
+            Coordinates focus = new Coordinates();
 
-            int col = 0;
-            int row = 0;
+            HighlightInMatrix(elements, focus.row, focus.col);
 
             while (result == null) {
-                if (row < 0) {
-                    row = 0;
-                } 
-                if (row > matrix.Count - 1) {
-                    row = matrix.Count - 1;
-                }
+                Coordinates oldFocus = new Coordinates(focus.row, focus.col);
+                focus = AdjustFocus(focus, new Coordinates(elements.Count, elements[focus.row].Count));
 
-                if (col < 0) {
-                    col = 0;
-                }
-                if (col > matrix[row].Count - 1) {
-                    col = matrix[row].Count - 1;
-                }
-
-                HighlightInMatrix(matrix, row, col);
+                if (focus.SameAs(oldFocus)) HighlightInMatrix(elements, focus.row, focus.col);
                 
                 if (Input.GetButtonDown("Fire1")) {
-                    result = new Coordinates(col, row);
+                    result = focus;
                     break;
                 }
 
@@ -87,67 +70,163 @@ namespace Zeef.Menu
                     break;
                 }
 
-                if (Input.GetKeyDown(KeyCode.LeftArrow)) {
-                    col -= 1;
+                yield return null;
+            }
+
+            // complete action
+            UnHighlightAllInMatrix(elements);
+
+            yield return result;
+        }
+
+        // Returns Coordinates
+        static public IEnumerator SelectFromMatrix(Coordinates max, Action<Coordinates> changeAction) 
+        {
+            Coordinates result = null; 
+            Coordinates focus = new Coordinates();
+
+            while (result == null) {
+                Coordinates oldFocus = new Coordinates(focus.row, focus.col);
+                focus = AdjustFocus(focus, max);
+                
+                if (!focus.SameAs(oldFocus)) changeAction(focus);
+
+                // Check for yes/ no input 
+                if (Input.GetButtonDown("Fire1")) {
+                    result = focus;
+                    break;
                 }
-                if (Input.GetKeyDown(KeyCode.RightArrow)) {
-                    col += 1;
-                }
-                if (Input.GetKeyDown(KeyCode.UpArrow)) {
-                    row -= 1;
-                }
-                if (Input.GetKeyDown(KeyCode.DownArrow)) {
-                    row += 1;
+
+                if (Input.GetButtonDown("Fire2")) {
+                    result = new Coordinates(-1, -1);
+                    break;
                 }
 
                 yield return null;
             }
 
-            UnHighlightAllInMatrix(matrix);
+            // complete action
 
             yield return result;
+        }
+        
+        // ---
+
+        static public void UnHighlightAllInMatrix(List<List<UIElement>> matrix) 
+        {
+            matrix.ForEach(m => {
+                m.ForEach(el => {
+                    el.UnHighlight();
+                });
+            });
+        }
+
+        static private void HighlightInMatrix(List<List<UIElement>> matrix, int row, int col) 
+        {
+            UnHighlightAllInMatrix(matrix);
+            matrix[row][col].Highlight();
+        }
+
+        static private Coordinates AdjustFocus(Coordinates focus, Coordinates max) {
+            // Change value based on user input
+            if (Input.GetKeyDown(KeyCode.UpArrow)) focus.row -= 1;
+            if (Input.GetKeyDown(KeyCode.DownArrow)) focus.row += 1; 
+            if (Input.GetKeyDown(KeyCode.LeftArrow)) focus.col -= 1;
+            if (Input.GetKeyDown(KeyCode.RightArrow)) focus.col += 1;
+
+            // Correct from max
+            if (focus.row < 0) focus.row = 0;
+            if (focus.row > max.row - 1) focus.row = max.row - 1;
+            if (focus.col < 0) focus.col = 0;
+            if (focus.col > max.col - 1) focus.col = max.col - 1;
+
+            return focus;
         }
 
         #endregion
         
         #region VerticalList
 
-        // Make this take in a list of ui elements instead or make overload
-        // Returns Int
-        static public IEnumerator VerticalList(int max, Action<int> changeAction) {
-            int? result = null;
-            int idx = 0;
-            
-            while (result == null) {
-                if (Input.GetKeyDown(KeyCode.UpArrow)) {
-                    idx -= 1;
-                    if (idx < 0) {
-                        idx = 0;
-                    }
-                    changeAction(idx);
-                }
+        //return int
+        static public IEnumerator SelectFromVerticalList(List<UIElement> elements, MonoBehaviour caller) 
+        {
+            CoroutineWithData cd = new CoroutineWithData(
+                caller,
+                SelectFromMatrix(ListToVerticalMatrix(elements))
+            );
+            yield return cd.coroutine;
+            Coordinates result = (Coordinates)cd.result;
+            yield return result.row;
+        }
 
-                if (Input.GetKeyDown(KeyCode.DownArrow)) {
-                    idx += 1;
-                    if (idx > max) {
-                        idx = max;
-                    }
-                    changeAction(idx);
-                }
+        // Returns int
+        static public IEnumerator SelectFromVerticalList(int max, MonoBehaviour caller, Action<Coordinates> changeAction) 
+        {
+            CoroutineWithData cd = new CoroutineWithData(
+                caller,
+                SelectFromMatrix(new Coordinates(max, 0), changeAction)
+            );
+            yield return cd.coroutine;
+            Coordinates result = (Coordinates)cd.result;
+            yield return result.row;
+        }
 
-                if (Input.GetButtonDown("Fire1")) {
-                    result = idx;
-                }
+        static public void UnHighlightAllInVerticalList(List<UIElement> elements) 
+        {
+            UnHighlightAllInMatrix(ListToVerticalMatrix(elements));
+        }
 
-                if (Input.GetButtonDown("Fire2")) {
-                    // result = -1;
-                }
-
-                yield return null;
-            }
-            yield return result;
+        static private List<List<UIElement>> ListToVerticalMatrix(List<UIElement> elements) 
+        {
+            List<List<UIElement>> result = new List<List<UIElement>>();
+            elements.ForEach(e => {
+                result.Add(new List<UIElement>() { e });
+            });
+            return result;
         }
         
+        #endregion
+
+        #region HorizontalList
+
+        // returns int
+        static public IEnumerator SelectFromHorizontalList(List<UIElement> elements, MonoBehaviour caller) 
+        {
+            CoroutineWithData cd = new CoroutineWithData(
+                caller,
+                SelectFromMatrix(ListToHorizontalMatrix(elements))
+            );
+
+            yield return cd.coroutine;
+
+            Coordinates result = (Coordinates)cd.result;
+            yield return result.col;
+        }
+
+        // returns int
+        static public IEnumerator SelectFromHorizontallList(int max, MonoBehaviour caller, Action<Coordinates> changeAction) 
+        {
+            CoroutineWithData cd = new CoroutineWithData(
+                caller,
+                SelectFromMatrix(new Coordinates(0, max), changeAction)
+            );
+
+            yield return cd.coroutine;
+
+            Coordinates result = (Coordinates)cd.result;
+            yield return result.col;
+        }
+
+        static public void UnHighlightAllInHorizontalList(List<UIElement> elements) 
+        {
+            UnHighlightAllInMatrix(ListToHorizontalMatrix(elements));
+        }
+
+        static private List<List<UIElement>> ListToHorizontalMatrix(List<UIElement> elements) 
+        {
+            return new List<List<UIElement>>(){ elements };
+        }
+
         #endregion
     }
 }
