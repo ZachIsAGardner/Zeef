@@ -4,7 +4,10 @@ using UnityEngine;
 using Zeef.GameManager;
 
 namespace Zeef.Sound {
+	
+	[RequireComponent(typeof (SingleInstanceChild))]
 	public class AudioPlayer : MonoBehaviour {
+
 		private AudioReference db;
 		private AudioSource audioSource;
 
@@ -18,7 +21,7 @@ namespace Zeef.Sound {
 		}
 
 		public static AudioPlayer Main(){
-			return Game.Main().GetComponentInChildren<AudioPlayer>();
+			return SingleInstance.Main().GetComponentInChildren<AudioPlayer>();
 		}
 
 		#region Music 

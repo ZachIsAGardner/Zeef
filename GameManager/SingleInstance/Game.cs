@@ -7,11 +7,13 @@ using UnityEngine.SceneManagement;
 using System.Linq;
 // ---
 using Zeef.Sound;
-// using Zee2D;
 
-namespace Zeef.GameManager {
+namespace Zeef.GameManager 
+{
 	[RequireComponent (typeof(AudioSource))]
-	public class Game : MonoBehaviour {
+	[RequireComponent (typeof(SingleInstanceChild))]
+	public class Game : MonoBehaviour 
+	{
 		// Pixel per unit
 		public int ppu = 100;
 		[SerializeField] string entryScene = "Entry";
@@ -43,11 +45,11 @@ namespace Zeef.GameManager {
 		}
 		
 		public static Game Main() {
-			return game;
+			return SingleInstance.Main().GetComponentInChildren<Game>();
 		}
 
 		public static Canvas Canvas() {
-			return game.GetComponentInChildren<Canvas>();
+			return SingleInstance.Main().GetComponentInChildren<Canvas>();
 		}
 		
 		#region Setup

@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using Zeef.GameManager;
 
 namespace Zeef.Persistance {
+    [RequireComponent(typeof (SingleInstanceChild))]
     public class FlagDB : MonoBehaviour 
     {
         [SerializeField] FlagSeed flagSeed;
@@ -20,7 +21,7 @@ namespace Zeef.Persistance {
 
         public static FlagDB Main()
         {
-            return Game.Main().GetComponentInChildren<FlagDB>();
+            return SingleInstance.Main().GetComponentInChildren<FlagDB>();
         }
 
         public void SetFlag(int id, bool value) 

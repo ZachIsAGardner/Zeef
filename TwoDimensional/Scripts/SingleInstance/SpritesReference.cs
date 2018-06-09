@@ -6,12 +6,13 @@ using Zeef.GameManager;
 
 namespace Zeef.TwoDimensional 
 {
+    [RequireComponent(typeof (SingleInstanceChild))]
     public class SpritesReference : MonoBehaviour 
     {
         [SerializeField] SpritesObjectContainer spritesObjectContainer;
 
         public static SpritesReference Main() {
-            return Game.Main().GetComponentInChildren<SpritesReference>();
+            return SingleInstance.Main().GetComponentInChildren<SpritesReference>();
         }
 
         public SpritesObject GetSpritesObject(SpritesID id) {

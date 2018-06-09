@@ -8,7 +8,7 @@ using Zeef.GameManager;
 // this holds references to all the songObjects.songs and sfx
 namespace Zeef.Sound 
 {
-	[ExecuteInEditMode]
+	[RequireComponent(typeof (SingleInstanceChild))]
 	public class AudioReference : MonoBehaviour
 	{
 		[SerializeField] float musicVolume = 0.5f;
@@ -18,7 +18,7 @@ namespace Zeef.Sound
 		[SerializeField] SoundEffectObjects soundEffectsObjects;
 
 		public static AudioReference Main() {
-			return Game.Main().GetComponentInChildren<AudioReference>(); 
+			return SingleInstance.Main().GetComponentInChildren<AudioReference>(); 
 		}
 
 		#region Music

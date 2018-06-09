@@ -10,7 +10,7 @@ namespace Zeef.Sound {
         }
 
         public void PlaySong() {
-            AudioPlayer audioPlayer = Game.Main().GetComponent<AudioPlayer>();
+            AudioPlayer audioPlayer = AudioPlayer.Main();
             audioPlayer.ChangeSong(songObject);
         }
     }

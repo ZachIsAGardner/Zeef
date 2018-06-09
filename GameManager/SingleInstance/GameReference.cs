@@ -5,12 +5,13 @@ using UnityEngine;
 namespace Zeef.GameManager {
     // 'References' hold the actual game object and such. References should be the single source for these kinds of gameobjects'
     // Reference GameObjects never change their data at runtime
+    [RequireComponent(typeof (SingleInstanceChild))]
     public class GameReference : MonoBehaviour {
         [SerializeField] EntityObjects entityObjects;
         [SerializeField] PromptObjects promptObjects;
 
         public static GameReference Main(){
-            return Game.Main().GetComponentInChildren<GameReference>();
+            return SingleInstance.Main().GetComponentInChildren<GameReference>();
         }
 
         public GameObject GetEntity(EntityID id) {
