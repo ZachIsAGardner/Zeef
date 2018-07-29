@@ -12,7 +12,7 @@ namespace Zeef.Sound {
 
 		private SongObject currentSong;
 
-		void Start() {
+		void Awake() {
 			db = AudioReference.Main();
 			audioSource = GetComponent<AudioSource>();
 
@@ -24,6 +24,10 @@ namespace Zeef.Sound {
 		}
 
 		#region Music 
+
+		public void ChangeSong(SongsEnum songID) {
+			ChangeSong(db.GetSong(songID));
+		}
 
 		public void ChangeSong(SongObject song) {
 			// stop if were already playing that song
@@ -68,7 +72,7 @@ namespace Zeef.Sound {
 			source.PlayOneShot(obj.clip, AudioReference.Main().SoundEffectVolume() - (1 - obj.volume));
 		}
 
-		public void PlaySoundEffect(AudioSource source, SoundEffectID id) {
+		public void PlaySoundEffect(AudioSource source, SoundEffectsEnum id) {
 			PlaySoundEffect(source, AudioReference.Main().GetSoundEffect(id));
 		}
 

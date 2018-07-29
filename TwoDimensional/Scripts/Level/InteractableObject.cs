@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 // ---
-using Zeef.GameManager;
+using Zeef.GameManagement;
 
 namespace Zeef.TwoDimensional
 {
 	public abstract class InteractableObject : MonoBehaviour 
 	{
-		public PromptID promptID;
+		public PromptsEnum promptID;
 		GameObject prompt;
 		public bool onTouch;
 		GameObject promptClone;

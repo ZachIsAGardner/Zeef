@@ -3,16 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Zeef.GameManager;
+using Zeef.GameManagement;
 
 namespace Zeef.TwoDimensional 
 {
 	public abstract class AnimatedSprite : MonoBehaviour 
 	{	
-		private string baseDirectory = "content/images/sheets/";
-
 		// References
-		Game game;
+		GameManager game;
 		public SpriteRenderer spriteRenderer;
 		public Image imageRenderer;
 		public MeshRenderer meshRenderer;
@@ -46,22 +44,26 @@ namespace Zeef.TwoDimensional
 		protected abstract AnimationEvent[] GetAnimationEvents();
 
 		protected virtual void Start () {
-			game = Game.Main();
+			Setup();
+		}
+
+		public void Setup() {
+			game = GameManager.Main();
 
 			spriteRenderer = spriteRenderer ?? GetComponent<SpriteRenderer>();
 			imageRenderer = imageRenderer ?? GetComponent<Image>();
 			meshRenderer = meshRenderer ?? GetComponent<MeshRenderer>();
 			GetAdvisor();
 
-			if (sprites.Length == 0 && spritesObject != null) sprites = spritesObject.sprites.ToArray();
-		
+			if (sprites.Length == 0  && spritesObject != null) sprites = spritesObject.sprites.ToArray();
+
 			events = GetAnimationEvents();
 
 			range = new int[] {0, 0};
 		}
 
 		void Update() {
-			if (!game.Paused()) {
+			if (!game.IsPaused()) {
 				EvaluateState();
 				ExecuteAnimationEvents();
 				RenderSprite();
@@ -72,10 +74,11 @@ namespace Zeef.TwoDimensional
 			forcedState = state;
 		}
 
-		public Sprite[] SetSprites(SpritesID id) {
+		public Sprite[] SetSprites(SpritesEnum id) {
 			spritesObject = SpritesReference.Main().GetSpritesObject(id);
 			if (spritesObject == null) throw new Exception($"the id: '{id}' did not return a sprites object.");
 			Sprite[] result = spritesObject.sprites.ToArray();
+			if (result.Length < 1) throw new Exception($"the id: '{id}' did not return any sprites.");
 			return result;
 		}
 
@@ -95,6 +98,8 @@ namespace Zeef.TwoDimensional
 		// ---
 
 		private void RenderSprite() {
+			if (sprites.Length < 1) return;
+
 			tick += 10 * Time.deltaTime;
 
 			if (tick > ticksPerFrame) {
@@ -119,6 +124,7 @@ namespace Zeef.TwoDimensional
 			} 
 			
 			frame = spriteIdx - range[0];
+
 			if (spriteRenderer != null) {
 				spriteRenderer.sprite = sprites[spriteIdx];
 			} else if (imageRenderer != null) {

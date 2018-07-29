@@ -1,11 +1,11 @@
 using UnityEngine;
 
-namespace Zeef.Sound 
-{
+namespace Zeef.Sound {
+    
     [CreateAssetMenu(menuName = "SO/Song")]
-    public class SongObject : ScriptableObject 
-    {
-        public SongID id;
+    public class SongObject : ScriptableObject {
+
+        public SongsEnum id;
         public AudioClip clip;
         // loop start, loop end
         public FloatRange loopTimes;

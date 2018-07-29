@@ -2,126 +2,115 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Zeef.Menu 
-{
-    public class Example : MonoBehaviour
-    { 
+namespace Zeef.Menu {
+
+    public class Example : MonoBehaviour { 
+
+        // Lists of lists are not serialized in the inspector, so the inner list is wrapped in a class
         [SerializeField] List<ListWrapper> matrixElements;
         [SerializeField] List<UIElement> verticalElements;
         [SerializeField] List<UIElement> horizontalElements;
 
-        void Start() 
-        {
-            StartCoroutine(RunMatrix());
+        void Start() {
+            StartCoroutine(RunMatrixCoroutine());
         }
 
-        void Update() 
-        {
+        void Update() {
             Listen();
         }
 
-        void Listen() 
-        {
+        void Listen() {
             if (Input.GetKeyDown("1")) {
                 StopAllCoroutines();
                 UnHighlightAll();
-                StartCoroutine(RunMatrix());
+                StartCoroutine(RunMatrixCoroutine());
             }
             if (Input.GetKeyDown("2")) {
                 StopAllCoroutines();
                 UnHighlightAll();
-                StartCoroutine(RunVertical());
+                StartCoroutine(RunVerticalCoroutine());
             }
             if (Input.GetKeyDown("3")) {
                 StopAllCoroutines();
                 UnHighlightAll();
-                StartCoroutine(RunHorizontal());
+                StartCoroutine(RunHorizontalCoroutine());
             }
         }
 
-        void UnHighlightAll() 
-        {
+        void UnHighlightAll() {
             MenuInput.UnHighlightAllInMatrix(ListWrapper.ToListOfLists(matrixElements));
             MenuInput.UnHighlightAllInVerticalList(verticalElements);
             MenuInput.UnHighlightAllInVerticalList(horizontalElements);
         }
 
-        IEnumerator RunMatrix() 
-        {
+        IEnumerator RunMatrixCoroutine() {
+
             CoroutineWithData cd = new CoroutineWithData (
                 this,
-                MenuInput.SelectFromMatrix(ListWrapper.ToListOfLists(matrixElements))
+                MenuInput.SelectFromMatrixCoroutine(ListWrapper.ToListOfLists(matrixElements))
             );
 
-            yield return cd.coroutine;
+            yield return cd.Coroutine;
 
-            if (cd.result.GetType() == typeof(Coordinates)) {
-                Coordinates result = (Coordinates)cd.result;
+            if (cd.Result != null) {
+                Coordinates result = (Coordinates)cd.Result;
                 print($"Chose element at coordintates [{result.row}, {result.col}]");
             }
 
-            StartCoroutine(RunMatrix());
+            StartCoroutine(RunMatrixCoroutine());
         }
 
-        IEnumerator RunVertical() 
-        {
+        IEnumerator RunVerticalCoroutine() {
+
             CoroutineWithData cd = new CoroutineWithData (
                 this,
-                MenuInput.SelectFromVerticalList(verticalElements, this)
+                MenuInput.SelectFromVerticalListCoroutine(verticalElements, this)
             );
 
-            yield return cd.coroutine;
+            yield return cd.Coroutine;
 
-            if (cd.result.GetType() == typeof(int)) {
-                int result = (int)cd.result;
+            if (cd.Result != null) {
+                int result = (int)cd.Result;
                 print($"Chose element at index [{result}]");
             }
 
-            StartCoroutine(RunVertical());
+            StartCoroutine(RunVerticalCoroutine());
         }
 
-        IEnumerator RunHorizontal() 
-        {
+        IEnumerator RunHorizontalCoroutine() {
+
             CoroutineWithData cd = new CoroutineWithData (
                 this,
-                MenuInput.SelectFromHorizontalList(horizontalElements, this)
+                MenuInput.SelectFromHorizontalListCoroutine(horizontalElements, this)
             );
 
-            yield return cd.coroutine;
+            yield return cd.Coroutine;
 
-            if (cd.result.GetType() == typeof(int)) {
-                int result = (int)cd.result;
+            if (cd.Result != null) {
+                int result = (int)cd.Result;
                 print($"Chose element at index [{result}]");
             }
 
-            StartCoroutine(RunHorizontal());
+            StartCoroutine(RunHorizontalCoroutine());
         }
     }
 
     [System.Serializable]
-    public class ListWrapper 
-    {
-        public List<UIElement> list;
+    public class ListWrapper {
 
-        public static List<List<UIElement>> ToListOfLists(List<ListWrapper> listWrappers) 
-        {
+        public List<UIElement> List;
+
+        public static List<List<UIElement>> ToListOfLists(List<ListWrapper> listWrappers) {
             List<List<UIElement>> result = new List<List<UIElement>>();
             listWrappers.ForEach(row => {
-                result.Add(row.list);
+                result.Add(row.List);
             });
             return result;
         }
 
-        public UIElement this[int index]
-        {
-            get
-            {
-                return list[index];
-            }
-            set
-            {
-                list[index] = value;
-            }
+        public UIElement this[int index] {
+            get { return List[index]; }
+            set { List[index] = value; }
         }
     }
 }

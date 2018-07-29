@@ -1,9 +1,10 @@
-namespace Zeef.TwoDimensional 
-{
-    public enum SpritesID {
+namespace Zeef.TwoDimensional {
+
+    public enum SpritesEnum {
         Default,
         Jack,
         Pebbles,
-        AssholeLiquor
+        AssholeLiquor,
+        Worm
     } 
 }

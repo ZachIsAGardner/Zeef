@@ -1,5 +1,5 @@
 using UnityEngine;
-using Zeef.GameManager;
+using Zeef.GameManagement;
 
 namespace Zeef.TwoDimensional {
 
@@ -7,7 +7,7 @@ namespace Zeef.TwoDimensional {
 	// https://github.com/SebLague/2DPlatformer-Tutorial
 	public class RaycastController : MonoBehaviour {
 
-		protected Game game;
+		protected GameManager game;
 		[HideInInspector]
 		public BoxCollider2D col;
 		protected float skin = 1f;
@@ -16,8 +16,8 @@ namespace Zeef.TwoDimensional {
 
 		protected virtual void Start () {
 			col = GetComponent<BoxCollider2D>();
-			game = Game.Main();
-			skin = 1f / game.ppu;
+			game = GameManager.Main();
+			skin = 1f / game.PPU;
 		}
 
 		protected void GetRayOrigins() {

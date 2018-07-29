@@ -10,51 +10,41 @@ namespace Zeef.Sound
 	[RequireComponent(typeof (SingleInstanceChild))]
 	public class AudioReference : MonoBehaviour
 	{
-		[SerializeField] float musicVolume = 0.5f;
-		[SerializeField] float soundEffectVolume = 1;
+		[SerializeField] private float musicVolume = 0.5f;
+		[SerializeField] private float soundEffectVolume = 1;
 
-		[SerializeField] SongObjectsContainer songObjects;	    
-		[SerializeField] SoundEffectObjectsContainer soundEffects;
+		[SerializeField] private SongObjectsContainer songsObjectsContainer;	    
+		[SerializeField] private SoundEffectObjectsContainer soundEffectObjectsContainer;
 
-		public static AudioReference Main() {
-			return SingleInstance.Main().GetComponentInChildren<AudioReference>(); 
-		}
-
+		public static AudioReference Main() => SingleInstance.Main().GetComponentInChildrenWithError<AudioReference>(); 
+		
 		#region Music
 
-		public float MusicVolume() 
-		{
-			return musicVolume;
-		}
+		public float MusicVolume() => musicVolume;
+		
 
-		public SongObject GetSong(SongID id) 
-		{
-			return songObjects.songs.First(s => s.id == id);
-		}
+		public SongObject GetSong(SongsEnum id) => songsObjectsContainer.songs.First(s => s.id == id);
+		
 
-		public SongObject GetSong(string name) 
-		{
-			return songObjects.songs.First(s => s.name == name);
-		}
+		public SongObject GetSong(string name) => songsObjectsContainer.songs.First(s => s.name == name);
+		
 
 		#endregion
 
 		#region SFX
 
-		public float SoundEffectVolume() 
-		{
-			return soundEffectVolume;
-		}
+		public float SoundEffectVolume() => soundEffectVolume;
+		
 
-		public SoundEffectObject GetSoundEffect(SoundEffectID id) 
+		public SoundEffectObject GetSoundEffect(SoundEffectsEnum id) 
 		{
-			SoundEffectObject result = soundEffects.soundEffects.FirstOrDefault(s => s.id == id);
+			SoundEffectObject result = soundEffectObjectsContainer.soundEffects.FirstOrDefault(s => s.id == id);
 			return result;
 		}
 
 		public SoundEffectObject GetSoundEffect(string name) 
 		{
-			SoundEffectObject result = soundEffects.soundEffects.FirstOrDefault(s => s.name == name);
+			SoundEffectObject result = soundEffectObjectsContainer.soundEffects.FirstOrDefault(s => s.name == name);
 			return result;
 		}
 

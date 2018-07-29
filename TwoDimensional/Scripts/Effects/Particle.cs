@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Zeef.GameManager;
+using Zeef.GameManagement;
 
 namespace Zeef.TwoDimensional {
 	public class Particle : MonoBehaviour 
 	{
-		Game game;
+		GameManager game;
 		Image image;
 		SpriteRenderer spriteRenderer;
 		MeshRenderer meshRenderer;
@@ -39,7 +39,7 @@ namespace Zeef.TwoDimensional {
 		}
 
 		void GetComponents() {
-			game = Game.Main();
+			game = GameManager.Main();
 			image = GetComponent<Image>();
 			spriteRenderer = GetComponent<SpriteRenderer>();
 			meshRenderer = GetComponent<MeshRenderer>();
@@ -63,7 +63,7 @@ namespace Zeef.TwoDimensional {
 
 		IEnumerator Run() {
 			while(lifeTime > 0) {	
-				while(game.Paused()) yield return null;
+				while(game.IsPaused()) yield return null;
 
 				if (fade) {
 					ChangeColor(new Color(1, 1, 1, lifeTime));

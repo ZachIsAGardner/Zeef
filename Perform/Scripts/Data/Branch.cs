@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Zeef.Perform {
+    
     public class Branch {
+
         public List<Section> Sections { get; private set; }
         public List<Path> Paths { get; private set; }
         public TextBoxOptions Options { get; private set; }

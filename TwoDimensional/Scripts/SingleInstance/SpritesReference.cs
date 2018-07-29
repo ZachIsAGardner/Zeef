@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 // ---
-using Zeef.GameManager;
+using Zeef.GameManagement;
 
 namespace Zeef.TwoDimensional 
 {
@@ -15,7 +15,7 @@ namespace Zeef.TwoDimensional
             return SingleInstance.Main().GetComponentInChildren<SpritesReference>();
         }
 
-        public SpritesObject GetSpritesObject(SpritesID id) {
+        public SpritesObject GetSpritesObject(SpritesEnum id) {
             SpritesObject result = spritesObjectsContainer.spritesObjects.FirstOrDefault(sp => sp.id == id);
             if (result == null) throw new Exception($"Couldn't find a sprites object with an id matching {id}");
             return result;

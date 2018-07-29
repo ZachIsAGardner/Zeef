@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 // ---
-using Zeef.GameManager;
+using Zeef.GameManagement;
 
 namespace Zeef.TwoDimensional {
 
@@ -22,7 +22,6 @@ namespace Zeef.TwoDimensional {
 		bool noBounds;
 
 		Camera cam;
-		Game game;
 
 		float shakeTime;
 		float shakeTick;
@@ -30,7 +29,6 @@ namespace Zeef.TwoDimensional {
 
 		void Start () {
 			cam = GetComponent<Camera>();
-			game = FindObjectOfType<Game>(); 
 
 			normalZoom = cam.orthographicSize;
 
@@ -45,14 +43,14 @@ namespace Zeef.TwoDimensional {
 		}
 
 		public void GetTarget() {
-			GameObject player = Identifier.FindIdentifierObject(IdentifierID.Player);
+			GameObject player = Identifier.FindIdentifierObject(IdentifiersEnum.Player);
 			target = (player) ? 
 				player.transform : 
 				null;
 		}
 
 		public void GetBoundaries() {
-			GameObject boundsObject = Identifier.FindIdentifierObject(IdentifierID.Bounds);
+			GameObject boundsObject = Identifier.FindIdentifierObject(IdentifiersEnum.Bounds);
 			if (boundsObject) {
 				bounds = boundsObject.GetComponent<BoxCollider2D>().bounds;
 				noBounds = false;
@@ -62,7 +60,7 @@ namespace Zeef.TwoDimensional {
 		}
 		
 		void LateUpdate() {
-			if (game.Paused()) return;
+			if (GameManager.Main() && GameManager.Main().IsPaused()) return;
 
 			if (target) {
 				Move();

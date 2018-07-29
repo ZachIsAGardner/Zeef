@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Zeef.GameManager;
+using Zeef.GameManagement;
 
 namespace Zeef.TwoDimensional {
 
@@ -19,7 +19,7 @@ namespace Zeef.TwoDimensional {
         private bool queueBounce;
 
         protected override void Update() {
-            if (!Game.Playing()) return;
+            if (!Game.IsPlaying()) return;
             base.Update();
         }
 
@@ -28,11 +28,11 @@ namespace Zeef.TwoDimensional {
                 return;
             }
             Facing = (Mathf.FloorToInt(Mathf.Sign(inputX)) == -1) 
-                ? FacingID.Left 
-                : FacingID.Right;
+                ? FacingsEnum.Left 
+                : FacingsEnum.Right;
 
             transform.localScale = new Vector2(
-                (Facing == FacingID.Left) ? -1 : 1, 
+                (Facing == FacingsEnum.Left) ? -1 : 1, 
                 1
             );
         }

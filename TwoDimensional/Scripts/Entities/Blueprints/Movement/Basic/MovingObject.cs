@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Zeef.GameManager;
+using Zeef.GameManagement;
 using Zeef.Sound;
 
 namespace Zeef.TwoDimensional {
@@ -15,7 +15,7 @@ namespace Zeef.TwoDimensional {
 	[RequireComponent(typeof(BoxCollider2D))]
 	public abstract class MovingObject : MonoBehaviour {
 		//state
-		public FacingID Facing { get; protected set; }
+		public FacingsEnum Facing { get; protected set; }
 		public Vector3 StartPosition { get; set; }
 
 		// basic movement stats
@@ -27,7 +27,7 @@ namespace Zeef.TwoDimensional {
 		protected bool active = true;
 
 		//references
-		protected Game Game { get; private set; }
+		protected GameManager Game { get; private set; }
 		protected BoxCollider2D BoxCollider2D { get; private set; }
 		protected Collision Collision { get; private set; }
 		protected AudioSource AudioSource { get; private set; }
@@ -52,7 +52,7 @@ namespace Zeef.TwoDimensional {
 		}
 
 		void GetComponents() {
-			Game = Game.Main();
+			Game = GameManager.Main();
 			audioRef = AudioReference.Main();
 
 			Collision = GetComponent<Collision>();
@@ -63,7 +63,7 @@ namespace Zeef.TwoDimensional {
 		}
 
 		protected virtual void Update () {
-			if (!(Game.Playing() || Game.InCutscene())) return;
+			if (!(Game.IsPlaying() || Game.InCutscene())) return;
 
 			CalculateVelocity(ref vel);
 			if (queueRecoil) {
@@ -77,16 +77,16 @@ namespace Zeef.TwoDimensional {
 		#region State
 
 		public bool FacingUp() {
-			return Facing == FacingID.Up;	
+			return Facing == FacingsEnum.Up;	
 		}
 		public bool FacingDown() {
-			return Facing == FacingID.Down;	
+			return Facing == FacingsEnum.Down;	
 		}
 		public bool FacingLeft() {
-			return Facing == FacingID.Left;	
+			return Facing == FacingsEnum.Left;	
 		}
 		public bool FacingRight() {
-			return Facing == FacingID.Right;	
+			return Facing == FacingsEnum.Right;	
 		}
 
 		public void Activate() {

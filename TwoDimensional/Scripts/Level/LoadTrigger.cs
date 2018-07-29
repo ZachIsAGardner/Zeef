@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Zeef.TwoDimensional;
-using Zeef.GameManager;
+using Zeef.GameManagement;
 
 namespace Zeef.TwoDimensional {
 
@@ -13,7 +13,7 @@ namespace Zeef.TwoDimensional {
 
       protected override void TriggerAction()
       {
-        Game.Main().LoadScene(sceneInfo);
+        GameManager.Main().LoadScene(sceneInfo);
       }
   }
 

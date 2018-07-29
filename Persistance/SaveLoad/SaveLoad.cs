@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
+using Zeef.GameManagement;
 
 namespace Zeef.Persistance {
 	public static class SaveLoad {
@@ -14,12 +15,10 @@ namespace Zeef.Persistance {
 			bf.Serialize(file, saveData);
 			file.Close();
 		}
+	
+		public static T Load<T>(string fileName) where T : SaveData {			
+			if (!DataExists(fileName)) throw new Exception($"There is no data with the filename {fileName} to load.");
 
-		public static bool DataExists(string fileName) {
-			return File.Exists(Application.persistentDataPath + "/" + fileName);
-		}
-
-		public static T Load<T>(string fileName) where T : SaveData {
 			BinaryFormatter bf = new BinaryFormatter();
 			FileStream file = File.Open(Application.persistentDataPath + "/" + fileName, FileMode.Open);
 
@@ -28,5 +27,20 @@ namespace Zeef.Persistance {
 
 			return saveData;
 		}
+
+		public static T TryLoad<T>(string fileName) where T : SaveData {
+			if (!DataExists(fileName)) return null;
+
+			BinaryFormatter bf = new BinaryFormatter();
+			FileStream file = File.Open(Application.persistentDataPath + "/" + fileName, FileMode.Open);
+
+			T saveData = (T)bf.Deserialize(file);
+			file.Close();
+
+			return saveData;
+		}
+
+		public static bool DataExists(string fileName) => 
+			File.Exists(Application.persistentDataPath + "/" + fileName);
 	}
 }

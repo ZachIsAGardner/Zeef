@@ -6,7 +6,7 @@ namespace Zeef.TwoDimensional
 	[CreateAssetMenu(menuName = "SO/Sprites")]
 	public class SpritesObject : ScriptableObject 
 	{
-		public SpritesID id;
+		public SpritesEnum id;
 		public List<Sprite> sprites;
 	}
 }

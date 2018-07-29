@@ -10,7 +10,7 @@ namespace Zeef.TwoDimensional {
         private Vector2 target;
 
         protected override void Update() {
-            if (!(Game.Playing() || Game.InCutscene())) return;
+            if (!(Game.IsPlaying() || Game.InCutscene())) return;
 
             base.Update();
             ApplyFacing(); 
