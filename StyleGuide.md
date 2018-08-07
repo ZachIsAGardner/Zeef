@@ -1,24 +1,28 @@
 # Style Guide #
 
+## General ##
+
 * Methods and related are written with the left bracket on the same line as the declaration
 ```
 void Method() {
-    // Do something
+    if (loveIsReal) {
+        // Do something
+    }
 }
 ```
 
-* Namespaces and classes get a space after declaration
+* Namespaces and classes get a return after declaration
 ```
-namespace Namespace {
+namespace SomeNamespace {
 
-    public class Class {
+    public class SomeClass {
 
         // Class stuff
     }
 }
 ```
 
-* Namespaces are seperated between standard c# and unity namespaces, and project and framework namespaces
+* Namespaces are seperated between standard c# and unity unity namespaces, and project and framework namespaces
 ```
 using System;
 using UnityEngine;
@@ -48,13 +52,15 @@ void LongMethod() {
 }
 ```
 
-* Public fields and properties are capitalized, private and protected are lowercase
-
 * This is how you deal with fields that are to be set in the inspector that also need to get referenced by other objects.
 ```
 [SerializeField] private GameObject player;
 public GameObject Player { get { return player; }}
 ```
+
+## Naming Conventions ##
+
+* Public fields and properties are capitalized, private and protected are lowercase
 
 * All enums end with Enum
 * Fight me
@@ -73,8 +79,17 @@ public IEnumerator DoSomethingCoroutine() {
 }
 ```
 
-* Methods named "Execute" are placed on existing monobehaviours that when called will perform some action
+* Classes that end with "Model" are only used to fill another class's properties
+* Classes that end with "Data" are used by MonoBehaviours, usually to fill in properties
+* Classes that end with "Info" carry data that is used for other actions, but isn't necessarily persisted anywhere
 
-* Methods named "Initialize" are placed on monobehaviours that are attached to gameobjects. Initilialize is called to return that gamobject filled with data passed in through arguments given to the "Initialize" method. Initiliaze can either create an empty gameobject for you and attach itself to it or you would also pass it a prefab that it will find itself on and fill the info.
+* Methods named "Execute" are written in MonoBehaviours. Execute is called on MonoBehaviours that already exist in the scene.
+    * Execute will often take a model as an argumement with which it will fill in properties on the MonoBehaviour and do other actions.
+    * (This is pretty much just the Start method, but with arguments)
+
+* Methods named "Initialize" are written in MonoBehaviours. Initialize will instantiate a GameObject and will fill in properties on the MonoBehaviour attached to the GameObject. Initialize can either...
+    * Create an empty GameObject for you and attach itself to that GameObject or...
+    * Require a prefab in which it will find itself attached to.
+    * (This is pretty much just the Instantiate method, but with arguments)
 
 * The main difference between "Execute" and "Initialize" is that one already exists and the other doesn't

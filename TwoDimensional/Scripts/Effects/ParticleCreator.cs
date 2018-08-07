@@ -46,18 +46,14 @@ namespace Zeef.TwoDimensional {
             int i = 0;
 
             while (i < amount) {
-                Instantiate(particle, transform).Initialize(lifeTime.RandomValue(), dir.RandomValue() * vel, fade, grav);
+                Particle.Initialize(particle.gameObject, lifeTime.RandomValue(), dir.RandomValue() * vel, fade, grav);
 
-                if (intervalTime > 0) {
-                    yield return new WaitForSeconds(intervalTime);
-                } 
-
+                if (intervalTime > 0) yield return new WaitForSeconds(intervalTime);
+                
                 i++;
             }
 
-            if (loopTime > 0) {
-                yield return new WaitForSeconds(loopTime);
-            } 
+            if (loopTime > 0) yield return new WaitForSeconds(loopTime); 
         }
     }
 }
