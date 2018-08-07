@@ -10,7 +10,7 @@ namespace Zeef {
                 GameObject.Destroy(child.gameObject); 
         }
 
-        public static IEnumerator Shake(this Transform transform, float duration, float strength = 1) {
+        public static IEnumerator ShakeCoroutine(this Transform transform, float duration, float strength = 1) {
             Vector3 originalPosition = transform.position;
 
             int interval = 2;

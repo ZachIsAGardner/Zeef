@@ -11,6 +11,28 @@ void Method() {
 }
 ```
 
+* Long methods get a space after declaration, short ones do not
+```
+void ShortMethod() {
+    // Do something
+}
+void LongMethod() {
+
+    // Do something
+    // Do something
+    // Do something
+    // Do something
+    // Do something
+    // Do something
+    // Do something
+    // Do something
+    // Do something
+    // Do something
+}
+```
+
+<hr/>
+
 * Namespaces and classes get a return after declaration
 ```
 namespace SomeNamespace {
@@ -32,25 +54,7 @@ using JacketGame.Fights;
 
 ```
 
-* Long methods get a space after declaration, short ones do not
-```
-void ShortMethod() {
-    // Do something
-}
-void LongMethod() {
-
-    // Do something
-    // Do something
-    // Do something
-    // Do something
-    // Do something
-    // Do something
-    // Do something
-    // Do something
-    // Do something
-    // Do something
-}
-```
+<hr/>
 
 * This is how you deal with fields that are to be set in the inspector that also need to get referenced by other objects.
 ```
@@ -62,6 +66,8 @@ public GameObject Player { get { return player; }}
 
 * Public fields and properties are capitalized, private and protected are lowercase
 
+<hr/>
+
 * All enums end with Enum
 * Fight me
 ```
@@ -70,7 +76,11 @@ public enum SomeEnum {
 }
 ```
 
+<hr/>
+
 * Partial scenes are prepended with an '_'
+
+<hr/>
 
 * methods that return an IEnumerator are appended with "Coroutine"
 ```
@@ -79,9 +89,13 @@ public IEnumerator DoSomethingCoroutine() {
 }
 ```
 
+<hr/>
+
 * Classes that end with "Model" are only used to fill another class's properties
 * Classes that end with "Data" are used by MonoBehaviours, usually to fill in properties
 * Classes that end with "Info" carry data that is used for other actions, but isn't necessarily persisted anywhere
+
+<hr/>
 
 * Methods named "Execute" are written in MonoBehaviours. Execute is called on MonoBehaviours that already exist in the scene.
     * Execute will often take a model as an argumement with which it will fill in properties on the MonoBehaviour and do other actions.
