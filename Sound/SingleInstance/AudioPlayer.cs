@@ -52,12 +52,12 @@ namespace Zeef.Sound {
 
 		private IEnumerator LoopSong(SongObject song) {
 			while (true) {
-				if (song.loopTimes.max == 0) {
+				if (song.loopTimes.Max == 0) {
 					// Debug.LogWarning($"loop end for '{song.name}' has not been set.");
 					break;
 				}
-				if (audioSource.time > song.loopTimes.max) {
-					audioSource.time = song.loopTimes.min;
+				if (audioSource.time > song.loopTimes.Max) {
+					audioSource.time = song.loopTimes.Min;
 				}
 				yield return null;
 			}

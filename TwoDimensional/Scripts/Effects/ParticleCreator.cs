@@ -7,53 +7,72 @@ using UnityEngine.UI;
 using Zeef.GameManagement;
 
 namespace Zeef.TwoDimensional {
-    public class ParticleCreator : MonoBehaviour 
-    {
-        public Particle particle;
-        public IntegerPair lifeTime = new IntegerPair(1, 2);
 
-        public int amount = 5;
+    public class ParticleCreator : MonoBehaviour {
+        public Particle Particle;
 
-        public float vel;
-        public Vector2Range dir = new Vector2Range(
+        public bool ParticlesBecomeChildren;
+        public bool StartPositionFromBoxCollider2DBounds = true;
+        public FloatRange LifeTime = new FloatRange(1, 2);
+
+        public int Amount = 5;
+
+        public float Vel;
+        public Vector2Range Dir = new Vector2Range(
             new Vector2(-1,-1),
             new Vector2(1,1)
         );
-        public float grav;
+        public float Grav;
 
-        public bool fade = false;
+        public bool Fade = false;
 
         // time between bursts
-        public float loopTime = -1;
+        public float LoopTime = -1;
         // time between individual particle generations
-        public float intervalTime = -1;
+        public float OffsetTime = -1;
 
-        void Awake() {
-            StartCoroutine(Run());
+        void Start() {
+            StartCoroutine(RunCoroutine());
         }
 
-        IEnumerator Run() {
-            if (loopTime > 0) {
-                while (true) yield return StartCoroutine(CreateParticles());
+        private IEnumerator RunCoroutine() {
+            if (LoopTime > 0) {
+                while (true) yield return StartCoroutine(CreateParticlesCoroutine());
             } else {
-                StartCoroutine(CreateParticles());
+                StartCoroutine(CreateParticlesCoroutine());
                 while (transform.childCount > 0) yield return null;
             }
             Destroy(gameObject);
         }
 
-        IEnumerator CreateParticles() {
+        private IEnumerator CreateParticlesCoroutine() {
             int i = 0;
 
-            while (i < amount) {
-                Particle.Initialize(particle.gameObject, lifeTime.RandomValue(), dir.RandomValue() * vel, fade, grav);
+            while (i < Amount) {
+                Vector2 pos = Vector2.zero;
+                BoxCollider2D col = GetComponent<BoxCollider2D>();
+                if (col != null && StartPositionFromBoxCollider2DBounds) {
+                    FloatRange x = new FloatRange(col.bounds.min.x, col.bounds.max.x);
+                    FloatRange y = new FloatRange(col.bounds.min.y, col.bounds.max.y);
+                    pos = new Vector2(x.RandomValue(), y.RandomValue());
+                }
+                
+                Particle.Initialize(
+                    prefab: Particle.gameObject, 
+                    lifeTime: LifeTime.RandomValue(), 
+                    vel: Dir.RandomValue() * Vel, 
+                    fade: Fade, 
+                    grav: Grav,
+                    parent: (ParticlesBecomeChildren) ? transform : null,
+                    pos: pos
+                );
 
-                if (intervalTime > 0) yield return new WaitForSeconds(intervalTime);
+                if (OffsetTime > 0) yield return new WaitForSeconds(OffsetTime);
                 
                 i++;
             }
 
-            if (loopTime > 0) yield return new WaitForSeconds(loopTime); 
+            if (LoopTime > 0) yield return new WaitForSeconds(LoopTime); 
         }
     }
 }

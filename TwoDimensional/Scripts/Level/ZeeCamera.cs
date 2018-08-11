@@ -143,11 +143,11 @@ namespace Zeef.TwoDimensional {
 			bool left = false;
 			bool right = false;
 
-			if (camWidth.min < boundsWidth.min) {
+			if (camWidth.Min < boundsWidth.Min) {
 				left = true;
 			}
 
-			if (camWidth.max > boundsWidth.max) {
+			if (camWidth.Max > boundsWidth.Max) {
 				right = true;
 			}
 
@@ -162,7 +162,7 @@ namespace Zeef.TwoDimensional {
 
 			if (left) {
 				transform.position = new Vector3(
-					boundsWidth.min + radius,
+					boundsWidth.Min + radius,
 					transform.position.y, 
 					transform.position.z
 				);
@@ -170,7 +170,7 @@ namespace Zeef.TwoDimensional {
 
 			if (right) {
 				transform.position = new Vector3(
-					boundsWidth.max - radius, 
+					boundsWidth.Max - radius, 
 					transform.position.y, 
 					transform.position.z
 				);
@@ -193,11 +193,11 @@ namespace Zeef.TwoDimensional {
 			bool up = false;
 
 
-			if (camHeight.min < boundsHeight.min) {
+			if (camHeight.Min < boundsHeight.Min) {
 				down = true;
 			}
 
-			if (camHeight.max > boundsHeight.max) {
+			if (camHeight.Max > boundsHeight.Max) {
 				up = true;
 			}
 

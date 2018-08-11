@@ -19,6 +19,11 @@ namespace Zeef {
             return r.Next(min, max);
         }
 
+        // 1 in {odds} change of returning true
+        public static bool RandomChance(int odds) {
+            return RandomInt(odds) == 0;
+        }
+
         public static string SplitCamelCase(string str) {
             var r = new Regex(
                 @"(?<=[A-Z])(?=[A-Z][a-z]) |

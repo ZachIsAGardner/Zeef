@@ -5,38 +5,49 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zeef.GameManagement;
 
-namespace Zeef.TwoDimensional 
-{
-	public abstract class AnimatedSprite : MonoBehaviour 
-	{	
+namespace Zeef.TwoDimensional {
+
+
+	public abstract class AnimatedSprite : MonoBehaviour {
+		public class AnimationEvent {
+			public string[] states;
+			public int frame;
+			public Action action;
+
+			public AnimationEvent(string[] newStates, int newFrame, Action newAction) {
+				states = newStates;
+				frame = newFrame;
+				action = newAction;
+			}
+		}
+
 		// References
-		GameManager game;
-		public SpriteRenderer spriteRenderer;
-		public Image imageRenderer;
-		public MeshRenderer meshRenderer;
+		private GameManager game;
+		[SerializeField] private SpriteRenderer spriteRenderer;
+		[SerializeField] private Image imageRenderer;
+		[SerializeField] private MeshRenderer meshRenderer;
 
 		// Art
-		public SpritesObject spritesObject;
-		Sprite[] sprites = new Sprite[]{};
+		[SerializeField] private SpritesObject spritesObject;
+		private Sprite[] sprites = new Sprite[]{};
 
 		// Frame Rate
-		float tick;
-		float ticksPerFrame = 1;
+		private float tick;
+		private float ticksPerFrame = 1;
 
 		// Current Sprite
-		string animationState;
-		int spriteIdx = 1;
-		int[] range = new int[1];
-		int frame;
+		private string animationState;
+		private int spriteIdx = 1;
+		private int[] range = new int[1];
+		private int frame;
 		protected bool loop = true;
 
 		private string forcedState = null;
 
 		// Animation Events
-		[HideInInspector]
-		AnimationEvent[] events = new AnimationEvent[]{};
-		int executedFrame = -1;
-		string executedState = "";
+		private AnimationEvent[] events = new AnimationEvent[]{};
+		private int executedFrame = -1;
+		private string executedState = "";
 
 		protected abstract void GetAdvisor();
 		protected abstract string GetAnimationState();
@@ -44,10 +55,6 @@ namespace Zeef.TwoDimensional
 		protected abstract AnimationEvent[] GetAnimationEvents();
 
 		protected virtual void Start () {
-			Setup();
-		}
-
-		public void Setup() {
 			game = GameManager.Main();
 
 			spriteRenderer = spriteRenderer ?? GetComponent<SpriteRenderer>();
@@ -70,29 +77,23 @@ namespace Zeef.TwoDimensional
 			}
 		}
 
+		// --
+
 		public void ForceState(string state) {
 			forcedState = state;
 		}
 
-		public Sprite[] SetSprites(SpritesEnum id) {
-			spritesObject = SpritesReference.Main().GetSpritesObject(id);
-			if (spritesObject == null) throw new Exception($"the id: '{id}' did not return a sprites object.");
-			Sprite[] result = spritesObject.sprites.ToArray();
-			if (result.Length < 1) throw new Exception($"the id: '{id}' did not return any sprites.");
-			return result;
+		public void SetSprites(Sprite[] sprites) {
+			this.sprites = sprites;
 		}
 
 		private void EvaluateState() {
 			string newState = forcedState ?? GetAnimationState();
 			if (newState != animationState) {
-				SetDefault();
+				loop = true;
+				ChangeSpeed(1);
 				ChangeState(ParseAnimationState(newState), newState);
 			}
-		}
-
-		private void SetDefault() {
-			loop = true;
-			ChangeSpeed(1);
 		}
 
 		// ---
@@ -108,32 +109,22 @@ namespace Zeef.TwoDimensional
 			}
 
 			if (spriteIdx > range[1]) {
-				if (loop) {
-					spriteIdx = range[0];
-				} else {
-					spriteIdx = range[1];
-				}
+				if (loop) spriteIdx = range[0];
+				else spriteIdx = range[1];	
 			}
 			
 			if (spriteIdx > sprites.Length - 1) {
-				if (loop) {
-					spriteIdx = 0;
-				} else {
-					spriteIdx = sprites.Length - 1;
-				}
+				if (loop) spriteIdx = 0;
+				else spriteIdx = sprites.Length - 1;	
 			} 
 			
 			frame = spriteIdx - range[0];
 
-			if (spriteRenderer != null) {
-				spriteRenderer.sprite = sprites[spriteIdx];
-			} else if (imageRenderer != null) {
-				imageRenderer.sprite = sprites[spriteIdx];
-			} else if (meshRenderer != null) {
-				meshRenderer.material.mainTexture = sprites[spriteIdx].texture;
-			} else {
-				throw new Exception("This component doesn't have any sort of visual renderer");
-			}
+			// Change image on first present renderer
+			if (spriteRenderer != null) spriteRenderer.sprite = sprites[spriteIdx];
+			else if (imageRenderer != null) imageRenderer.sprite = sprites[spriteIdx];
+			else if (meshRenderer != null) meshRenderer.material.mainTexture = sprites[spriteIdx].texture;
+			else throw new Exception("This component doesn't have any sort of visual renderer");	
 		}
 
 		protected void ChangeSpeed(float speed) {
@@ -148,9 +139,10 @@ namespace Zeef.TwoDimensional
 			animationState = name;
 		}
 
-		#region Event
+		// ---
+		// Event
 
-		void ExecuteAnimationEvents() {
+		private void ExecuteAnimationEvents() {
 			if (events == null) {
 				return;
 			}
@@ -169,7 +161,7 @@ namespace Zeef.TwoDimensional
 			}
 		}
 
-		bool IncludesString(string[] arr, string target) {
+		private bool IncludesString(string[] arr, string target) {
 			foreach (var el in arr) {
 				if (el == target) {
 					return true;
@@ -177,20 +169,5 @@ namespace Zeef.TwoDimensional
 			}
 			return false;
 		}
-
-		public class AnimationEvent {
-			public string[] states;
-			public int frame;
-			public Action action;
-
-			public AnimationEvent(string[] newStates, int newFrame, Action newAction) {
-				states = newStates;
-				frame = newFrame;
-				action = newAction;
-			}
-		}
-
-		#endregion
-
 	}
 }

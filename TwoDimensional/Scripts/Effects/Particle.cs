@@ -18,11 +18,12 @@ namespace Zeef.TwoDimensional {
 		[SerializeField] Vector2 velocityMax;
 
 		private Vector2 vel;
+		private Color originalColor;
 
-		private Image imageComponent;
-		private SpriteRenderer spriteRenderer;
-		private MeshRenderer meshRenderer;
-		private Text textComponent;
+		[SerializeField] private Image imageComponent;
+		[SerializeField] private SpriteRenderer spriteRenderer;
+		[SerializeField] private MeshRenderer meshRenderer;
+		[SerializeField]private Text textComponent;
 
 		void Start() {
 			if (independant) { 
@@ -35,52 +36,64 @@ namespace Zeef.TwoDimensional {
 			}
 		}
 
-		public static Particle Initialize(GameObject prefab, float lifeTime, Vector2? vel = null, bool fade = false, float grav = 0) {
-			Particle particle = Instantiate(prefab).GetComponent<Particle>();
+		public static Particle Initialize(GameObject prefab, float lifeTime, Vector2? vel = null, bool fade = false, float grav = 0, Transform parent = null, Vector2 pos = new Vector2()) {
+			Particle instance = Instantiate(prefab, pos, Quaternion.identity, parent).GetComponent<Particle>();
 
-			particle.GetComponents();
+			instance.GetComponents();
 
-			particle.lifeTime = lifeTime;
-			particle.fade = fade;
-			particle.vel = (vel != null) ? (Vector2)vel : Vector2.zero;
-			particle.grav = grav;
+			instance.lifeTime = lifeTime;
+			instance.fade = fade;
+			instance.vel = (vel != null) ? (Vector2)vel : Vector2.zero;
+			instance.grav = grav;
 
-			particle.StartCoroutine(particle.RunCoroutine());
+			instance.StartCoroutine(instance.RunCoroutine());
 
-			return particle;
+			return instance;
 		}
-
-		public static Particle Initialize(GameObject prefab, Vector2 lifeTime, Vector2 velocityMin, Vector2 velocityMax, bool fade = false, float grave = 0) {
+		public static Particle Initialize(GameObject prefab, Vector2 lifeTime, Vector2 velocityMin, Vector2 velocityMax, bool fade = false, float grav = 0) {
 			throw new NotImplementedException();
 		}
 
 		private void GetComponents() {
 			imageComponent = GetComponent<Image>();
+			if (imageComponent != null) originalColor = imageComponent.color;
+
 			spriteRenderer = GetComponent<SpriteRenderer>();
+			if (spriteRenderer != null) originalColor = spriteRenderer.color;
+
 			meshRenderer = GetComponent<MeshRenderer>();
+			if (meshRenderer != null) originalColor = meshRenderer.material.color;
+
 			textComponent = GetComponent<Text>();
+			if (textComponent != null) originalColor = textComponent.color;
 		}
 
 		private void ChangeColor(Color color) {
-			if (imageComponent != null) {
-				imageComponent.color = color;
-			}
-			if (spriteRenderer != null) {
-				spriteRenderer.color = color;
-			}
-			if (meshRenderer != null) {
-				meshRenderer.material.color = color;
-			}
-			if (textComponent != null) {
-				textComponent.color = color;
-			}
+			if (imageComponent != null) imageComponent.color = color;	
+			if (spriteRenderer != null) spriteRenderer.color = color;	
+			if (meshRenderer != null) meshRenderer.material.color = color;	
+			if (textComponent != null) textComponent.color = color;	
+		}
+
+		private void ChangeColor(float alpha) {
+			if (imageComponent != null) imageComponent.color = 
+				new Color(originalColor.r, originalColor.g, originalColor.b, alpha);	
+
+			if (spriteRenderer != null) spriteRenderer.color =	
+				new Color(originalColor.r, originalColor.g, originalColor.b, alpha);	
+
+			if (meshRenderer != null) meshRenderer.material.color =	
+				new Color(originalColor.r, originalColor.g, originalColor.b, alpha);	
+
+			if (textComponent != null) textComponent.color =	
+				new Color(originalColor.r, originalColor.g, originalColor.b, alpha);	
 		}
 
 		private IEnumerator RunCoroutine() {
 			while(lifeTime > 0) {	
 				while(GameManager.Main().IsPaused()) yield return null;
 
-				if (fade) ChangeColor(new Color(1, 1, 1, lifeTime));
+				if (fade) ChangeColor(lifeTime);
 				
 				vel.y -= grav * Time.deltaTime;
 				transform.position += (Vector3)vel * Time.deltaTime;

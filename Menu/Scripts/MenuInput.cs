@@ -12,34 +12,24 @@ namespace Zeef.Menu
         #region SimpleInput
 
         // like Console.ReadLine();
-        public static IEnumerator WaitForInput() 
-        {
+        public static IEnumerator WaitForInput() {
             int? result = null;
-            while (result == null)
-            {
+            while (result == null) {
                 result = ReadKeyPressAsNumber();
                 yield return null;
             }
             yield return result;
         }
 
-        private static int? ReadKeyPressAsNumber() 
-        {
+        private static int? ReadKeyPressAsNumber() {
             int result = -1;
-            if (Input.anyKeyDown) {
+            if (Input.anyKeyDown) 
                 foreach (KeyCode key in System.Enum.GetValues(typeof(KeyCode)))
-                {
-                    if (Input.GetKey(key)) {
-                        Int32.TryParse(key.ToString().Replace("Alpha", ""), out result);
-                    }
-                }
-            }
-
-            if (result == -1) {
-                return null;
-            } else {
-                return result;
-            }
+                    if (Input.GetKey(key)) 
+                        Int32.TryParse(key.ToString().Replace("Alpha", ""), out result); 
+                
+            if (result == -1) return null;
+            else return result; 
         }
 
         #endregion
@@ -47,8 +37,7 @@ namespace Zeef.Menu
         #region Matrix
 
         // Returns Coordinates
-        static public IEnumerator SelectFromMatrixCoroutine(List<List<UIElement>> elements) 
-        {
+        static public IEnumerator SelectFromMatrixCoroutine(List<List<UIElement>> elements) {
             Coordinates result = null;
             Coordinates focus = new Coordinates();
 
@@ -80,8 +69,8 @@ namespace Zeef.Menu
         }
 
         // Returns Coordinates
-        static public IEnumerator SelectFromMatrixCoroutine(Coordinates max, Action<Coordinates> changeAction) 
-        {
+        static public IEnumerator SelectFromMatrixCoroutine(Coordinates max, Action<Coordinates> changeAction) {
+
             Coordinates result = null; 
             Coordinates focus = new Coordinates();
 
@@ -112,8 +101,7 @@ namespace Zeef.Menu
         
         // ---
 
-        static public void UnHighlightAllInMatrix(List<List<UIElement>> matrix) 
-        {
+        static public void UnHighlightAllInMatrix(List<List<UIElement>> matrix) {
             matrix.ForEach(m => {
                 m.ForEach(el => {
                     el.UnHighlight();
@@ -121,14 +109,14 @@ namespace Zeef.Menu
             });
         }
 
-        static private void HighlightInMatrix(List<List<UIElement>> matrix, int row, int col) 
-        {
+        static private void HighlightInMatrix(List<List<UIElement>> matrix, int row, int col) {
             UnHighlightAllInMatrix(matrix);
             matrix[row][col].Highlight();
         }
 
         // When player is deciding selection
         static private Coordinates AdjustFocus(Coordinates focus, Coordinates max) {
+
             // Change value based on user input
             if (Input.GetKeyDown(KeyCode.UpArrow)) focus.row -= 1;
             if (Input.GetKeyDown(KeyCode.DownArrow)) focus.row += 1; 
@@ -149,8 +137,7 @@ namespace Zeef.Menu
         #region VerticalList
 
         //return int?
-        static public IEnumerator SelectFromVerticalListCoroutine(List<UIElement> elements, MonoBehaviour caller) 
-        {
+        static public IEnumerator SelectFromVerticalListCoroutine(List<UIElement> elements, MonoBehaviour caller) {
             CoroutineWithData cd = new CoroutineWithData(
                 caller,
                 SelectFromMatrixCoroutine(ListToVerticalMatrix(elements))
@@ -166,8 +153,7 @@ namespace Zeef.Menu
         }
 
         // Returns int?
-        static public IEnumerator SelectFromVerticalListCoroutine(int max, MonoBehaviour caller, Action<Coordinates> changeAction) 
-        {
+        static public IEnumerator SelectFromVerticalListCoroutine(int max, MonoBehaviour caller, Action<Coordinates> changeAction) {
             CoroutineWithData cd = new CoroutineWithData(
                 caller,
                 SelectFromMatrixCoroutine(new Coordinates(max, 0), changeAction)
@@ -182,13 +168,11 @@ namespace Zeef.Menu
             }
         }
 
-        static public void UnHighlightAllInVerticalList(List<UIElement> elements) 
-        {
+        static public void UnHighlightAllInVerticalList(List<UIElement> elements) {
             UnHighlightAllInMatrix(ListToVerticalMatrix(elements));
         }
 
-        static private List<List<UIElement>> ListToVerticalMatrix(List<UIElement> elements) 
-        {
+        static private List<List<UIElement>> ListToVerticalMatrix(List<UIElement> elements) {
             List<List<UIElement>> result = new List<List<UIElement>>();
             elements.ForEach(e => {
                 result.Add(new List<UIElement>() { e });
@@ -201,8 +185,7 @@ namespace Zeef.Menu
         #region HorizontalList
 
         // returns int?
-        static public IEnumerator SelectFromHorizontalListCoroutine(List<UIElement> elements, MonoBehaviour caller) 
-        {
+        static public IEnumerator SelectFromHorizontalListCoroutine(List<UIElement> elements, MonoBehaviour caller) {
             CoroutineWithData cd = new CoroutineWithData(
                 caller,
                 SelectFromMatrixCoroutine(ListToHorizontalMatrix(elements))
@@ -218,8 +201,7 @@ namespace Zeef.Menu
         }
 
         // returns int?
-        static public IEnumerator SelectFromHorizontalListCoroutine(int max, MonoBehaviour caller, Action<Coordinates> changeAction) 
-        {
+        static public IEnumerator SelectFromHorizontalListCoroutine(int max, MonoBehaviour caller, Action<Coordinates> changeAction) {
             CoroutineWithData cd = new CoroutineWithData(
                 caller,
                 SelectFromMatrixCoroutine(new Coordinates(0, max), changeAction)
@@ -234,13 +216,11 @@ namespace Zeef.Menu
             }
         }
 
-        static public void UnHighlightAllInHorizontalList(List<UIElement> elements) 
-        {
+        static public void UnHighlightAllInHorizontalList(List<UIElement> elements) {
             UnHighlightAllInMatrix(ListToHorizontalMatrix(elements));
         }
 
-        static private List<List<UIElement>> ListToHorizontalMatrix(List<UIElement> elements) 
-        {
+        static private List<List<UIElement>> ListToHorizontalMatrix(List<UIElement> elements) {
             return new List<List<UIElement>>(){ elements };
         }
 

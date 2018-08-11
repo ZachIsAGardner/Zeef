@@ -4,20 +4,24 @@ using UnityEngine;
 // ---
 using Zeef.GameManagement;
 
-namespace Zeef.TwoDimensional 
-{
-    [RequireComponent(typeof (SingleInstanceChild))]
-    public class SpritesReference : MonoBehaviour 
-    {
+namespace Zeef.TwoDimensional {
+
+    public class SpritesContent : MonoBehaviour {
+
         [SerializeField] SpritesObjectsContainer spritesObjectsContainer;
 
-        public static SpritesReference Main() {
-            return SingleInstance.Main().GetComponentInChildren<SpritesReference>();
+        public static SpritesContent Main() {
+            return Utility.FindObjectOfTypeWithError<SpritesContent>();
         }
 
         public SpritesObject GetSpritesObject(SpritesEnum id) {
             SpritesObject result = spritesObjectsContainer.spritesObjects.FirstOrDefault(sp => sp.id == id);
             if (result == null) throw new Exception($"Couldn't find a sprites object with an id matching {id}");
+            return result;
+        }
+
+        public SpritesObject TryGetSpritesObject(SpritesEnum id) {
+            SpritesObject result = spritesObjectsContainer.spritesObjects.FirstOrDefault(sp => sp.id == id);
             return result;
         }
     }    
