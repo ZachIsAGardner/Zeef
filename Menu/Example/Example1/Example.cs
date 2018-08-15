@@ -54,7 +54,7 @@ namespace Zeef.Menu {
 
             if (cd.Result != null) {
                 Coordinates result = (Coordinates)cd.Result;
-                print($"Chose element at coordintates [{result.row}, {result.col}]");
+                print($"Chose element at coordintates [{result.Row}, {result.Col}]");
             }
 
             StartCoroutine(RunMatrixCoroutine());

@@ -12,7 +12,7 @@ namespace Zeef.Menu {
         public RectTransform RectTransform { get { return GetComponent<RectTransform>(); } }
 
         private Color initialColor;
-
+        
         protected virtual void Awake() {
             imageComponent = imageComponent ?? GetComponentInChildren<Image>();
             initialColor = ImageComponent.color;

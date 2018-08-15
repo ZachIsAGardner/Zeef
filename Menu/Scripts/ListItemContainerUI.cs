@@ -6,53 +6,97 @@ using Zeef;
 using Zeef.Menu;
 
 namespace Zeef.Menu {
-    
+
+    // public class PageUI : MonoBehaviour {
+
+    //     public List<ListItemUI> ListItems { get; private set; }
+
+    //     public static PageUI Initialize(Transform parent, int index, List<ListItemUIModel> models, ListItemUI listItemPrefab, int padding, int? selected = null) {
+    //         PageUI instance = Instantiate(new GameObject(), parent).AddComponent<PageUI>();
+    //         instance.name = $"Page {index}";
+
+    //         RectTransform rectTransform = instance.gameObject.AddComponent<RectTransform>();
+    //         rectTransform.anchorMin = new Vector2(0,0);
+    //         rectTransform.anchorMax = new Vector2(1,1);
+    //         rectTransform.offsetMin = new Vector2(0,0);
+    //         rectTransform.offsetMax = new Vector2(0,0);
+
+    //         // Generate list items
+    //         instance.ListItems = new List<ListItemUI>();
+
+    //         // Create elements
+    //         foreach (ListItemUIModel model in models)
+    //             instance.ListItems.Add(ListItemUI.Initialize(listItemPrefab, instance.transform, model));
+
+    //         // Position elements
+    //         int i = 0;
+    //         foreach (ListItemUI listItem in instance.ListItems) {
+    //             float y = ((i * listItem.RectTransform.sizeDelta.y) + padding) * -1;
+    //             listItem.RectTransform.anchoredPosition = new Vector2(0, y);
+    //             i++;
+    //         }
+
+    //         // Highlight selected element
+    //         instance.HighlightListItem((selected.HasValue) ? selected.Value : 0);
+
+    //         return instance;
+    //     }
+
+    //     public void HighlightListItem(int selected) {
+    //         foreach (ListItemUI listItem in ListItems)
+    //             listItem.UnHighlight();
+
+    //         ListItems[selected].Highlight();
+    //     }
+    // }
+
     public class ListItemContainerUI : UIElement {
 
         [SerializeField] private int padding = 5;
         [SerializeField] private Text title;
         [SerializeField] private Transform list;
-        [SerializeField] private ListItemUI listItem; //prefab
+        [SerializeField] private ListItemUI listItemPrefab;
         
-        private List<ListItemUI> listItems;
+        public List<PageUI> Pages { get; private set; }
 
-        public static ListItemContainerUI Initialize(ListItemContainerUI prefab, Transform parent, List<ListItemUIModel> models, string title = "") {
+        public static ListItemContainerUI Initialize(ListItemContainerUI prefab, Transform parent, List<ListItemUIModel> models, int maxLength, string title = "") {
             ListItemContainerUI instance = Instantiate(prefab, parent).GetComponentWithError<ListItemContainerUI>();
             
-            instance.Show(models, title);
+            instance.Show(models, maxLength, title);
 
             return instance;
         }
 
-        public void Show(List<ListItemUIModel> models, string title = "", int? idx = null) {
+        public void Show(List<ListItemUIModel> models, int maxLength, string title = "", Coordinates selected = null) {
             this.title.text = title;    
             list.DestroyChildren();
             gameObject.SetActive(true);
 
-            // Create elements
-            listItems = new List<ListItemUI>();
-            foreach (ListItemUIModel model in models)
-                listItems.Add(ListItemUI.Initialize(listItem, list, model));
+            Pages = new List<PageUI>();
 
-            // Set position and highlight hovered
-            int i = 0;
-            foreach (ListItemUI ui in listItems) {
+            // while (Pages.Count * maxLength < models.Count) {
+            //     // Get models for just this page
+            //     List<ListItemUIModel> pageModels = models.TryGetRange((Pages.Count) * maxLength, maxLength);
 
-                if (idx == i) ui.Highlight();
-                else ui.UnHighlight();
-                
-                ui.RectTransform.anchoredPosition = 
-                    new Vector2(0, (i * (ui.RectTransform.sizeDelta.y + padding)) * -1);
+            //     // Create new page
+            //     PageUI page = PageUI.Initialize(
+            //         parent: list, 
+            //         index: Pages.Count, 
+            //         models: pageModels, 
+            //         listItemPrefab: listItemPrefab, 
+            //         padding: padding
+            //     );
 
-                i++;
-            };
+            //     Pages.Add(page);
+            // }
         }
 
-        public void HighlightListItem(int idx) {
-            foreach (ListItemUI listItem in listItems)
-                listItem.UnHighlight();
+        public void HighlightListItem(Coordinates selected) {
+            foreach (PageUI page in Pages) page.gameObject.SetActive(false);
 
-            listItems[idx].Highlight();
+            PageUI currentPage = Pages[selected.Col];
+            currentPage.gameObject.SetActive(true);
+            // currentPage.HighlightListItem(selected.Row);
         }
 
         public void Hide() {

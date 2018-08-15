@@ -1,23 +1,110 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 // ---
 using Zeef.GameManagement;
 
-namespace Zeef.Menu 
-{
-    public static class MenuInput 
-    {
+namespace Zeef.Menu {
+    // Understanding Matrix and Coordinates...
+
+    //       | col 0 | col 1 | col 2 |
+    // row 0 | item 0| item 1| item 2|
+    // row 1 | item 0| item 1|
+
+    public class SelectionResult {
+        public Coordinates Focus { get; set; }
+        public SelectionStatesEnum SelectionState { get; set; }
+
+        public SelectionResult(Coordinates focus, SelectionStatesEnum selectionState) {
+            Focus = focus;
+            SelectionState = selectionState;
+        }
+    }
+
+    public enum SelectionStatesEnum {
+        StillDeciding,
+        Confirmed,
+        Cancelled
+    }
+
+    public static class MenuInput {
+
         #region SimpleInput
 
         // like Console.ReadLine();
-        public static IEnumerator WaitForInput() {
+        public static IEnumerator WaitForInputCoroutine() {
             int? result = null;
             while (result == null) {
                 result = ReadKeyPressAsNumber();
                 yield return null;
             }
+            yield return result;
+        }
+
+        // Returns SelectionResult
+        public static IEnumerator WaitForSelectionCoroutine(Coordinates currentFocus, Coordinates max) {
+            SelectionResult result = null;
+
+            while (true) {
+                // Up
+                if (Input.GetKeyDown(KeyCode.UpArrow) && currentFocus.Row - 1 > -1) {
+                    result = new SelectionResult(
+                        new Coordinates(currentFocus.Col, currentFocus.Row - 1), 
+                        SelectionStatesEnum.StillDeciding
+                    );
+                    break;
+                }
+
+                // Down
+                if (Input.GetKeyDown(KeyCode.DownArrow) && currentFocus.Row + 1 < max.Row) {
+                    result = new SelectionResult(
+                        new Coordinates(currentFocus.Col, currentFocus.Row + 1), 
+                        SelectionStatesEnum.StillDeciding
+                    );
+                    break;
+                }
+
+                // Left
+                if (Input.GetKeyDown(KeyCode.LeftArrow) && currentFocus.Col - 1 > -1) {
+                    result = new SelectionResult(
+                        new Coordinates(currentFocus.Col - 1, currentFocus.Row), 
+                        SelectionStatesEnum.StillDeciding
+                    );
+                    break;
+                }
+
+                // Right
+                if (Input.GetKeyDown(KeyCode.RightArrow) && currentFocus.Col + 1 < max.Col) {
+                    result = new SelectionResult(
+                        new Coordinates(currentFocus.Col + 1, currentFocus.Row), 
+                        SelectionStatesEnum.StillDeciding
+                    );
+                    break;
+                }
+
+                // Confirm
+                if (Input.GetButtonDown("Fire1")) {
+                    result = new SelectionResult(
+                        currentFocus,
+                        SelectionStatesEnum.Confirmed
+                    );
+                    break;
+                }
+
+                // Cancel
+                if (Input.GetButtonDown("Fire2")) {
+                    result = new SelectionResult(
+                        null,
+                        SelectionStatesEnum.Cancelled
+                    );
+                    break;
+                }
+
+                yield return null;
+            }
+
             yield return result;
         }
 
@@ -36,18 +123,48 @@ namespace Zeef.Menu
 
         #region Matrix
 
+        // Returns SelectionResult
+        static public IEnumerator SelectFromListItemContainer(ListItemContainerUI container, MonoBehaviour host) {
+            // SelectionResult result = null;
+            // Coordinates focus = new Coordinates();
+
+            // container.HighlightListItem(focus);
+
+            // while (true) {
+            //     Coordinates oldFocus = new Coordinates(focus.Col, focus.Row);
+
+            //     CoroutineWithData cd = new CoroutineWithData(host, WaitForSelectionCoroutine(
+            //         focus, 
+            //         new Coordinates (container.Pages.Count, container.Pages[focus.Col].ListItems.Count))
+            //     );
+            //     yield return cd.Coroutine;
+            //     SelectionResult selectionResult = (SelectionResult)cd.Result;
+
+            //     if (selectionResult.SelectionState == SelectionStatesEnum.StillDeciding) {
+            //         focus  = selectionResult.Focus;
+            //         container.HighlightListItem(focus);
+            //     } else {
+            //         result = selectionResult;
+            //         break;
+            //     }
+            // }
+
+            // yield return result;
+            yield return null;
+        }
+
         // Returns Coordinates
         static public IEnumerator SelectFromMatrixCoroutine(List<List<UIElement>> elements) {
             Coordinates result = null;
             Coordinates focus = new Coordinates();
 
-            HighlightInMatrix(elements, focus.row, focus.col);
+            HighlightInMatrix(elements, focus.Row, focus.Col);
 
             while (result == null) {
-                Coordinates oldFocus = new Coordinates(focus.row, focus.col);
-                focus = AdjustFocus(focus, new Coordinates(elements.Count, elements[focus.row].Count));
+                Coordinates oldFocus = new Coordinates(focus.Col, focus.Row);
+                focus = AdjustFocus(focus, new Coordinates(elements[focus.Row].Count, elements.Count));
 
-                if (focus.SameAs(oldFocus)) HighlightInMatrix(elements, focus.row, focus.col);
+                if (!focus.SameAs(oldFocus)) HighlightInMatrix(elements, focus.Row, focus.Col);
                 
                 if (Input.GetButtonDown("Fire1")) {
                     result = focus;
@@ -75,7 +192,7 @@ namespace Zeef.Menu
             Coordinates focus = new Coordinates();
 
             while (result == null) {
-                Coordinates oldFocus = new Coordinates(focus.row, focus.col);
+                Coordinates oldFocus = new Coordinates(focus.Row, focus.Col);
                 focus = AdjustFocus(focus, max);
                 
                 if (!focus.SameAs(oldFocus)) changeAction(focus);
@@ -113,21 +230,21 @@ namespace Zeef.Menu
             UnHighlightAllInMatrix(matrix);
             matrix[row][col].Highlight();
         }
-
+        
         // When player is deciding selection
         static private Coordinates AdjustFocus(Coordinates focus, Coordinates max) {
 
             // Change value based on user input
-            if (Input.GetKeyDown(KeyCode.UpArrow)) focus.row -= 1;
-            if (Input.GetKeyDown(KeyCode.DownArrow)) focus.row += 1; 
-            if (Input.GetKeyDown(KeyCode.LeftArrow)) focus.col -= 1;
-            if (Input.GetKeyDown(KeyCode.RightArrow)) focus.col += 1;
+            if (Input.GetKeyDown(KeyCode.UpArrow)) focus.Row -= 1;
+            if (Input.GetKeyDown(KeyCode.DownArrow)) focus.Row += 1; 
+            if (Input.GetKeyDown(KeyCode.LeftArrow)) focus.Col -= 1;
+            if (Input.GetKeyDown(KeyCode.RightArrow)) focus.Col += 1;
 
             // Correct from max
-            if (focus.row < 0) focus.row = 0;
-            if (focus.row > max.row - 1) focus.row = max.row - 1;
-            if (focus.col < 0) focus.col = 0;
-            if (focus.col > max.col - 1) focus.col = max.col - 1;
+            if (focus.Row < 0) focus.Row = 0;
+            if (focus.Row > max.Row - 1) focus.Row = max.Row - 1;
+            if (focus.Col < 0) focus.Col = 0;
+            if (focus.Col > max.Col - 1) focus.Col = max.Col - 1;
 
             return focus;
         }
@@ -146,7 +263,7 @@ namespace Zeef.Menu
 
             Coordinates result = (Coordinates)cd.Result;
             if (result != null) {
-                yield return result.row;
+                yield return result.Row;
             } else {
                 yield return null;
             }
@@ -162,7 +279,7 @@ namespace Zeef.Menu
 
             Coordinates result = (Coordinates)cd.Result;
             if (result != null) {
-                yield return result.row;
+                yield return result.Row;
             } else {
                 yield return null;
             }
@@ -194,7 +311,7 @@ namespace Zeef.Menu
 
             Coordinates result = (Coordinates)cd.Result;
             if (result != null) {
-                yield return result.col;
+                yield return result.Col;
             } else {
                 yield return null;
             }
@@ -210,7 +327,7 @@ namespace Zeef.Menu
 
             Coordinates result = (Coordinates)cd.Result;
             if (result != null) {
-                yield return result.col;
+                yield return result.Col;
             } else {
                 yield return null;
             }
