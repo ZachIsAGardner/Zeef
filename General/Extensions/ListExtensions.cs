@@ -14,7 +14,7 @@ namespace Zeef {
             return list == null || list.Count < 1;
         }
 
-        // Gets whatver it can from start index plus the amount to try to grab
+        // Gets whatever it can from start index plus the amount to try to grab
         public static List<T> TryGetRange<T> (this List<T> list, int index, int count) {
             List<T> result = new List<T>();
 
