@@ -14,8 +14,5 @@
 * This holds the actual information that is referenced by DB objects
 * A Reference Object's information never changes
 
-## Info ##
-* Other ZeeFramework components are expected to be attached to the ZeeGame singleton object
-
 ### Dependencies: ###
 * Zeef.Sound
