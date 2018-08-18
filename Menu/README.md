@@ -1,7 +1,8 @@
-# ZeeMenu
-## Features
-* Scripts and assets for menu input
+# Zeef.Menu #
 
-## Info
-### Dependencies
-* ZeeGame
+## Features ##
+* Prebuilt and customizable menus for picking out of lists or matrixes
+
+
+### Dependencies ###
+* AsyncAwaitUtil

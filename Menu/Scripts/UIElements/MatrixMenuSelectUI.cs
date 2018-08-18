@@ -32,7 +32,7 @@ namespace Zeef.Menu {
 
                     menuItem.RectTransform.anchoredPosition = new Vector2(
                         colIdx * menuItem.RectTransform.sizeDelta.x, 
-                        rowIdx * menuItem.RectTransform.sizeDelta.y
+                        rowIdx * -menuItem.RectTransform.sizeDelta.y
                     );
 
                     instance.menuItems.Last().Add(menuItem);
@@ -50,20 +50,25 @@ namespace Zeef.Menu {
 
             Coordinates focus = new Coordinates();
 
-            while (true) {
-                Coordinates oldFocus = focus;
+            foreach (List<MenuItemUI> row in menuItems) 
+                foreach(MenuItemUI item in row)
+                    item.UnHighlight();
+            menuItems[focus.Row][focus.Col].Highlight();
 
-                if (Control.GetInputDown(Control.Left)) focus.Col--;
-                if (Control.GetInputDown(Control.Right)) focus.Col++;
-                if (Control.GetInputDown(Control.Up)) focus.Row--;
-                if (Control.GetInputDown(Control.Down)) focus.Row++;
+            while (true) {
+                Coordinates oldFocus = new Coordinates(focus);
+
+                if (ControlManager.GetInputDown(ControlManager.Left)) focus.Col--;
+                if (ControlManager.GetInputDown(ControlManager.Right)) focus.Col++;
+                if (ControlManager.GetInputDown(ControlManager.Up)) focus.Row--;
+                if (ControlManager.GetInputDown(ControlManager.Down)) focus.Row++;
 
                 if (focus.Row < 0) focus.Row = 0;
-                if (focus.Row > menuItems.Count) focus.Col = menuItems.Count; 
+                if (focus.Row >= menuItems.Count) focus.Row = menuItems.Count - 1; 
                 if (focus.Col < 0) focus.Col = 0;
-                if (focus.Col > menuItems[focus.Row].Count) focus.Col = menuItems[focus.Row].Count; 
+                if (focus.Col >= menuItems[focus.Row].Count) focus.Col = menuItems[focus.Row].Count - 1; 
 
-                if (focus != oldFocus) {
+                if (!focus.SameAs(oldFocus)) {
                     foreach (List<MenuItemUI> row in menuItems) 
                         foreach(MenuItemUI item in row)
                             item.UnHighlight();
@@ -71,11 +76,14 @@ namespace Zeef.Menu {
                     menuItems[focus.Row][focus.Col].Highlight();
                 }
                 
-                if (Input.GetKeyDown("z")) { 
+                if (ControlManager.GetInputDown(ControlManager.Accept)) { 
                     Close();
                     return menuItems[focus.Row][focus.Col].Data;
                 }
-                if (Control.GetInputDown(Control.Deny)) return null;
+                if (ControlManager.GetInputDown(ControlManager.Deny)) { 
+                    Close();
+                    return null;
+                }
 
                 await new WaitForUpdate();
             }

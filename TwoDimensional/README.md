@@ -1,10 +1,10 @@
-#Zee2D# 
+# Zeef.TwoDimensional # 
 
-Is for:
+## Features ##
 * Moving objects
 * Living objects
 * Particle effects
 * Animated 2D sprites
 
-Dependencies:
-* ZeeGame
+## Dependencies ##
+* Zeef.GameManager

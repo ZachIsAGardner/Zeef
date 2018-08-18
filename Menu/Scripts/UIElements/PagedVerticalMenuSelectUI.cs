@@ -53,10 +53,10 @@ namespace Zeef.Menu {
                 int oldFocus = focus;
                 int oldPageFocus = pageFocus;
 
-                if (Control.GetInputDown(Control.Up)) focus--;
-                if (Control.GetInputDown(Control.Down)) focus++;
-                if (Control.GetInputDown(Control.Left)) pageFocus--;
-                if (Control.GetInputDown(Control.Right)) pageFocus++;
+                if (ControlManager.GetInputDown(ControlManager.Up)) focus--;
+                if (ControlManager.GetInputDown(ControlManager.Down)) focus++;
+                if (ControlManager.GetInputDown(ControlManager.Left)) pageFocus--;
+                if (ControlManager.GetInputDown(ControlManager.Right)) pageFocus++;
 
                 if (pageFocus < 0) 
                     pageFocus = 0;
@@ -76,11 +76,14 @@ namespace Zeef.Menu {
                 if (focus != oldFocus)
                     pages[pageFocus].HighlightItem(focus);
                 
-                if (Input.GetKeyDown("z")) { 
+                if (ControlManager.GetInputDown(ControlManager.Accept)) { 
                     Close();
                     return pages[pageFocus].MenuItems[focus].Data;
                 }
-                if (Control.GetInputDown(Control.Deny)) return null;
+                if (ControlManager.GetInputDown(ControlManager.Deny)) { 
+                    Close();
+                    return null;
+                }
 
                 await new WaitForUpdate();
             }

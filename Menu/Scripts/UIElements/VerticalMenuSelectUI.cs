@@ -44,22 +44,25 @@ namespace Zeef.Menu {
             while (true) {
                 int oldFocus = focus;
 
-                if (Control.GetInputDown(Control.Up)) focus--;
-                if (Control.GetInputDown(Control.Down)) focus++;
+                if (ControlManager.GetInputDown(ControlManager.Up)) focus--;
+                if (ControlManager.GetInputDown(ControlManager.Down)) focus++;
 
                 if (focus < 0) focus = 0;
-                if (focus > menuItems.Count) focus = menuItems.Count; 
+                if (focus >= menuItems.Count) focus = menuItems.Count - 1; 
 
                 if (focus != oldFocus) {
                     foreach (MenuItemUI item in menuItems) item.UnHighlight();
                     menuItems[focus].Highlight();
                 }
                 
-                if (Input.GetKeyDown("z")) { 
+                if (ControlManager.GetInputDown(ControlManager.Accept)) { 
                     Close();
                     return menuItems[focus].Data;
                 }
-                if (Control.GetInputDown(Control.Deny)) return null;
+                if (ControlManager.GetInputDown(ControlManager.Deny)) {
+                    Close();
+                    return null;
+                }
 
                 await new WaitForUpdate();
             }
