@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 // ---
 using Zeef.TwoDimensional;
@@ -7,36 +8,24 @@ using Zeef.TwoDimensional;
 namespace Zeef.Perform {
 	public class PerformanceTrigger : InteractableObject {
 
-		public Performance performance;
-		public bool onSceneStart;
+		[SerializeField] Performance performance;
+		[SerializeField] bool onSceneStart;
 
-		protected override void Start() {
-			base.Start();
-			if (onSceneStart) {
-				StartPerformance();
-			}
+		async void Start() {
+			if (onSceneStart) await performance.ExecuteAsync();
 		}
 
-		public void SetTriggered(bool boolean) {
-			triggered = boolean;
+		public void ChangePerformance(Performance performance) {
+			this.performance = performance;
 		}
 
-		protected override void TriggerAction() {
-			// Delay so that first text box doesn't auto skip to end
-			StartCoroutine(DelayStartPerformance());
+		protected override async Task TriggerActionAsync() {
 			HidePrompt();
+
+			triggered = true;
+			await performance.ExecuteAsync();
+			
+			triggered = false;
 		}
-
-		IEnumerator DelayStartPerformance() {
-			yield return new WaitForSeconds(0.1f);
-			StartPerformance();
-		}
-
-		void StartPerformance() {
-			if (performance.performing) return;
-
-			performance.StartPerformance(this);
-		}
-
 	}
 }

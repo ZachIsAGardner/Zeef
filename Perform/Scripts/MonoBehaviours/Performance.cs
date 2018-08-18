@@ -2,199 +2,98 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 // ---
 using Zeef.GameManagement;
+using Zeef.Menu;
 
 namespace Zeef.Perform {
 	[Serializable]
 	public abstract class Performance : MonoBehaviour {
 
-		protected PerformanceReference performanceRef;
-		protected PerformanceTrigger trigger;
-		protected GameManager game;
-
-		GameObject container;
-
-		TextBox textBox;
-		ResponseBox responseBox;
-
 		// is currently performing
-		[HideInInspector]
-		public bool performing;
+		public bool Performing { get; private set; }
 
 		protected abstract Branch BranchStart();
 		protected virtual void AdditionalSetup() { }
 		protected virtual void AdditionalEnd() { }
 
-		#region LifeCycle
+		// All performance ui elements get placed in here
+		private GameObject border;
 
-		void Start() {
-			game = GameManager.Main();
-			performanceRef = PerformanceReference.Main();
-			container = Container.FindContainerObjectInParent(
-				ContainersEnum.PerformanceElements, 
-				GameManager.Canvas().transform
-			);
-		}
+		// ---
 
-		public void StartPerformance(PerformanceTrigger trigger) {
-			if (performing) return;
+		// Start performance
+		public async Task ExecuteAsync() {
+			if (Performing) return;
 
-			AdditionalSetup();
-			
-			game.EnterCutscene();
+			AdditionalSetup();	
+			GameManager.Main().EnterCutscene();
+			Performing = true;
 
-			performing = true;
-			this.trigger = trigger;
-
-			CreateBorder();
-
-			StartCoroutine(DigestBranch(BranchStart()));
+			border = Instantiate(PerformanceContent.Border, FindObjectOfType<Canvas>().transform);
+			await DigestBranchAsync(BranchStart());
 		}
 		
 		protected virtual void EndPerformance() {
-			container.transform.DestroyChildren();
+			Destroy(border);
 			
-			game.ExitCutscene();
-
-			if (trigger) trigger.SetTriggered(false);
-			performing = false;
+			GameManager.Main().ExitCutscene();
+			Performing = false;
 
 			AdditionalEnd();
 		}
+		
+		// ---
+		// Handle Content
 
-		#endregion
-
-		#region Utility
-
-		bool AnyOtherActivePerformances() {
-			return FindObjectsOfType<Performance>().Where(p => p.performing).Count() > 0;
-		}
-
-		#endregion
-
-		#region HandleContent
-
-		IEnumerator DigestBranch(Branch branch) {
+		// Play all sections and respond if there are paths
+		private async Task DigestBranchAsync(Branch branch) {
 			List<Section> sections = branch.Sections;
-			bool end = true;
 
-			int i = 0;
-			foreach (var section in sections) {
-				// Play section
-				yield return StartCoroutine(PlaySection(section, branch));	
+			// Play sections
+			foreach (var section in sections) await PlaySectionAsync(section, branch);	
 
-				// Once section ends check if player needs to respond
-				if (i == sections.Count - 1 && branch.Paths != null) {
-					CreateResponseBox(branch.Paths);
-
-					CoroutineWithData cd = new CoroutineWithData(
-						this, 
-						WaitResponse()
-					);
-					yield return cd.Coroutine;	
-					int response = (int)cd.Result;
-					
-					Path path = branch.Paths[response];
-
-					if (path.sideEffect != null) path.sideEffect();
-					StartCoroutine(DigestBranch(path.branch));
-
-					end = false;
-					break;
-				}
-
-				i++;
-			}
-
-			if (end) {
+			// If we've gone through all the sections and there are paths then 
+			// the player needs to respond to a question.
+			// Else we're done so end the performance.
+			if (branch.Paths != null) {
+				Path path = await GetPathAsync(branch);
+				if (path.SideEffect != null) path.SideEffect();
+				await DigestBranchAsync(path.Branch);
+			} else {
 				EndPerformance();
 			}
 		}
 
-		IEnumerator PlaySection(Section section, Branch branch) {
-			if (section.action != null) section.action();
+		private async Task PlaySectionAsync(Section section, Branch branch) {
+			// Execute action if there is one
+			if (section.Action != null) section.Action();
 
-			CreateTextBox(section, branch);
-			yield return StartCoroutine(WaitInput());
-		}
-
-		#endregion
-
-		#region UI
-
-		void CreateBorder() {
-			Instantiate(performanceRef.border, container.transform);
-		}
-
-		void CreateTextBox(Section section, Branch branch) {
-			if (String.IsNullOrEmpty(section.text) && textBox) {
-				textBox.Die();
-			}
-			TextBoxOptions options = (section.options != null) ? section.options : branch.Options;
-			if (textBox) {
-				textBox.Execute(section, options);
-			} else {
-				textBox = TextBox.Initialize(
-					Instantiate(performanceRef.textBoxPrefab, container.transform),
-					section, 
-					options
+			if (section.TextBoxUIModel != null) {
+				// Create textbox
+				TextBoxUI textBoxUI = TextBoxUI.Initialize(
+					PerformanceContent.TextBoxPrefab,
+					Utility.FindObjectOfTypeWithError<Canvas>().transform,
+					Vector2.zero,
+					section.TextBoxUIModel
 				);
+
+				// Wait for text box to finish running
+				await textBoxUI.ExecuteAsync();
 			}
 		}
 
-		void CreateResponseBox(List<Path> paths) {
-			responseBox = ResponseBox.Initialize(
-				Instantiate(performanceRef.responseBoxPrefab, container.transform),
-				paths
-			);
+		private async Task<Path> GetPathAsync(Branch branch) {			
+			Path selection = (Path)await VerticalMenuSelectUI
+				.Initialize(
+					PerformanceContent.ResponseBoxPrefab, 
+					FindObjectOfType<Canvas>().GetComponent<RectTransform>(),
+					branch.Paths.Select(p => new MenuItemUIModel(p, p.Text)).ToList()
+				).GetSelectionAsync();
+
+			return selection;
 		}
-
-		#endregion
-
-		#region UserInput
-	
-		IEnumerator WaitInput() {
-			bool wait = true;
-			while (wait) {
-				if (Input.GetButtonDown("Fire1") || Input.GetButtonDown("Fire2")) {
-					if (!textBox.Crawling) {
-						wait = false;
-					} else {
-						textBox.SetSpeed(0);
-					}
-				}
-				yield return null;
-			}
-			yield return null;
-		}
-
-		// returns int
-		IEnumerator WaitResponse() {
-			int? result = null;
-
-			bool wait = true;
-			while (wait) {
-
-				if (Input.GetKeyDown(KeyCode.UpArrow)) {
-					responseBox.DecrementChoice();
-				}
-				if (Input.GetKeyDown(KeyCode.DownArrow)) {
-					responseBox.IncrementChoice();
-				}
-
-				if (Input.GetButtonDown("Fire1")) {
-					result = responseBox.Choice;
-					wait = false;
-				}
-				yield return null;
-			}
-
-			responseBox.Die();
-			yield return result;
-		}
-
-		#endregion
 	}
 }

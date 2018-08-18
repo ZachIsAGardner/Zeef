@@ -1,70 +1,51 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 // ---
 using Zeef.GameManagement;
 
-namespace Zeef.TwoDimensional
-{
-	public abstract class InteractableObject : MonoBehaviour 
-	{
-		public PromptsEnum promptID;
-		GameObject prompt;
-		public bool onTouch;
-		GameObject promptClone;
+namespace Zeef.TwoDimensional {
 
+	public abstract class InteractableObject : MonoBehaviour {
+
+		[SerializeField] private PromptsEnum promptID;
+		[SerializeField] private bool onTouch;
+
+		private GameObject promptClone;
 		protected bool triggered;
 
-		protected abstract void TriggerAction();
+		protected abstract Task TriggerActionAsync();
 
-		protected virtual void Start() {
-			prompt = GameReference.Main().GetPrompt(promptID);
-		}
-
-		protected void ShowPrompt(GameObject go) 
-		{
+		protected void ShowPrompt(GameObject go) {
 			if (promptClone) return;
 
-			promptClone = Instantiate(prompt, go.transform);
+			promptClone = Instantiate(GameReference.Main().GetPrompt(promptID), go.transform);
 		}
 
-		protected void HidePrompt() 
-		{
-			if (promptClone) {
-				Destroy(promptClone);
-			}
+		protected void HidePrompt() {
+			if (promptClone) Destroy(promptClone);	
 		}
 
-		void OnTriggerEnter2D(Collider2D col) 
-		{
+		void OnTriggerEnter2D(Collider2D col) {
 			if (triggered) return;
 
-			if (col.tag == "Player") {
-				if (!onTouch) {
-					ShowPrompt(col.gameObject);
-				} else {
-					TriggerAction();
-				}
-			}
+			if (col.tag == "Player")
+				if (!onTouch) ShowPrompt(col.gameObject);
+				else TriggerActionAsync();		
 		}
 
-		void OnTriggerStay2D(Collider2D col) 
-		{
+		void OnTriggerStay2D(Collider2D col) {
 			if (onTouch || triggered) return;
 
 			if (col.tag == "Player" && Input.GetButtonDown("Fire1")) {	
-				TriggerAction();
+				TriggerActionAsync();
 				triggered = true;
 			} 
 		}
 
-		void OnTriggerExit2D(Collider2D col) 
-		{
-			if (!onTouch && col.tag == "Player") {
-				HidePrompt();
-			}
+		void OnTriggerExit2D(Collider2D col) {
+			if (!onTouch && col.tag == "Player") HidePrompt();	
 		}
-
 	}
-
 }

@@ -10,8 +10,9 @@ using Zeef.Sound;
 
 namespace Zeef.GameManagement {
 
-	[RequireComponent (typeof(SingleInstanceChild))]
 	public class GameManager : MonoBehaviour {
+
+		private static GameManager gameManager;
 
 		// Special actions are available in dev mode
         [SerializeField] private bool isDev = true;
@@ -41,11 +42,14 @@ namespace Zeef.GameManagement {
 			Fight  
 		}
 		
-		public static GameManager Main() => SingleInstance.Main().GetComponentInChildren<GameManager>();
-		
-		public static Canvas Canvas() => SingleInstance.Main().GetComponentInChildren<Canvas>();
+		public static GameManager Main() => gameManager;
 		
 		#region Setup
+
+		void Awake() {
+			if (gameManager != null) throw new Exception("Only one GameManager may exist at a time."); 
+			gameManager = this;
+		}
 
 		void Start() {
 			Setup();
@@ -63,7 +67,7 @@ namespace Zeef.GameManagement {
 				LoadScene(firstScene);
 			} else {
 				SceneInfo info = new SceneInfo(SceneManager.GetActiveScene().name, FacingsEnum.Right, 0, LoadSceneMode.Single);
-				StartCoroutine(SpawnPlayer(info));
+				// StartCoroutine(SpawnPlayer(info));
 				lastLoadedSceneInfo = info;
 			}
 		}

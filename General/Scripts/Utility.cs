@@ -57,11 +57,5 @@ namespace Zeef {
         public static Color Color255(float r, float g, float b, float a) {
             return new Color(r / 255, g / 255, b / 255, a / 255);
         }
-
-        // ---
-
-        public static void RequireFields(List<object> fields) {
-            if (fields.Any(f => f == null)) throw new Exception("Missing fields!");
-        }
     }
 }

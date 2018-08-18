@@ -2,21 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zeef.Sound;
 
 namespace Zeef.Perform{
 
 	public class Section {
 
-		public string text;
-		public string speaker;
-		public TextBoxOptions options;
-		public Action action;
+		public TextBoxUIModel TextBoxUIModel { get; set; }
+		public Action Action { get; set; }
 		
-		public Section(string text = "", TextBoxOptions options = null, Action action = null, string speaker = null) {
-			this.text = text;
-			this.options = options;
-			this.action = action;
-			this.speaker = speaker;
+		public Section(TextBoxUIModel textBoxUIModel, Action action = null) {
+			TextBoxUIModel = textBoxUIModel;
+			Action = action;
 		}
 	}
 }

@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Zeef
-{
-	public class Example : MonoBehaviour 
-	{
-	
+namespace Zeef {
+
+	public class Example : MonoBehaviour {
+		// TODO: :)
 	}
 }

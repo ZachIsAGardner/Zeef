@@ -14,6 +14,7 @@ namespace Zeef.TwoDimensional {
 	[RequireComponent(typeof(Rigidbody2D))]
 	[RequireComponent(typeof(BoxCollider2D))]
 	public abstract class MovingObject : MonoBehaviour {
+
 		//state
 		public FacingsEnum Facing { get; protected set; }
 		public Vector3 StartPosition { get; set; }
@@ -33,7 +34,6 @@ namespace Zeef.TwoDimensional {
 		protected AudioSource AudioSource { get; private set; }
 		protected SpriteRenderer Sprite { get; private set; }
 		protected AnimatedSprite Animator { get; private set; }
-		protected AudioReference audioRef;
 		protected ZeeTimerHandler TimerHandler { get; private set; }
 		
 		Vector2 vel;
@@ -48,12 +48,11 @@ namespace Zeef.TwoDimensional {
 		}
 
 		void SetUpSound() {
-			AudioSource.volume = audioRef.SoundEffectVolume();
+			AudioSource.volume = AudioManager.SoundEffectVolume;
 		}
 
 		void GetComponents() {
 			Game = GameManager.Main();
-			audioRef = AudioReference.Main();
 
 			Collision = GetComponent<Collision>();
 			Sprite = GetComponentInChildren<SpriteRenderer>();
