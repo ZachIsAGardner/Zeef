@@ -32,7 +32,7 @@ namespace Zeef.Persistance {
         }
 
         private FlagsContainer GetFlagsContainer() {
-            return FlagDB.Main().GetFlagsContainer(SceneName);
+            return FlagDB.GetFlagsContainer(SceneName);
         }
     }
 }

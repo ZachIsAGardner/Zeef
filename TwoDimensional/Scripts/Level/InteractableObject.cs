@@ -20,7 +20,7 @@ namespace Zeef.TwoDimensional {
 		protected void ShowPrompt(GameObject go) {
 			if (promptClone) return;
 
-			promptClone = Instantiate(GameReference.Main().GetPrompt(promptID), go.transform);
+			promptClone = Instantiate(GameContent.GetPrompt(promptID), go.transform);
 		}
 
 		protected void HidePrompt() {

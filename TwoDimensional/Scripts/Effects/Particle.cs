@@ -91,7 +91,7 @@ namespace Zeef.TwoDimensional {
 
 		private IEnumerator RunCoroutine() {
 			while(lifeTime > 0) {	
-				while(GameManager.Main().IsPaused()) yield return null;
+				while(GameManager.IsPaused()) yield return null;
 
 				if (fade) ChangeColor(lifeTime);
 				

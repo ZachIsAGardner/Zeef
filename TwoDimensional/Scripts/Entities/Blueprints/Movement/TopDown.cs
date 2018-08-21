@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using UnityEngine;
+// ---
+using Zeef.GameManagement;
 
 namespace Zeef.TwoDimensional {
 
@@ -10,7 +12,7 @@ namespace Zeef.TwoDimensional {
         private Vector2 target;
 
         protected override void Update() {
-            if (!(Game.IsPlaying() || Game.InCutscene())) return;
+            if (!(GameManager.IsPlaying() || GameManager.IsInCutscene())) return;
 
             base.Update();
             ApplyFacing(); 
@@ -25,7 +27,7 @@ namespace Zeef.TwoDimensional {
         }
 
         protected override float CalculateAcceleration() {
-            return groundAcc;
+            return GroundAcc;
         }
 
         protected override void CalculateVelocity(ref Vector2 vel) {
@@ -38,8 +40,8 @@ namespace Zeef.TwoDimensional {
 
         protected void MoveWithInput(ref Vector2 vel, float inputX, float inputY) {
             float acc = CalculateAcceleration();
-            vel.x = Mathf.Lerp(vel.x, inputX * moveSpeed, 1 - Mathf.Pow(acc, Time.deltaTime));
-            vel.y = Mathf.Lerp(vel.y, inputY * moveSpeed, 1 - Mathf.Pow(acc, Time.deltaTime));
+            vel.x = Mathf.Lerp(vel.x, inputX * MoveSpeed, 1 - Mathf.Pow(acc, Time.deltaTime));
+            vel.y = Mathf.Lerp(vel.y, inputY * MoveSpeed, 1 - Mathf.Pow(acc, Time.deltaTime));
         }
 
 

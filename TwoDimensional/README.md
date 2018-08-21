@@ -7,4 +7,4 @@
 * Animated 2D sprites
 
 ## Dependencies ##
-* Zeef.GameManager
+* Zeef.GameManagement

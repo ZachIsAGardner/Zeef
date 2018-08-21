@@ -11,14 +11,14 @@ namespace Zeef.GameManagement {
         [SerializeField] private string scene;
         public string Scene { get { return scene; } }
 
+        [SerializeField] private LoadSceneMode loadMode;
+        public LoadSceneMode LoadMode { get { return loadMode; } }
+
         [SerializeField] private int spawn;
         public int Spawn { get { return spawn; } }
 
         [SerializeField] private FacingsEnum facingID; 
         public FacingsEnum FacingID { get { return facingID; } }
-
-        [SerializeField] private LoadSceneMode loadMode;
-        public LoadSceneMode LoadMode { get { return loadMode; } }
 
         public SceneInfo(string scene) {
             this.scene = scene;

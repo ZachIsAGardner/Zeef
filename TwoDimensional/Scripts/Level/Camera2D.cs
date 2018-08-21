@@ -8,11 +8,11 @@ using Zeef.GameManagement;
 
 namespace Zeef.TwoDimensional {
 
-	public class ZeeCamera : MonoBehaviour {
+	public class Camera2D : MonoBehaviour {
 
-		public Vector3 offset;
-		public Transform target;
-		public float acc = .5f;
+		[SerializeField] Vector3 offset;
+		[SerializeField] Transform target;
+		[SerializeField] float acc = .5f;
 
 		float normalZoom;
 		bool zooming;
@@ -60,7 +60,7 @@ namespace Zeef.TwoDimensional {
 		}
 		
 		void LateUpdate() {
-			if (GameManager.Main() && GameManager.Main().IsPaused()) return;
+			if (GameManager.IsPaused()) return;
 
 			if (target) {
 				Move();

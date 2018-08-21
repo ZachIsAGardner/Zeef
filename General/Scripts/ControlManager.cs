@@ -50,6 +50,7 @@ namespace Zeef {
             this.FindObjectOfTypeWithError<MonoBehaviour>();
             if (controlManager != null) throw new Exception("Only one ControlManager can be loaded at once.");
             controlManager = this;
+            DontDestroyOnLoad(gameObject);
         }
 
         public static ControlManager Main() {

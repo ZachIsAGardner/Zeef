@@ -20,15 +20,15 @@ namespace Zeef.TwoDimensional {
 		public Vector3 StartPosition { get; set; }
 
 		// basic movement stats
-		public Vector2 velMax = new Vector2(100, 100);
-		public float groundAcc = .01f;
-		public float moveSpeed = 5;
+		public Vector2 VelMax = new Vector2(100, 100);
+		public float GroundAcc = .01f;
+		public float MoveSpeed = 5;
 
 		// Used in enemy for before they are triggered
-		protected bool active = true;
+		// TODO: revisit this
+		public bool Active = true;
 
 		//references
-		protected GameManager Game { get; private set; }
 		protected BoxCollider2D BoxCollider2D { get; private set; }
 		protected Collision Collision { get; private set; }
 		protected AudioSource AudioSource { get; private set; }
@@ -36,33 +36,28 @@ namespace Zeef.TwoDimensional {
 		protected AnimatedSprite Animator { get; private set; }
 		protected ZeeTimerHandler TimerHandler { get; private set; }
 		
-		Vector2 vel;
+		private Vector2 vel;
 
-		bool queueRecoil;
-		Vector2 recoilDir;
+		private bool queueRecoil;
+		private Vector2 recoilDir;
+
+		// ---
+		// Lifecycle
 
 		protected virtual void Start () {
 			StartPosition = transform.position;
-			GetComponents();
-			SetUpSound();
-		}
-
-		void SetUpSound() {
-			AudioSource.volume = AudioManager.SoundEffectVolume;
-		}
-
-		void GetComponents() {
-			Game = GameManager.Main();
 
 			Collision = GetComponent<Collision>();
 			Sprite = GetComponentInChildren<SpriteRenderer>();
 			Animator = GetComponentInChildren<AnimatedSprite>();
 			AudioSource = GetComponent<AudioSource>();
 			TimerHandler = GetComponent<ZeeTimerHandler>();
+
+			AudioSource.volume = AudioManager.SoundEffectVolume;
 		}
 
 		protected virtual void Update () {
-			if (!(Game.IsPlaying() || Game.InCutscene())) return;
+			if (!(GameManager.IsPlaying() || GameManager.IsInCutscene())) return;
 
 			CalculateVelocity(ref vel);
 			if (queueRecoil) {
@@ -73,62 +68,15 @@ namespace Zeef.TwoDimensional {
 			CollisionVelocity(ref vel);	
 		}
 
-		#region State
-
-		public bool FacingUp() {
-			return Facing == FacingsEnum.Up;	
-		}
-		public bool FacingDown() {
-			return Facing == FacingsEnum.Down;	
-		}
-		public bool FacingLeft() {
-			return Facing == FacingsEnum.Left;	
-		}
-		public bool FacingRight() {
-			return Facing == FacingsEnum.Right;	
-		}
-
-		public void Activate() {
-			active = true;
-		}
-		public void DeActivate() {
-			active = false;
-		}
-
-		#endregion
-
-		#region HelperMethods
-
-		protected bool AnyCollision() {
-			if (Collision.collisions.up 
-			|| Collision.collisions.down 
-			|| Collision.collisions.left 
-			|| Collision.collisions.right) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-
-		public bool Moving() {
-			return (Mathf.Abs(vel.x) > 0.1f || Mathf.Abs(vel.y) > 0.1f);
-		}
-
-		public bool MovingDown() {
-			return vel.y < 0;
-		}
-
-		public virtual void LandedHit(GameObject victim) { }
-
-		#endregion
-
-		#region CollisionAndVelocity
+		// ---
+		// Collision and Velocity
 
 		// Recoil on hit
 		public virtual void QueueRecoil(Vector2 dir) {
 			queueRecoil = true;
 			recoilDir = dir;
 		}
+
 		protected virtual void Recoil(Vector2 dir, ref Vector2 vel) {
 			vel = Vector2.zero;
 		}
@@ -136,6 +84,7 @@ namespace Zeef.TwoDimensional {
 		protected virtual float CalculateAcceleration() {
 			return 0;
 		}
+
 		// reset vel on collision
 		protected virtual void CollisionVelocity(ref Vector2 vel) {
 			if (Collision.collisions.up || Collision.collisions.down) {
@@ -146,18 +95,48 @@ namespace Zeef.TwoDimensional {
 			}
 		}
 
-		//is used for it's side effects but still returns a vector2. Confusing? yes.
-		protected virtual void CalculateVelocity(ref Vector2 vel) { }
+		// TODO: is used for it's side effects but still returns a vector2. Confusing? yes.
+		protected virtual void CalculateVelocity(ref Vector2 vel) {
+
+		}
 
 		protected virtual void LimitVelocity() {
-			if (Mathf.Abs(vel.x) > Mathf.Abs(velMax.x)) {
-				vel.x = velMax.x * -Mathf.Sign(velMax.x);
+			if (Mathf.Abs(vel.x) > Mathf.Abs(VelMax.x)) {
+				vel.x = VelMax.x * -Mathf.Sign(VelMax.x);
 			}
-			if (Mathf.Abs(vel.y) > Mathf.Abs(velMax.y)) {
-				vel.y = velMax.y * Mathf.Sign(vel.y);
+			if (Mathf.Abs(vel.y) > Mathf.Abs(VelMax.y)) {
+				vel.y = VelMax.y * Mathf.Sign(vel.y);
 			}
 		}
 
-		#endregion
+		// ---
+		// Status
+
+		// TODO: These should not be on MovingObject
+		public bool IsFacingUp() => Facing == FacingsEnum.Up;	
+		
+		public bool IsFacingDown() => Facing == FacingsEnum.Down;	
+		
+		public bool IsFacingLeft() => Facing == FacingsEnum.Left;	
+
+		public bool IsFacingRight() => Facing == FacingsEnum.Right;	
+
+		// TODO: why is this here?
+		public virtual void LandedHit(GameObject victim) { }
+
+		protected bool AnyCollision() {
+			if (Collision.collisions.up || Collision.collisions.down 
+			|| Collision.collisions.left || Collision.collisions.right) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+			
+		// TODO: Revisit this
+		public bool IsMoving() => (Mathf.Abs(vel.x) > 0.1f || Mathf.Abs(vel.y) > 0.1f);
+		
+		// TODO: Revisit this
+		public bool IsMovingDown() => vel.y < 0;
 	}
 }

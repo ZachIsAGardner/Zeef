@@ -14,7 +14,7 @@ namespace Zeef.TwoDimensional {
         [SerializeField] private SceneInfo sceneInfo;
 
         protected override async Task TriggerActionAsync() {
-            GameManager.Main().LoadScene(sceneInfo);
+            await GameManager.LoadSceneAsync(sceneInfo);
         }
     }
 }

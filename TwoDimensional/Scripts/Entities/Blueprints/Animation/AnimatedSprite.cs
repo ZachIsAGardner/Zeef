@@ -7,8 +7,8 @@ using Zeef.GameManagement;
 
 namespace Zeef.TwoDimensional {
 
-
 	public abstract class AnimatedSprite : MonoBehaviour {
+
 		public class AnimationEvent {
 			public string[] states;
 			public int frame;
@@ -19,10 +19,18 @@ namespace Zeef.TwoDimensional {
 				frame = newFrame;
 				action = newAction;
 			}
+
+			public static bool IncludesString(string[] arr, string target) {
+				foreach (var el in arr) {
+					if (el == target) {
+						return true;
+					}
+				}
+				return false;
+			}
 		}
 
 		// References
-		private GameManager game;
 		[SerializeField] private SpriteRenderer spriteRenderer;
 		[SerializeField] private Image imageRenderer;
 		[SerializeField] private MeshRenderer meshRenderer;
@@ -55,11 +63,11 @@ namespace Zeef.TwoDimensional {
 		protected abstract AnimationEvent[] GetAnimationEvents();
 
 		protected virtual void Start () {
-			game = GameManager.Main();
 
 			spriteRenderer = spriteRenderer ?? GetComponent<SpriteRenderer>();
 			imageRenderer = imageRenderer ?? GetComponent<Image>();
 			meshRenderer = meshRenderer ?? GetComponent<MeshRenderer>();
+
 			GetAdvisor();
 
 			if (sprites.Length == 0  && spritesObject != null) sprites = spritesObject.sprites.ToArray();
@@ -70,7 +78,7 @@ namespace Zeef.TwoDimensional {
 		}
 
 		void Update() {
-			if (!game.IsPaused()) {
+			if (!GameManager.IsPaused()) {
 				EvaluateState();
 				ExecuteAnimationEvents();
 				RenderSprite();
@@ -89,6 +97,7 @@ namespace Zeef.TwoDimensional {
 
 		private void EvaluateState() {
 			string newState = forcedState ?? GetAnimationState();
+
 			if (newState != animationState) {
 				loop = true;
 				ChangeSpeed(1);
@@ -148,7 +157,7 @@ namespace Zeef.TwoDimensional {
 			}
 			for (int i = 0; i < events.Length; i++){
 				AnimationEvent item = events[i];
-				if (IncludesString(item.states, animationState) && frame == item.frame) {
+				if (AnimationEvent.IncludesString(item.states, animationState) && frame == item.frame) {
 					if (executedFrame != frame) {
 						item.action();
 						executedFrame = frame;
@@ -159,15 +168,6 @@ namespace Zeef.TwoDimensional {
 					executedFrame = -1;
 				}
 			}
-		}
-
-		private bool IncludesString(string[] arr, string target) {
-			foreach (var el in arr) {
-				if (el == target) {
-					return true;
-				}
-			}
-			return false;
 		}
 	}
 }
