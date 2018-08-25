@@ -71,9 +71,9 @@ namespace Zeef {
                 foreach (FieldInfo fieldInfo in fieldInfos) {
                     object value = fieldInfo.GetValue(behaviour);
 
-                    if (value == null || value.Equals(null)) {
+                    if (value == null || value.Equals(null) || string.IsNullOrEmpty(value.ToString())) {
                         validations.Add(new ValidationError(
-                            error: $"UnassignedReference: The '{fieldInfo.Name}' field of '{behaviour.GetType().Name}' has not been assigned.",
+                            error: $"UnassignedReference: The field '{fieldInfo.Name}' of '{behaviour.GetType().Name}' has not been given a value.",
                             subject: behaviour.gameObject
                         ));
                     } 

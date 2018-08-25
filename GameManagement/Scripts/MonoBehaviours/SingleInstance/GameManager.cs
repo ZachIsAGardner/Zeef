@@ -17,12 +17,13 @@ namespace Zeef.GameManagement {
 
 		// ---
 
-		// Special actions are available in dev mode
+		// Special actions are available only in dev mode
         [SerializeField] private bool isDev = true;
 		public static bool IsDev { get { return gameManager.isDev; } }
 
         [SerializeField] private string saveDataFileName = "saveData.dat";
 		public static string SaveDataFileName { get { return gameManager.saveDataFileName; }}
+
 
         [SerializeField] private string entryScene = "_Entry";
 		public static string EntryScene { get { return gameManager.entryScene; }}
@@ -38,6 +39,8 @@ namespace Zeef.GameManagement {
 		[SerializeField] private SceneInfo firstScene;
 
 		// ---
+
+		private object scenePackage { get; set; }
 
         protected GameStatesEnum gameState = GameStatesEnum.Play;
 		public static GameStatesEnum GameState { get { return gameManager.gameState; } }
@@ -108,6 +111,15 @@ namespace Zeef.GameManagement {
 
 		// ---
 		// Loading
+
+		public static T OpenPackage<T>() where T : class {
+			return (T)gameManager.scenePackage;
+		}
+
+		public static async Task LoadSceneAsync(SceneInfo info, object scenePackage) {
+			gameManager.scenePackage = scenePackage;
+			await LoadSceneAsync(info);
+		}
 
 		public static async Task LoadSceneAsync(SceneInfo info) {
 			gameManager.lastLoadedSceneInfo = info;
