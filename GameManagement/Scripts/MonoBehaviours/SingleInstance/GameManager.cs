@@ -11,19 +11,15 @@ using System.Threading.Tasks;
 
 namespace Zeef.GameManagement {
 
-	// "Manager" has simple settings and oversees certain actions
 	public class GameManager : MonoBehaviour {
 
 		private static GameManager gameManager;
 
+		// ---
 
 		// Special actions are available in dev mode
         [SerializeField] private bool isDev = true;
 		public static bool IsDev { get { return gameManager.isDev; } }
-
-        // Pixels per unit
-        // [SerializeField] private int ppu = 100;
-		// public int PPU { get { return ppu; } }
 
         [SerializeField] private string saveDataFileName = "saveData.dat";
 		public static string SaveDataFileName { get { return gameManager.saveDataFileName; }}
@@ -40,6 +36,8 @@ namespace Zeef.GameManagement {
 		[SerializeField] Color transitionColor = Color.black;
 
 		[SerializeField] private SceneInfo firstScene;
+
+		// ---
 
         protected GameStatesEnum gameState = GameStatesEnum.Play;
 		public static GameStatesEnum GameState { get { return gameManager.gameState; } }
@@ -59,7 +57,7 @@ namespace Zeef.GameManagement {
 		
 		protected virtual void Awake() {
 			if (gameManager != null) throw new Exception("Only one GameManager may exist at a time."); 
-			gameManager = this;
+			gameManager = this;	
 			DontDestroyOnLoad(gameObject);
 
 			ReferenceCheck.EnsureNotNull(this, new ReferenceCheck(typeof(Canvas), canvas));
@@ -68,10 +66,10 @@ namespace Zeef.GameManagement {
 			SceneManager.sceneLoaded += OnSceneLoaded;
 		}
 
-		protected virtual void Start() {
+		protected virtual async void Start() {
 			// Start game from entry scene or just spawn player
 			if (SceneManager.GetActiveScene().name == entryScene) {
-				LoadSceneAsync(firstScene);
+				await LoadSceneAsync(firstScene);
 			} else {
 				SceneInfo info = new SceneInfo(SceneManager.GetActiveScene().name, FacingsEnum.Right, 0, LoadSceneMode.Single);
 				// StartCoroutine(SpawnPlayer(info));

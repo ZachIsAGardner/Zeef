@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using UnityEditor;
 using UnityEngine;
 
 namespace Zeef {
@@ -56,6 +58,16 @@ namespace Zeef {
         }
         public static Color Color255(float r, float g, float b, float a) {
             return new Color(r / 255, g / 255, b / 255, a / 255);
+        }
+
+        // ---
+
+        // KirillKuzyk
+        public static void ClearConsole() {      
+            var assembly = Assembly.GetAssembly(typeof(SceneView));
+            var type = assembly.GetType("UnityEditor.LogEntries");
+            var method = type.GetMethod("Clear");
+            method.Invoke(new object(), null);
         }
     }
 }

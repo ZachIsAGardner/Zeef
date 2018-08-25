@@ -22,13 +22,24 @@ namespace Zeef.Menu {
 
 	public class Example : MonoBehaviour {
 
+		[Required]
 		[SerializeField] AlertUI alertUIPrefab;
-		[SerializeField] VerticalMenuSelectUI verticalMenuSelectPrefab;
-		[SerializeField] PagedVerticalMenuSelectUI pagedVerticalMenuSelectPrefab;
-		[SerializeField] MatrixMenuSelectUI matrixMenuSelectPrefab;
-		[SerializeField] HorizontalMenuSelectUI horizontalMenuSelectPrefab;
-		[SerializeField] OptionsEnum options;
 
+		[Required]
+		[SerializeField] VerticalMenuSelectUI verticalMenuSelectPrefab;
+
+		[Required]
+		[SerializeField] PagedVerticalMenuSelectUI pagedVerticalMenuSelectPrefab;
+
+		[Required]
+		[SerializeField] MatrixMenuSelectUI matrixMenuSelectPrefab;
+
+		[Required]
+		[SerializeField] HorizontalMenuSelectUI horizontalMenuSelectPrefab;
+
+		[Required]
+		[SerializeField] OptionsEnum options;
+		
 		public enum OptionsEnum {
 			Vertical,
 			PagedVertical,
@@ -36,22 +47,7 @@ namespace Zeef.Menu {
 			Horizontal
 		}
 
-		void RequireReferences() {
-			ReferenceCheck.EnsureNotNull(
-				this, 
-				new List<ReferenceCheck>() {
-					new ReferenceCheck(typeof(VerticalMenuSelectUI), verticalMenuSelectPrefab),
-					new ReferenceCheck(typeof(PagedVerticalMenuSelectUI), pagedVerticalMenuSelectPrefab),
-					new ReferenceCheck(typeof(MatrixMenuSelectUI), matrixMenuSelectPrefab),
-					new ReferenceCheck(typeof(HorizontalMenuSelectUI), horizontalMenuSelectPrefab),
-				}
-			);
-		}
-
 		async void Start() {
-			// Ensure everything we need is assigned in the inspector
-			RequireReferences();
-
 			// Set up example data
 			List<TestData> datas = new List<TestData>() {
 				new TestData("Pebbles", 2),

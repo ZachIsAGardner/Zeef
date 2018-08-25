@@ -18,7 +18,7 @@ namespace Zeef.Menu {
             return instance;
         }
 
-        public async Task<bool> GetSelection() {
+        public Task<bool> GetSelection() {
             throw new NotImplementedException();
         }
     }

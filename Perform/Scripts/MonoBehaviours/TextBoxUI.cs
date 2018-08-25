@@ -104,7 +104,9 @@ namespace Zeef.Perform {
 
 			textComponent.text = text;
 
-			await ControlManager.WaitForInputDownAsync(ControlManager.Accept);
+			if (auto) await new WaitForSeconds(1);
+			else await ControlManager.WaitForInputDownAsync(ControlManager.Accept);
+			
 			Close();
 		}
 

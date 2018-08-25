@@ -6,8 +6,10 @@ using UnityEditor;
 using UnityEngine;
 
 namespace Zeef.TwoDimensional {
+    
 	[CustomEditor(typeof(Map))]
 	public class MapEditor : Editor {
+        
 		GameObject[] allPrefabs;
 		GameObject selectedPrefab;
 		Transform[] spawnedPrefabs;

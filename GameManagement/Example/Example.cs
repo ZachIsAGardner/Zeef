@@ -12,12 +12,15 @@ namespace Zeef.GameManagement {
 		[SerializeField] VerticalMenuSelectUI verticalMenuSelectUI;
 		[SerializeField] string sceneToLoad;
 
-		async void Start() {
+		private async void Start() {
+
+			// Find canvas
 			Canvas canvas = GameObject
 				.FindGameObjectsWithTag(TagsConstant.SceneCanvas)
 				.First(g => g.GetComponent<Canvas>() != null)
 				.GetComponent<Canvas>();
 
+			// Create Menu
 			await VerticalMenuSelectUI
 				.Initialize(
 					verticalMenuSelectUI, 
@@ -26,7 +29,7 @@ namespace Zeef.GameManagement {
 						new MenuItemUIModel(0, "Load Scene 2")
 					})
 				.GetSelectionAsync();
-
+			
 			await GameManager.LoadSceneAsync(new SceneInfo(sceneToLoad));
 		}
 	}
