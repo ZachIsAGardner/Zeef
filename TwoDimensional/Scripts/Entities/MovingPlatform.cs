@@ -7,18 +7,28 @@ namespace Zeef.TwoDimensional {
 
 	// This is heavily influenced by Sebastian Lague's platformer repo
 	// https://github.com/SebLague/2DPlatformer-Tutorial
-	public class MovingPlatform : RaycastController {
+	public class MovingPlatform : MonoBehaviour {
 
-		public LayerMask passengerMask;
+		[SerializeField] LayerMask passengerMask;
 
-		List<PassengerMovement> passengerMovements;
-		Transform[] waypoints;
-		Transform platform;
-		int currentPoint;
+		private BoxCollider2D boxCollider2DComponent;
+		
+		private OriginInfo origins;
+		private float skin = 1f;
+		private int rayCount = 4;
 
-		protected override void Start() {
+		private List<PassengerMovement> passengerMovements;
+		private Transform[] waypoints;
+		private Transform platform;
+		private int currentPoint;
+
+		// ---
+
+		void Start() {
+			boxCollider2DComponent = GetComponent<BoxCollider2D>();
+			skin = 1f;
+
 			platform = GetComponentsInChildren<Transform>().First((p) => p.name == "platform");
-			col = platform.GetComponent<BoxCollider2D>();
 
 			waypoints = GetComponentsInChildren<Transform>().Where((w) => w.name.Contains("point")).ToArray();
 
@@ -31,29 +41,28 @@ namespace Zeef.TwoDimensional {
 			MovePassengers();
 		}
 
+		// ---
+
 		void Loop() {
-			if (waypoints.Length <= 0) {
-				return;
-			}
+			if (waypoints.Length <= 0) return;
+			
 			Vector3 oldPosition = platform.position;
 			platform.position = Vector3.MoveTowards(platform.position, waypoints[currentPoint].position, 1);
 
 			Vector3 vel = platform.position - oldPosition;
 			FindPassengers(vel);
 
-			if (platform.position == waypoints[currentPoint].position) {
-				currentPoint = (currentPoint >= waypoints.Length - 1) ? 0 : currentPoint + 1;
-			}
+			if (platform.position == waypoints[currentPoint].position)
+				currentPoint = (currentPoint >= waypoints.Length - 1) ? 0 : currentPoint + 1;	
 		}
 
 		void MovePassengers() {
 			foreach (var movement in passengerMovements)
-			{
-				movement.transform.gameObject.GetComponent<Collision>().Move(movement.velocity, true);
-			}
+				movement.transform.gameObject.GetComponent<Collision2D>().Move(movement.velocity, true);	
 		}
 
 		void FindPassengers(Vector3 vel) {
+
 			HashSet<Transform> movedPassengers = new HashSet<Transform>();
 			passengerMovements = new List<PassengerMovement>();
 
@@ -61,7 +70,7 @@ namespace Zeef.TwoDimensional {
 
 			float dir = Mathf.Sign(vel2.y);
 			float length = Mathf.Abs (vel2.y) + skin;
-			float spacing = col.bounds.size.x / (rayCount - 1);
+			float spacing = boxCollider2DComponent.bounds.size.x / (rayCount - 1);
 
 			for (int i = 0; i < rayCount; i ++) {
 
@@ -80,7 +89,24 @@ namespace Zeef.TwoDimensional {
 			}
 		}
 
-		struct PassengerMovement {
+		// ---
+
+		protected void GetRayOrigins() {
+			Bounds bounds = boxCollider2DComponent.bounds;
+			bounds.Expand (skin * -2);
+			origins.bottomLeft = new Vector2(boxCollider2DComponent.bounds.min.x, boxCollider2DComponent.bounds.min.y);
+			origins.bottomRight = new Vector2(boxCollider2DComponent.bounds.max.x, boxCollider2DComponent.bounds.min.y);
+			origins.topLeft = new Vector2(boxCollider2DComponent.bounds.min.x, boxCollider2DComponent.bounds.max.y);
+			origins.topRight = new Vector2(boxCollider2DComponent.bounds.max.x, boxCollider2DComponent.bounds.max.y);
+		}
+
+		// ---
+
+		public struct OriginInfo {
+			public Vector2 bottomLeft, bottomRight, topLeft, topRight;
+		}
+
+		private struct PassengerMovement {
 			public Transform transform;
 			public Vector3 velocity;
 			public bool onPlatform;
@@ -94,5 +120,4 @@ namespace Zeef.TwoDimensional {
 			}
 		}
 	}
-
 }

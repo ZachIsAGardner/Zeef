@@ -11,11 +11,11 @@ namespace Zeef.Persistance {
 	[Serializable]
     public class SaveData {
         
-        public SceneInfo SceneInfo { get; private set; }
+        public string Scene { get; private set; }
         public List<FlagsContainer> FlagsContainers { get; private set; }
 
-        public SaveData(SceneInfo sceneInfo, List<FlagsContainer> flagsContainers) {
-            SceneInfo = sceneInfo;
+        public SaveData(string scene, List<FlagsContainer> flagsContainers) {
+            Scene = scene;
             FlagsContainers = flagsContainers;
         }
     }

@@ -10,30 +10,34 @@ namespace Zeef {
     public class ControlManager : MonoBehaviour {
 
         private static ControlManager controlManager;
+        private static ControlManager GetControlManager() {
+            if (controlManager == null) throw new Exception("No ControlManager exists.");
+            else return controlManager;
+        }
 
         [SerializeField] private List<string> up = new List<string>() { "up" };
-        public static List<string> Up { get { return controlManager.up; } }
+        public static List<string> Up { get { return GetControlManager().up; } }
 
         [SerializeField] private List<string> down = new List<string>() { "down" };
-        public static List<string> Down { get { return controlManager.down; } }
+        public static List<string> Down { get { return GetControlManager().down; } }
 
         [SerializeField] private List<string> left = new List<string>() { "left" };
-        public static List<string> Left { get { return controlManager.left; } }
+        public static List<string> Left { get { return GetControlManager().left; } }
 
         [SerializeField] private List<string> right = new List<string>() { "right" };
-        public static List<string> Right { get { return controlManager.right; } }
+        public static List<string> Right { get { return GetControlManager().right; } }
 
         [SerializeField] private List<string> accept = new List<string>() { "z" };
-        public static List<string> Accept { get { return controlManager.accept; } }
+        public static List<string> Accept { get { return GetControlManager().accept; } }
 
         [SerializeField] private List<string> deny = new List<string>() { "x" };
-        public static List<string> Deny { get { return controlManager.deny; } }
+        public static List<string> Deny { get { return GetControlManager().deny; } }
 
         [SerializeField] private List<string> special = new List<string>() { "c" };
-        public static List<string> Special { get { return controlManager.special; } }
+        public static List<string> Special { get { return GetControlManager().special; } }
 
         [SerializeField] private List<string> start = new List<string>() { "enter" };
-        public static List<string> Start { get { return controlManager.start; } }
+        public static List<string> Start { get { return GetControlManager().start; } }
 
         // 0: Super sensitive
         // 1: Never trigger
@@ -47,14 +51,9 @@ namespace Zeef {
         // ---
 
         void Awake() {
-            this.FindObjectOfTypeWithError<MonoBehaviour>();
             if (controlManager != null) throw new Exception("Only one ControlManager can be loaded at once.");
             controlManager = this;
             DontDestroyOnLoad(gameObject);
-        }
-
-        public static ControlManager Main() {
-            return controlManager;
         }
 
         // ---
@@ -78,15 +77,18 @@ namespace Zeef {
         }
 
         public static bool GetInputHeld(List<string> inputs) {
-            foreach (string input in inputs) {
-                if (Input.GetKey(input)) return true;
-                if (Input.GetButton(input)) return true;
-            }
+            foreach (string input in inputs) 
+                if (GetInputHeld(input)) return true;
+            
             return false;
         }
         public static bool GetInputHeld(string input) {
-            if (Input.GetKey(input)) return true;
-            if (Input.GetButton(input)) return true;
+            try { if (Input.GetKey(input)) return true; } 
+            catch(ArgumentException e) { };
+
+            try { if (Input.GetButton(input)) return true; } 
+            catch(ArgumentException e) { };
+
             return false;
         }
 

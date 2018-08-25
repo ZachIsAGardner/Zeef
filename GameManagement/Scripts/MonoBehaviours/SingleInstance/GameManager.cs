@@ -14,38 +14,39 @@ namespace Zeef.GameManagement {
 	public class GameManager : MonoBehaviour {
 
 		private static GameManager gameManager;
-
-		// ---
+		private static GameManager GetGameManager() { 
+			if (gameManager == null) {
+				throw new Exception("No GameManager exists.");
+			} else { 
+				return gameManager;
+			}
+		}
 
 		// Special actions are available only in dev mode
         [SerializeField] private bool isDev = true;
-		public static bool IsDev { get { return gameManager.isDev; } }
+		public static bool IsDev { get { return GetGameManager().isDev; } }
 
+		[Required]
         [SerializeField] private string saveDataFileName = "saveData.dat";
-		public static string SaveDataFileName { get { return gameManager.saveDataFileName; }}
+		public static string SaveDataFileName { get { return GetGameManager().saveDataFileName; }}
 
-
-        [SerializeField] private string entryScene = "_Entry";
-		public static string EntryScene { get { return gameManager.entryScene; }}
-
+		[Required]
 		[SerializeField] private Canvas canvas;
-		public static Canvas Canvas { get { return gameManager.canvas; }}
+		public static Canvas Canvas { get { return GetGameManager().canvas; }}
 
 		[Range(0, 5)]
 		[SerializeField] private float transitionTime = 1;
 
 		[SerializeField] Color transitionColor = Color.black;
 
-		[SerializeField] private SceneInfo firstScene;
-
 		// ---
 
 		private object scenePackage { get; set; }
 
         protected GameStatesEnum gameState = GameStatesEnum.Play;
-		public static GameStatesEnum GameState { get { return gameManager.gameState; } }
+		public static GameStatesEnum GameState { get { return GetGameManager().gameState; } }
 
-		protected SceneInfo lastLoadedSceneInfo;
+		protected string lastLoadedScene;
 
 		public enum GameStatesEnum {
 			Play,
@@ -57,27 +58,18 @@ namespace Zeef.GameManagement {
 
 		// ---
 		// Setup
-		
+
 		protected virtual void Awake() {
 			if (gameManager != null) throw new Exception("Only one GameManager may exist at a time."); 
 			gameManager = this;	
 			DontDestroyOnLoad(gameObject);
 
-			ReferenceCheck.EnsureNotNull(this, new ReferenceCheck(typeof(Canvas), canvas));
-
 			Application.targetFrameRate = 60;			
 			SceneManager.sceneLoaded += OnSceneLoaded;
 		}
 
-		protected virtual async void Start() {
-			// Start game from entry scene or just spawn player
-			if (SceneManager.GetActiveScene().name == entryScene) {
-				await LoadSceneAsync(firstScene);
-			} else {
-				SceneInfo info = new SceneInfo(SceneManager.GetActiveScene().name, FacingsEnum.Right, 0, LoadSceneMode.Single);
-				// StartCoroutine(SpawnPlayer(info));
-				lastLoadedSceneInfo = info;
-			}
+		void Start() {
+			lastLoadedScene = SceneManager.GetActiveScene().name;
 		}
 
 		protected virtual void OnSceneLoaded(Scene scene, LoadSceneMode mode) { }
@@ -90,78 +82,59 @@ namespace Zeef.GameManagement {
 		}
 
 		void ListenForPause() {
-			if (Input.GetButtonDown("Submit") && (IsPaused() || IsPlaying()))
-				gameState = (IsPlaying()) 
-					? GameStatesEnum.Pause
-					: GameStatesEnum.Play;
-		}
-
-		// TODO: revisit this
-		public static GameObject SpawnEntity(GameObject prefab, Vector3 position) {
-			GameObject result = Container.PlaceCopyInContainer(prefab, ContainersEnum.Entities);
-			result.transform.position = position;
-			return result;
-		}
-
-		public static GameObject SpawnEntity(EntitiesEnum id, Vector3 position) {
-			GameObject result = Container.PlaceCopyInContainer(GameContent.GetEntity(id), ContainersEnum.Entities);
-			result.transform.position = position;
-			return result;
+			if (ControlManager.GetInputDown(ControlManager.Start) && (IsPaused() || IsPlaying()))
+				gameState = (IsPlaying()) ? GameStatesEnum.Pause : GameStatesEnum.Play;
 		}
 
 		// ---
 		// Loading
 
 		public static T OpenPackage<T>() where T : class {
-			return (T)gameManager.scenePackage;
+				
+			return (T)GetGameManager().scenePackage;
 		}
 
-		public static async Task LoadSceneAsync(SceneInfo info, object scenePackage) {
-			gameManager.scenePackage = scenePackage;
-			await LoadSceneAsync(info);
-		}
+		public static async Task LoadSceneAsync(string scene, LoadSceneMode loadMode = LoadSceneMode.Single, object package = null) {
+			GetGameManager().lastLoadedScene = scene;
+			GetGameManager().scenePackage = package;
 
-		public static async Task LoadSceneAsync(SceneInfo info) {
-			gameManager.lastLoadedSceneInfo = info;
-
-			gameManager.gameState = GameStatesEnum.Loading;
+			GetGameManager().gameState = GameStatesEnum.Loading;
 			await new WaitForUpdate();
 
 			ScreenTransition screenTransition = ScreenTransition.Initialize(
-				gameManager.canvas.gameObject, 
-				gameManager.transitionColor
+				GetGameManager().canvas.gameObject, 
+				GetGameManager().transitionColor
 			);
 
-			await screenTransition.FadeOutAsync(gameManager.transitionTime);
+			await screenTransition.FadeOutAsync(GetGameManager().transitionTime);
 
-			SceneManager.LoadScene(info.Scene, info.LoadMode);
-			// if (info.LoadMode != LoadSceneMode.Additive) StartCoroutine(SpawnPlayer(info));
+			SceneManager.LoadScene(scene, loadMode);
 
-			await screenTransition.FadeInAsync(gameManager.transitionTime);
+			await screenTransition.FadeInAsync(GetGameManager().transitionTime);
 
 			Destroy(screenTransition.gameObject);
 
-			gameManager.gameState = GameStatesEnum.Play;
+			GetGameManager().gameState = GameStatesEnum.Play;
 		} 
 
 		// ---
 		// GameState
 
-		public static bool IsPaused() => gameManager.gameState == GameStatesEnum.Pause;
+		public static bool IsPaused() => GetGameManager().gameState == GameStatesEnum.Pause;
 		
-		public static bool IsPlaying() => gameManager.gameState == GameStatesEnum.Play;
+		public static bool IsPlaying() => GetGameManager().gameState == GameStatesEnum.Play;
 		
-		public static bool IsInCutscene() => gameManager.gameState == GameStatesEnum.Cutscene;
+		public static bool IsInCutscene() => GetGameManager().gameState == GameStatesEnum.Cutscene;
 		
-		public static bool IsLoading() => gameManager.gameState == GameStatesEnum.Loading;
+		public static bool IsLoading() => GetGameManager().gameState == GameStatesEnum.Loading;
 		
-		public static bool IsInFight() => gameManager.gameState == GameStatesEnum.Fight;
+		public static bool IsInFight() => GetGameManager().gameState == GameStatesEnum.Fight;
 		
 		public static void EnterCutscene() {
-			gameManager.gameState = GameStatesEnum.Cutscene;
+			GetGameManager().gameState = GameStatesEnum.Cutscene;
 		}
 		public static void ExitCutscene() {
-			gameManager.gameState = GameStatesEnum.Play;
+			GetGameManager().gameState = GameStatesEnum.Play;
 		}
 	}
 }

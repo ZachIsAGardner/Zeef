@@ -11,10 +11,10 @@ namespace Zeef.TwoDimensional {
     [RequireComponent (typeof(BoxCollider2D))]
     public class LoadTrigger : InteractableObject {
 
-        [SerializeField] private SceneInfo sceneInfo;
+        [SerializeField] private string scene;
 
         protected override async Task TriggerActionAsync() {
-            await GameManager.LoadSceneAsync(sceneInfo);
+            await GameManager.LoadSceneAsync(scene);
         }
     }
 }

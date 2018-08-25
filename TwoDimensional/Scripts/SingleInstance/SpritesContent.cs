@@ -14,14 +14,14 @@ namespace Zeef.TwoDimensional {
             return Utility.FindObjectOfTypeWithError<SpritesContent>();
         }
 
-        public SpritesObject GetSpritesObject(SpritesEnum id) {
-            SpritesObject result = spritesObjectsContainer.spritesObjects.FirstOrDefault(sp => sp.id == id);
+        public SpritesObject GetSpritesObject(int id) {
+            SpritesObject result = spritesObjectsContainer.spritesObjects.FirstOrDefault(sp => sp.ID == id);
             if (result == null) throw new Exception($"Couldn't find a sprites object with an id matching {id}");
             return result;
         }
 
-        public SpritesObject TryGetSpritesObject(SpritesEnum id) {
-            SpritesObject result = spritesObjectsContainer.spritesObjects.FirstOrDefault(sp => sp.id == id);
+        public SpritesObject TryGetSpritesObject(int id) {
+            SpritesObject result = spritesObjectsContainer.spritesObjects.FirstOrDefault(sp => sp.ID == id);
             return result;
         }
     }    

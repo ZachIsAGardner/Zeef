@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 // ---
 using Zeef.Menu;
 
@@ -26,25 +28,11 @@ namespace Zeef.GameManagement {
 
 		private async void Start() {
 
-			// Find canvas
-			Canvas canvas = GameObject
-				.FindGameObjectsWithTag(TagsConstant.SceneCanvas)
-				.First(g => g.GetComponent<Canvas>() != null)
-				.GetComponent<Canvas>();
-
-			// Create Menu
-			await VerticalMenuSelectUI
-				.Initialize(
-					verticalMenuSelectUI, 
-					canvas.GetComponent<RectTransform>(), 
-					new List<MenuItemUIModel>() { 
-						new MenuItemUIModel(0, "Load Scene 2")
-					})
-				.GetSelectionAsync();
+			await ControlManager.WaitForAnyInputAsync();
 			
 			await GameManager.LoadSceneAsync(
-				new SceneInfo(sceneToLoad),
-				new GameManagementExample2Package("Hi")
+				scene: sceneToLoad,
+				package: new GameManagementExample2Package("Hi")
 			);
 		}
 	}

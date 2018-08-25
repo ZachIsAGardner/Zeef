@@ -10,22 +10,23 @@ namespace Zeef.TwoDimensional {
 
 	public class Camera2D : MonoBehaviour {
 
-		[SerializeField] Vector3 offset;
-		[SerializeField] Transform target;
-		[SerializeField] float acc = .5f;
+		[SerializeField] private Vector3 offset;
+		[SerializeField] private Transform target;
+		[SerializeField] private float acc = .5f;
 
-		float normalZoom;
-		bool zooming;
-		float zoom;
+		private float normalZoom;
+		private bool zooming;
+		private float zoom;
 
-		Bounds bounds;
-		bool noBounds;
+		private Bounds? bounds;
 
-		Camera cam;
+		private Camera cam;
 
-		float shakeTime;
-		float shakeTick;
-		Vector3 shakeStart;
+		private float shakeTime;
+		private float shakeTick;
+		private Vector3 shakeStart;
+
+		// ---
 
 		void Start () {
 			cam = GetComponent<Camera>();
@@ -39,24 +40,22 @@ namespace Zeef.TwoDimensional {
 		}
 
 		void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+			GetTarget();
 			GetBoundaries();
 		}
 
-		public void GetTarget() {
-			GameObject player = Identifier.FindIdentifierObject(IdentifiersEnum.Player);
-			target = (player) ? 
-				player.transform : 
-				null;
+		// ---
+
+		void GetTarget() {
+			GameObject player = GameObject.FindGameObjectWithTag(TagsConstant.Player);
+			target = (player) ? player.transform : null;
 		}
 
-		public void GetBoundaries() {
-			GameObject boundsObject = Identifier.FindIdentifierObject(IdentifiersEnum.Bounds);
-			if (boundsObject) {
-				bounds = boundsObject.GetComponent<BoxCollider2D>().bounds;
-				noBounds = false;
-			} else {
-				noBounds = true;
-			}
+		void GetBoundaries() {
+			GameObject boundsObject = GameObject.FindGameObjectWithTag(TagsConstant.CameraBounds);
+
+			if (boundsObject) bounds = boundsObject.GetComponent<BoxCollider2D>().bounds;
+			else bounds = null;	
 		}
 		
 		void LateUpdate() {
@@ -79,10 +78,26 @@ namespace Zeef.TwoDimensional {
 			CheckBoundaries();
 		}
 
+		// ---
+
+		public void ResetZoom() {
+			zoom = normalZoom;
+		}
+
 		public void ChangeZoom(float newZoom) {
 			zooming = true;
 			zoom = newZoom;
 		}
+
+		void Zooming() {
+			cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, zoom, 0.125f);
+			if (Mathf.Abs(cam.orthographicSize - zoom) < 1) {
+				cam.orthographicSize = zoom;
+				zooming = false;
+			}
+		}
+
+		// ---
 
 		public void Shake(float newShakeTime) {
 			shakeTime = newShakeTime;
@@ -106,13 +121,7 @@ namespace Zeef.TwoDimensional {
 			}
 		}
 
-		void Zooming() {
-			cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, zoom, 0.125f);
-			if (Mathf.Abs(cam.orthographicSize - zoom) < 1) {
-				cam.orthographicSize = zoom;
-				zooming = false;
-			}
-		}
+		// ---
 
 		public void Move() {
 			Vector2 moveTo = Vector2.zero;
@@ -123,7 +132,7 @@ namespace Zeef.TwoDimensional {
 		}
 
 		void CheckBoundaries() {	
-			if (noBounds) return;
+			if (bounds == null) return;
 			CheckHorizontal();
 			CheckVertical();
 		}
@@ -136,8 +145,8 @@ namespace Zeef.TwoDimensional {
 				transform.position.x + radius
 			);
 			FloatRange boundsWidth = new FloatRange(
-				bounds.center.x - bounds.extents.x,
-				bounds.center.x + bounds.extents.x
+				bounds.Value.center.x - bounds.Value.extents.x,
+				bounds.Value.center.x + bounds.Value.extents.x
 			);
 
 			bool left = false;
@@ -153,7 +162,7 @@ namespace Zeef.TwoDimensional {
 
 			if (left && right) {
 				transform.position = new Vector3(
-					bounds.center.x + offset.x,
+					bounds.Value.center.x + offset.x,
 					transform.position.y,
 					transform.position.z
 				);
@@ -185,8 +194,8 @@ namespace Zeef.TwoDimensional {
 				transform.position.y + radius
 			);
 			FloatRange boundsHeight = new FloatRange(
-				bounds.center.y - bounds.extents.y,
-				bounds.center.y + bounds.extents.y
+				bounds.Value.center.y - bounds.Value.extents.y,
+				bounds.Value.center.y + bounds.Value.extents.y
 			);
 
 			bool down = false;
@@ -204,7 +213,7 @@ namespace Zeef.TwoDimensional {
 			if (down && up) {
 				transform.position = new Vector3(
 					transform.position.x,
-					bounds.center.y + offset.y,
+					bounds.Value.center.y + offset.y,
 					transform.position.z
 				);
 				return;
@@ -213,7 +222,7 @@ namespace Zeef.TwoDimensional {
 			if (down) {
 				transform.position = new Vector3(
 					transform.position.x, 
-					bounds.center.y - bounds.extents.y + radius, 
+					bounds.Value.center.y - bounds.Value.extents.y + radius, 
 					transform.position.z
 				);
 			}
@@ -221,12 +230,10 @@ namespace Zeef.TwoDimensional {
 			if (up) {
 				transform.position = new Vector3(
 					transform.position.x, 
-					bounds.center.y + bounds.extents.y - radius, 
+					bounds.Value.center.y + bounds.Value.extents.y - radius, 
 					transform.position.z
 				);
 			}
 		}
-
 	}
-
 }
