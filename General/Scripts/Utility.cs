@@ -26,6 +26,8 @@ namespace Zeef {
             return RandomInt(odds) == 0;
         }
 
+        // ---
+
         public static string SplitCamelCase(string str) {
             var r = new Regex(
                 @"(?<=[A-Z])(?=[A-Z][a-z]) |
@@ -48,6 +50,12 @@ namespace Zeef {
         public static T FindObjectOfTypeWithError<T> () where T : UnityEngine.Object {
             T result = UnityEngine.Object.FindObjectOfType<T>();
             if (result == null) throw new Exception($"Could not find any objects with the '{typeof(T).ToString()}' component attached.");
+            return result;
+        }
+
+        public static GameObject FindGameObjectWithTagWithError(string tag) {
+            GameObject result = GameObject.FindGameObjectWithTag(tag);
+            if (result == null) throw new Exception($"Could not find any game objects with the tag '{tag}'.");
             return result;
         }
 

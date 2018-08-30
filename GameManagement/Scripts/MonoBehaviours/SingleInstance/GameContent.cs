@@ -14,8 +14,8 @@ namespace Zeef.GameManagement {
 
         private static GameContent gameContent;
 
-        [SerializeField] EntityObjectsContainer entityObjects;
-        [SerializeField] PromptObjectsContainer promptObjects;
+        [SerializeField] EntityScriptablesContainer entityObjects;
+        [SerializeField] PromptScriptablesContainer promptObjects;
 
         void Awake() {
             if (gameContent != null) throw new Exception("Only one GameContent can exist at a time.");
@@ -24,9 +24,9 @@ namespace Zeef.GameManagement {
         }
 
         public static GameObject GetEntity(EntitiesEnum id) => 
-            gameContent.entityObjects.entities.First(e => e.id == id).prefab;
+            gameContent.entityObjects.Entities.First(e => e.ID == id).Prefab;
         
         public static GameObject GetPrompt(PromptsEnum id) =>
-            gameContent.promptObjects.prompts.First(p => p.id == id).prefab;	
+            gameContent.promptObjects.Prompts.First(p => p.ID == id).Prefab;	
     }
 }

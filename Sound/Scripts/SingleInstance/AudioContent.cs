@@ -11,8 +11,8 @@ namespace Zeef.Sound {
 
 		private static AudioContent audioContent;
 
-		[SerializeField] private SongObjectsContainer songsObjectsContainer;	    
-		[SerializeField] private SoundEffectObjectsContainer soundEffectObjectsContainer;
+		[SerializeField] private SongScriptablesContainer songsScriptablesContainer;	    
+		[SerializeField] private SoundEffectScriptablesContainer soundEffectScriptablesContainer;
 
 		void Awake() {
 			if (audioContent != null) throw new Exception("Only one AudioContent my exist at a time");
@@ -22,17 +22,17 @@ namespace Zeef.Sound {
 		// ---
 		// Music
 		
-		public static SongObject GetSong(SongsEnum id) => audioContent.songsObjectsContainer.songs.First(s => s.id == id);
+		public static SongScriptable GetSong(SongsEnum id) => audioContent.songsScriptablesContainer.Songs.First(s => s.ID == id);
 		
-		public static SongObject GetSong(string name) => audioContent.songsObjectsContainer.songs.First(s => s.name == name);
+		public static SongScriptable GetSong(string name) => audioContent.songsScriptablesContainer.Songs.First(s => s.name == name);
 		
 		// ---
 		// SFX
 		
-		public static SoundEffectObject GetSoundEffect(SoundEffectsEnum id) =>
-			audioContent.soundEffectObjectsContainer.soundEffects.FirstOrDefault(s => s.id == id);
+		public static SoundEffectScriptable GetSoundEffect(SoundEffectsEnum id) =>
+			audioContent.soundEffectScriptablesContainer.SoundEffects.FirstOrDefault(s => s.ID == id);
 
-		public static SoundEffectObject GetSoundEffect(string name) =>
-			audioContent.soundEffectObjectsContainer.soundEffects.FirstOrDefault(s => s.name == name);	
+		public static SoundEffectScriptable GetSoundEffect(string name) =>
+			audioContent.soundEffectScriptablesContainer.SoundEffects.FirstOrDefault(s => s.name == name);	
 	}
 }

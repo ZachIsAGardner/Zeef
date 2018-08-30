@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Zeef.TwoDimensional 
-{
+namespace Zeef.TwoDimensional {
+	
 	[CreateAssetMenu(menuName = "SO/Sprites")]
-	public class SpritesObject : ScriptableObject 
-	{
+	public class SpritesScriptable : ScriptableObject {
 		public int ID;
 		public List<Sprite> Sprites;
 	}

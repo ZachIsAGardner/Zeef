@@ -10,6 +10,10 @@ namespace Zeef.TwoDimensional {
 	public class Collision2D : MonoBehaviour {
 
 		[SerializeField] private LayerMask layerMask;	
+		[SerializeField] private float skin = 0.1f;
+		[SerializeField] private int rayCount = 4;
+
+		private BoxCollider2D boxCollider2DComponent;
 
 		private CollisionInfo collisions;
 		public CollisionInfo Collisions { get { return collisions; } }
@@ -18,15 +22,10 @@ namespace Zeef.TwoDimensional {
 		private HorizontalSlopeInfo horizontalSlopeInfo;
 		private VerticalSlopeInfo verticalSlopeInfo;
 
-		private BoxCollider2D boxCollider2DComponent;
-		private float skin = 1f;
-		private int rayCount = 4;
-
 		// ---
 
 		protected virtual void Start () {
 			boxCollider2DComponent = GetComponent<BoxCollider2D>();
-			skin = 1f;
 		}
 
 		protected void GetRayOrigins() {

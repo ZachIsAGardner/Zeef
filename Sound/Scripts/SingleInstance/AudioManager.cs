@@ -10,14 +10,16 @@ namespace Zeef.Sound {
 
 		private static AudioManager audioPlayer;
 
+		[Range (0, 1)]
 		[SerializeField] private float musicVolume = 0.5f;
 		public static float MusicVolume { get { return audioPlayer.musicVolume; } }
 
+		[Range (0, 1)]
 		[SerializeField] private float soundEffectVolume = 1;
 		public static float SoundEffectVolume { get { return audioPlayer.soundEffectVolume; } }
 
 		private AudioSource audioSource;
-		private SongObject currentSong;
+		private SongScriptable currentSong;
 
 		void Awake() {
 			if (audioPlayer != null) throw new Exception("Only one audio player may exist at a time.");
@@ -36,20 +38,19 @@ namespace Zeef.Sound {
 			ChangeSong(AudioContent.GetSong(songID));
 		}
 
-		public static void ChangeSong(SongObject song) {
-			// stop if were already playing that song
+		public static void ChangeSong(SongScriptable song) {
+			// Stop if were already playing that song
 			if (song == audioPlayer.currentSong) return;
 
 			audioPlayer.currentSong = song;
 
 			audioPlayer.StopAllCoroutines();
 
-			audioPlayer.audioSource.time = 0;
 			audioPlayer.audioSource.Stop();
 
 			if (song == null) return;
 
-			audioPlayer.audioSource.clip = song.clip;
+			audioPlayer.audioSource.clip = song.Clip;
 			audioPlayer.audioSource.Play();
 
 			audioPlayer.audioSource.volume = MusicVolume;
@@ -57,15 +58,13 @@ namespace Zeef.Sound {
 			audioPlayer.StartCoroutine(LoopSongCoroutine(song));
 		}
 
-		private static IEnumerator LoopSongCoroutine(SongObject song) {
+		private static IEnumerator LoopSongCoroutine(SongScriptable song) {
 			while (true) {
-				if (song.loopTimes.Max == 0) {
-					// Debug.LogWarning($"loop end for '{song.name}' has not been set.");
-					break;
+				if ((song.LoopTime.End > 0 && audioPlayer.audioSource.time > song.LoopTime.End) 
+				|| (audioPlayer.audioSource.time > audioPlayer.audioSource.clip.length - 0.025f)) {
+					audioPlayer.audioSource.time = song.LoopTime.Start;
 				}
-				if (audioPlayer.audioSource.time > song.loopTimes.Max) {
-					audioPlayer.audioSource.time = song.loopTimes.Min;
-				}
+				
 				yield return null;
 			}
 		}
@@ -73,9 +72,9 @@ namespace Zeef.Sound {
 		// ---
 		// SFX
 
-		public static void PlaySoundEffect(AudioSource source, SoundEffectObject obj) {
+		public static void PlaySoundEffect(AudioSource source, SoundEffectScriptable obj) {
 			if (obj == null) return;
-			source.PlayOneShot(obj.clip, SoundEffectVolume - (1 - obj.volume));
+			source.PlayOneShot(obj.Clip, SoundEffectVolume - (1 - obj.Volume));
 		}
 
 		public static void PlaySoundEffect(AudioSource source, SoundEffectsEnum id) {

@@ -53,7 +53,6 @@ namespace Zeef.GameManagement {
 			Pause,
 			Cutscene,
 			Loading,
-			Fight  
 		}
 
 		// ---
@@ -86,14 +85,29 @@ namespace Zeef.GameManagement {
 				gameState = (IsPlaying()) ? GameStatesEnum.Pause : GameStatesEnum.Play;
 		}
 
+		public static void SpawnActor(GameObject prefab, Vector3 position) {
+			Instantiate(
+				original: prefab, 
+				position: position, 
+				rotation: Quaternion.identity, 
+				parent: Utility.FindGameObjectWithTagWithError(TagsConstant.DynamicFolder).transform
+			);
+		}
+
+		public static void SpawnCanvasElement(GameObject prefab, Vector3 position) {
+			Instantiate(
+				original: prefab, 
+				position: position, 
+				rotation: Quaternion.identity, 
+				parent: Utility.FindGameObjectWithTagWithError(TagsConstant.DynamicCanvasFolder).transform
+			);
+		}
+
 		// ---
 		// Loading
 
-		public static T OpenPackage<T>() where T : class {
-				
-			return (T)GetGameManager().scenePackage;
-		}
-
+		public static T OpenPackage<T>() where T : class =>	(T)GetGameManager().scenePackage;
+		
 		public static async Task LoadSceneAsync(string scene, LoadSceneMode loadMode = LoadSceneMode.Single, object package = null) {
 			GetGameManager().lastLoadedScene = scene;
 			GetGameManager().scenePackage = package;
@@ -128,11 +142,10 @@ namespace Zeef.GameManagement {
 		
 		public static bool IsLoading() => GetGameManager().gameState == GameStatesEnum.Loading;
 		
-		public static bool IsInFight() => GetGameManager().gameState == GameStatesEnum.Fight;
-		
 		public static void EnterCutscene() {
 			GetGameManager().gameState = GameStatesEnum.Cutscene;
 		}
+
 		public static void ExitCutscene() {
 			GetGameManager().gameState = GameStatesEnum.Play;
 		}

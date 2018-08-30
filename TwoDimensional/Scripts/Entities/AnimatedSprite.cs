@@ -36,7 +36,7 @@ namespace Zeef.TwoDimensional {
 		[SerializeField] private MeshRenderer meshRenderer;
 
 		// Art
-		[SerializeField] private SpritesObject spritesObject;
+		[SerializeField] private SpritesScriptable spritesObject;
 		private Sprite[] sprites = new Sprite[]{};
 
 		// Frame Rate
