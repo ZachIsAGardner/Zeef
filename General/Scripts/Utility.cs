@@ -38,13 +38,6 @@ namespace Zeef {
             return r.Replace(str, " ");
         }
 
-        // ex)
-        // Zeef.GameManager
-        // GameManager
-        public static string TrimType(object type) {
-            return type.ToString().Split('.')[type.ToString().Split('.').Length - 1];
-        }
-
         // ---
 
         public static T FindObjectOfTypeWithError<T> () where T : UnityEngine.Object {

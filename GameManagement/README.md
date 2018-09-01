@@ -1,4 +1,4 @@
-# Zeef.GameManager #
+# Zeef.GameManagement #
 
 ## Features ##
 * Handles transitions and persistence betweens scenes

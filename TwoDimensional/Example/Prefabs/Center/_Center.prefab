@@ -59,7 +59,7 @@ GameObject:
   - component: {fileID: 6956222922253467819}
   - component: {fileID: 6956222922253467818}
   m_Layer: 0
-  m_Name: Center
+  m_Name: _Center
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -281,11 +281,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ExampleContent
-      objectReference: {fileID: 0}
-    - target: {fileID: 2843418388617029361, guid: 3d9455d889e484187bb653fbe1c628c4,
-        type: 3}
-      propertyPath: playerPrefab
-      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3d9455d889e484187bb653fbe1c628c4, type: 3}
