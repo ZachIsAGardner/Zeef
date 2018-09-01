@@ -13,7 +13,6 @@ namespace Zeef.TwoDimensional {
 		[SerializeField] private float skin = 0.1f;
 		[SerializeField] private int rayCount = 4;
 
-		private BoxCollider2D boxCollider2DComponent;
 
 		private CollisionInfo collisions;
 		public CollisionInfo Collisions { get { return collisions; } }
@@ -24,18 +23,15 @@ namespace Zeef.TwoDimensional {
 
 		// ---
 
-		protected virtual void Start () {
-			boxCollider2DComponent = GetComponent<BoxCollider2D>();
-		}
-
 		protected void GetRayOrigins() {
-			Bounds bounds = boxCollider2DComponent.bounds;
+			BoxCollider2D boxCollider2D = GetComponent<BoxCollider2D>();
+			Bounds bounds = boxCollider2D.bounds;
 			bounds.Expand (skin * -2);
 
-			origins.bottomLeft = new Vector2(boxCollider2DComponent.bounds.min.x, boxCollider2DComponent.bounds.min.y);
-			origins.bottomRight = new Vector2(boxCollider2DComponent.bounds.max.x, boxCollider2DComponent.bounds.min.y);
-			origins.topLeft = new Vector2(boxCollider2DComponent.bounds.min.x, boxCollider2DComponent.bounds.max.y);
-			origins.topRight = new Vector2(boxCollider2DComponent.bounds.max.x, boxCollider2DComponent.bounds.max.y);
+			origins.bottomLeft = new Vector2(boxCollider2D.bounds.min.x, boxCollider2D.bounds.min.y);
+			origins.bottomRight = new Vector2(boxCollider2D.bounds.max.x, boxCollider2D.bounds.min.y);
+			origins.topLeft = new Vector2(boxCollider2D.bounds.min.x, boxCollider2D.bounds.max.y);
+			origins.topRight = new Vector2(boxCollider2D.bounds.max.x, boxCollider2D.bounds.max.y);
 		}
 
 		// ---
@@ -102,7 +98,7 @@ namespace Zeef.TwoDimensional {
 		void HorizontalCollisions(ref Vector2 vel) {
 			float dir = Mathf.Sign(vel.x);
 			float length = Mathf.Abs (vel.x) + skin;
-			float spacing = boxCollider2DComponent.bounds.size.y / (rayCount - 1);
+			float spacing = GetComponent<BoxCollider2D>().bounds.size.y / (rayCount - 1);
 
 			if (Mathf.Abs(vel.x) < skin) length = 2 * skin;
 			
@@ -165,7 +161,7 @@ namespace Zeef.TwoDimensional {
 		void VerticalCollisions(ref Vector2 vel) {
 			float dir = Mathf.Sign(vel.y);
 			float length = Mathf.Abs (vel.y) + skin;
-			float spacing = boxCollider2DComponent.bounds.size.x / (rayCount - 1);
+			float spacing = GetComponent<BoxCollider2D>().bounds.size.x / (rayCount - 1);
 
 			for (int i = 0; i < rayCount; i ++) {
 

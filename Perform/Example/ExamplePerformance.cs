@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Zeef.Perform.Examples {
+namespace Zeef.Perform.Example {
 
     class ExamplePerformance : Performance {
 

@@ -92,7 +92,7 @@ public IEnumerator DoSomethingCoroutine() {
 
 * Classes that end with "Data" are used by MonoBehaviours, usually to fill in properties
     * These classes are usually seeded once and stored in a list for later reference
-    * These classes can be stored in a .dat file for persistance between play sessions
+    * These classes can be stored in a .dat file for persistence between play sessions
 * Classes that end with "Model" are only used to fill another class's properties
     * These classes are only created at runtime and discared quickly
 * Classes that end with "Info" carry data that is used for other actions, but isn't necessarily persisted anywhere

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 // ---
 using Zeef.Menu;
 
-namespace Zeef.GameManagement {
+namespace Zeef.GameManagement.Example {
 
     public class GameManagementExample2Package {
 

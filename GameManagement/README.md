@@ -1,7 +1,7 @@
 # Zeef.GameManager #
 
 ## Features ##
-* Handles transitions and persistance betweens scenes
+* Handles transitions and persistence betweens scenes
 * Holds assets for use in scenes
 * Holds information about game state
 * Holds other helpful scripts

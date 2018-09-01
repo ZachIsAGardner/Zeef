@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Zeef.Perform.Examples {
+namespace Zeef.Perform.Example {
 
     public class Example : MonoBehaviour {
 

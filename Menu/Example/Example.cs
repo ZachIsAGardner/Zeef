@@ -8,7 +8,7 @@ using UnityEngine;
 using Zeef;
 using Zeef.Menu;
 
-namespace Zeef.Menu {
+namespace Zeef.Menu.Example {
 
 	public class TestData {
 		public string Name { get; set; }

@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 // ---
 using Zeef.Menu;
 
-namespace Zeef.GameManagement {
+namespace Zeef.GameManagement.Example {
 
 	public class GameManagementExample1Package {
 

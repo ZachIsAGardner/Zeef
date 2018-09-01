@@ -44,37 +44,31 @@ namespace Zeef.TwoDimensional {
 			GetBoundaries();
 		}
 
-		// ---
-
 		void GetTarget() {
-			GameObject player = GameObject.FindGameObjectWithTag(TagsConstant.Player);
+			GameObject player = GameObject.FindGameObjectWithTag(TagConstants.Player);
 			target = (player) ? player.transform : null;
 		}
 
 		void GetBoundaries() {
-			GameObject boundsObject = GameObject.FindGameObjectWithTag(TagsConstant.CameraBounds);
+			GameObject boundsObject = GameObject.FindGameObjectWithTag(TagConstants.CameraBounds);
 
 			if (boundsObject) bounds = boundsObject.GetComponent<BoxCollider2D>().bounds;
 			else bounds = null;	
 		}
+
+		// ---
 		
 		void LateUpdate() {
 			if (GameManager.IsPaused()) return;
 
-			if (target) {
-				Move();
-			} else {
-				GetTarget();
-			}
-
+			if (target) Move();
+			else GetTarget(); // bad
+			
 			shakeTime -= 1 * Time.deltaTime;
-			if (shakeTime > 0) {
-				Shaking();
-			} 
-			if (zooming) {
-				Zooming();
-			}
-
+			if (shakeTime > 0) Shaking();
+			
+			if (zooming) Zooming();
+			
 			CheckBoundaries();
 		}
 
@@ -138,101 +132,66 @@ namespace Zeef.TwoDimensional {
 		}
 
 		void CheckHorizontal() {
-			float radius = cam.orthographicSize * cam.aspect;
+			float camExtents = cam.orthographicSize * cam.aspect;
 
-			FloatRange camWidth = new FloatRange(
-				transform.position.x - radius,
-				transform.position.x + radius
-			);
-			FloatRange boundsWidth = new FloatRange(
-				bounds.Value.center.x - bounds.Value.extents.x,
-				bounds.Value.center.x + bounds.Value.extents.x
-			);
-
-			bool left = false;
-			bool right = false;
-
-			if (camWidth.Min < boundsWidth.Min) {
-				left = true;
-			}
-
-			if (camWidth.Max > boundsWidth.Max) {
-				right = true;
-			}
-
-			if (left && right) {
+			if (camExtents >= bounds.Value.extents.x) {
 				transform.position = new Vector3(
 					bounds.Value.center.x + offset.x,
 					transform.position.y,
 					transform.position.z
 				);
-				return;
-			}
+			} else {
+				float camLeft = transform.position.x - camExtents;
+				float camRight = transform.position.x + camExtents;
 
-			if (left) {
-				transform.position = new Vector3(
-					boundsWidth.Min + radius,
-					transform.position.y, 
-					transform.position.z
-				);
-			}
+				float boundsLeft = bounds.Value.center.x - bounds.Value.extents.x;
+				float boundsRight = bounds.Value.center.x + bounds.Value.extents.x;
 
-			if (right) {
-				transform.position = new Vector3(
-					boundsWidth.Max - radius, 
-					transform.position.y, 
-					transform.position.z
-				);
+				if (camLeft < boundsLeft) {
+					transform.position = new Vector3(
+						boundsLeft + camExtents,
+						transform.position.y, 
+						transform.position.z
+					);
+				} else if (camRight > boundsRight) {
+					transform.position = new Vector3(
+						boundsRight - camExtents, 
+						transform.position.y, 
+						transform.position.z
+					);
+				}
 			}
 		}
 
 		void CheckVertical() {
-			float radius = cam.orthographicSize;
+			float camExtents = cam.orthographicSize;
 
-			FloatRange camHeight = new FloatRange(
-				transform.position.y - radius,
-				transform.position.y + radius
-			);
-			FloatRange boundsHeight = new FloatRange(
-				bounds.Value.center.y - bounds.Value.extents.y,
-				bounds.Value.center.y + bounds.Value.extents.y
-			);
-
-			bool down = false;
-			bool up = false;
-
-
-			if (camHeight.Min < boundsHeight.Min) {
-				down = true;
-			}
-
-			if (camHeight.Max > boundsHeight.Max) {
-				up = true;
-			}
-
-			if (down && up) {
+			if (camExtents > bounds.Value.extents.y) {
 				transform.position = new Vector3(
 					transform.position.x,
 					bounds.Value.center.y + offset.y,
 					transform.position.z
 				);
-				return;
-			}
+			} else {
+				float camBottom = transform.position.y - camExtents;
+				float camTop = transform.position.y + camExtents;
 
-			if (down) {
-				transform.position = new Vector3(
-					transform.position.x, 
-					bounds.Value.center.y - bounds.Value.extents.y + radius, 
-					transform.position.z
-				);
-			}
+				float boundsBottom = bounds.Value.center.y - bounds.Value.extents.y;
+				float boundsTop = bounds.Value.center.y + bounds.Value.extents.y;
 
-			if (up) {
-				transform.position = new Vector3(
-					transform.position.x, 
-					bounds.Value.center.y + bounds.Value.extents.y - radius, 
-					transform.position.z
-				);
+				if (camBottom < boundsBottom) {
+					transform.position = new Vector3(
+						transform.position.x, 
+						bounds.Value.center.y - bounds.Value.extents.y + camExtents, 
+						transform.position.z
+					);
+				} else if (camTop > boundsTop) {
+					transform.position = new Vector3(
+						transform.position.x, 
+						bounds.Value.center.y + bounds.Value.extents.y - camExtents, 
+						transform.position.z
+					);
+				}
 			}
 		}
 	}

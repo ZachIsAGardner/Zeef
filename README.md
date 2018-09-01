@@ -1,6 +1,9 @@
 # Zeef #
 Zachary's Framework (Zeef) is a C# game framework built for Unity.
 
+#### Current Version ####
+0.0
+
 ## Setup ##
 This project requires minimal setup to get working.
 
@@ -19,9 +22,9 @@ This project requires minimal setup to get working.
 ## Namespace Navigation ##
 
 * [General](https://github.com/ZachIsAGardner/Zeef/tree/master/General)
-* [GameManager](https://github.com/ZachIsAGardner/Zeef/tree/master/GameManagement)
+* [GameManagement](https://github.com/ZachIsAGardner/Zeef/tree/master/GameManagement)
 * [Menu](https://github.com/ZachIsAGardner/Zeef/tree/master/Menu)
 * [Perform](https://github.com/ZachIsAGardner/Zeef/tree/master/Perform)
-* [Persistance](https://github.com/ZachIsAGardner/Zeef/tree/master/Persistance)
+* [Persistence](https://github.com/ZachIsAGardner/Zeef/tree/master/Persistence)
 * [Sound](https://github.com/ZachIsAGardner/Zeef/tree/master/Sound)
 * [TwoDimensional](https://github.com/ZachIsAGardner/Zeef/tree/master/TwoDimensional)

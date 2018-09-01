@@ -8,28 +8,34 @@ namespace Zeef.Sound {
 	[RequireComponent (typeof(AudioSource))]
 	public class AudioManager : MonoBehaviour {
 
-		private static AudioManager audioPlayer;
+		private static AudioManager audioManager;
+		private static AudioManager GetAudioManager() {
+			if (audioManager == null) 
+				throw new Exception("No AudioManager exists. Yet one was requested for.");
+
+			return audioManager;
+		}
 
 		[Range (0, 1)]
 		[SerializeField] private float musicVolume = 0.5f;
-		public static float MusicVolume { get { return audioPlayer.musicVolume; } }
+		public static float MusicVolume { get { return GetAudioManager().musicVolume; } }
 
 		[Range (0, 1)]
 		[SerializeField] private float soundEffectVolume = 1;
-		public static float SoundEffectVolume { get { return audioPlayer.soundEffectVolume; } }
+		public static float SoundEffectVolume { get { return GetAudioManager().soundEffectVolume; } }
 
 		private AudioSource audioSource;
 		private SongScriptable currentSong;
 
 		void Awake() {
-			if (audioPlayer != null) throw new Exception("Only one audio player may exist at a time.");
-			audioPlayer = this;
+			if (audioManager != null) throw new Exception("Only one AudioManager may exist at a time.");
+			audioManager = this;
 
 			audioSource = this.GetComponentWithError<AudioSource>();
 			audioSource.volume = MusicVolume;
 		}
 
-		public static AudioManager Main() => audioPlayer;
+		public static AudioManager Main() => audioManager;
 		
 		// ---
 		// Music
@@ -40,29 +46,29 @@ namespace Zeef.Sound {
 
 		public static void ChangeSong(SongScriptable song) {
 			// Stop if were already playing that song
-			if (song == audioPlayer.currentSong) return;
+			if (song == GetAudioManager().currentSong) return;
 
-			audioPlayer.currentSong = song;
+			GetAudioManager().currentSong = song;
 
-			audioPlayer.StopAllCoroutines();
+			GetAudioManager().StopAllCoroutines();
 
-			audioPlayer.audioSource.Stop();
+			GetAudioManager().audioSource.Stop();
 
 			if (song == null) return;
 
-			audioPlayer.audioSource.clip = song.Clip;
-			audioPlayer.audioSource.Play();
+			GetAudioManager().audioSource.clip = song.Clip;
+			GetAudioManager().audioSource.Play();
 
-			audioPlayer.audioSource.volume = MusicVolume;
+			GetAudioManager().audioSource.volume = MusicVolume;
 
-			audioPlayer.StartCoroutine(LoopSongCoroutine(song));
+			GetAudioManager().StartCoroutine(LoopSongCoroutine(song));
 		}
 
 		private static IEnumerator LoopSongCoroutine(SongScriptable song) {
 			while (true) {
-				if ((song.LoopTime.End > 0 && audioPlayer.audioSource.time > song.LoopTime.End) 
-				|| (audioPlayer.audioSource.time > audioPlayer.audioSource.clip.length - 0.025f)) {
-					audioPlayer.audioSource.time = song.LoopTime.Start;
+				if ((song.LoopTime.End > 0 && GetAudioManager().audioSource.time > song.LoopTime.End) 
+				|| (GetAudioManager().audioSource.time > GetAudioManager().audioSource.clip.length - 0.025f)) {
+					GetAudioManager().audioSource.time = song.LoopTime.Start;
 				}
 				
 				yield return null;

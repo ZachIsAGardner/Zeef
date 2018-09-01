@@ -7,6 +7,13 @@ using Zeef.Sound;
 
 namespace Zeef.TwoDimensional {
 
+	public enum FacingsEnum {
+        Up,
+        Down,
+        Left,
+        Right
+    }
+
 	// Sets up basic movement and collision
 	[RequireComponent(typeof(Collision2D))]
 	[RequireComponent(typeof(AudioSource))]
@@ -23,6 +30,7 @@ namespace Zeef.TwoDimensional {
 		// Status
 
 		[SerializeField] protected Vector2 velMax = new Vector2(100, 100);
+		[Range (0, 1)]
 		[SerializeField] protected float acc = .01f;
 		[SerializeField] protected float moveSpeed = 5;
 
