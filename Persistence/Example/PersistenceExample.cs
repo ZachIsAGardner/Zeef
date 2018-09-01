@@ -30,7 +30,7 @@ namespace Zeef.Persistence.Example {
 			}
 
 			if (Input.GetKeyDown("l")) {
-				SaveDataExample saveData = SaverLoader.TryLoad<SaveDataExample>(PersistenceManager.FileName);
+				SaveDataExample saveData = PersistenceManager.TryLoad<SaveDataExample>();
 				if (saveData != null) {
 					count = saveData.Count;
 					textComponent.text = $"Count: {count}";
@@ -41,10 +41,10 @@ namespace Zeef.Persistence.Example {
 			}
 
 			if (Input.GetKeyDown("s"))
-				SaverLoader.Save(new SaveDataExample(count), PersistenceManager.FileName);
+				PersistenceManager.Save(new SaveDataExample(count));
 
 			if (Input.GetKeyDown("d"))
-				SaverLoader.Delete(PersistenceManager.FileName);
+				PersistenceManager.Delete();
 			
 		}
 	}
