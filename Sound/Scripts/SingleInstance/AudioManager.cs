@@ -6,36 +6,25 @@ using UnityEngine;
 namespace Zeef.Sound {
 	
 	[RequireComponent (typeof(AudioSource))]
-	public class AudioManager : MonoBehaviour {
-
-		private static AudioManager audioManager;
-		private static AudioManager GetAudioManager() {
-			if (audioManager == null) 
-				throw new Exception("No AudioManager exists. Yet one was requested for.");
-
-			return audioManager;
-		}
+	public class AudioManager : SingleInstance<AudioManager> {
 
 		[Range (0, 1)]
 		[SerializeField] private float musicVolume = 0.5f;
-		public static float MusicVolume { get { return GetAudioManager().musicVolume; } }
+		public static float MusicVolume { get { return GetInstance().musicVolume; } }
 
 		[Range (0, 1)]
 		[SerializeField] private float soundEffectVolume = 1;
-		public static float SoundEffectVolume { get { return GetAudioManager().soundEffectVolume; } }
+		public static float SoundEffectVolume { get { return GetInstance().soundEffectVolume; } }
 
 		private AudioSource audioSource;
 		private SongScriptable currentSong;
 
-		void Awake() {
-			if (audioManager != null) throw new Exception("Only one AudioManager may exist at a time.");
-			audioManager = this;
+		protected override void Awake() {
+			base.Awake();
 
 			audioSource = this.GetComponentWithError<AudioSource>();
 			audioSource.volume = MusicVolume;
 		}
-
-		public static AudioManager Main() => audioManager;
 		
 		// ---
 		// Music
@@ -46,29 +35,29 @@ namespace Zeef.Sound {
 
 		public static void ChangeSong(SongScriptable song) {
 			// Stop if were already playing that song
-			if (song == GetAudioManager().currentSong) return;
+			if (song == GetInstance().currentSong) return;
 
-			GetAudioManager().currentSong = song;
+			GetInstance().currentSong = song;
 
-			GetAudioManager().StopAllCoroutines();
+			GetInstance().StopAllCoroutines();
 
-			GetAudioManager().audioSource.Stop();
+			GetInstance().audioSource.Stop();
 
 			if (song == null) return;
 
-			GetAudioManager().audioSource.clip = song.Clip;
-			GetAudioManager().audioSource.Play();
+			GetInstance().audioSource.clip = song.Clip;
+			GetInstance().audioSource.Play();
 
-			GetAudioManager().audioSource.volume = MusicVolume;
+			GetInstance().audioSource.volume = MusicVolume;
 
-			GetAudioManager().StartCoroutine(LoopSongCoroutine(song));
+			GetInstance().StartCoroutine(LoopSongCoroutine(song));
 		}
 
 		private static IEnumerator LoopSongCoroutine(SongScriptable song) {
 			while (true) {
-				if ((song.LoopTime.End > 0 && GetAudioManager().audioSource.time > song.LoopTime.End) 
-				|| (GetAudioManager().audioSource.time > GetAudioManager().audioSource.clip.length - 0.025f)) {
-					GetAudioManager().audioSource.time = song.LoopTime.Start;
+				if ((song.LoopTime.End > 0 && GetInstance().audioSource.time > song.LoopTime.End) 
+				|| (GetInstance().audioSource.time > GetInstance().audioSource.clip.length - 0.025f)) {
+					GetInstance().audioSource.time = song.LoopTime.Start;
 				}
 				
 				yield return null;

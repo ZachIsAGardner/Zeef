@@ -1,131 +1,146 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Zeef.TwoDimensional {
 
+	public class DamageEventArgs {
+		public HitBox2D HitBox2D { get; private set; }
+
+		public DamageEventArgs(HitBox2D hitBox) {
+			HitBox2D = hitBox;
+		}
+	}
+
 	// Makes it so objects can live and die
-	[RequireComponent (typeof(MovingObject2D))]
+	[RequireComponent (typeof(BoxCollider2D))]
 	public class LivingObject : MonoBehaviour {
 
-		[SerializeField]
-		SpriteRenderer sprite;
-		MovingObject2D movingObject;
+		[SerializeField] int maxHealth = 1;
+		public int MaxHealth { get { return maxHealth; } }
 
-		// Freeze frames upon getting hit
-		float frozenTime = 0.25f;
-		protected bool frozen;
+		public int Health = 1;
 
-		public float inviTime = 0.25f;
-		public bool invincible { get; private set; }
+		[SerializeField] float invincibilityDuration = 0.5f;
+		[SerializeField] float freezeDuration = 0.25f;
 
-		public float maxHealth = 1;
-		float health;
+		[Required]
+		[SerializeField] SpriteRenderer spriteRenderer;
+		[SerializeField] MovingObject2D movingObject2D;
+		[Required]
+		[SerializeField] List<HurtBox2D> weakPoints;
 
-		public string[] weakTo = new string[]{"Hurt"};
+		public float HealthPercentage { get { return (float)Health / (float)MaxHealth; } }
+		public bool IsInvincible { get; private set; }
+		public bool IsFrozen { get; private set ; }
 
-		public string hurtSound = "hit_blunt";
-		public GameObject hurtParticle;
+		public event EventHandler<DamageEventArgs> BeforeTakeDamage;
+		public event EventHandler<DamageEventArgs> AfterTakeDamage;
+		public event EventHandler BeforeDie;
 
-		protected void Start() {
-			health = maxHealth;
-			GetComponents();
+		// ---	
+
+		void Start() {
+			movingObject2D = movingObject2D ?? GetComponent<MovingObject2D>();
+			foreach (HurtBox2D hurtBox in weakPoints) 
+				hurtBox.ExternalTriggerStay2D += OnExternalTriggerStay2D;
 		}
 
-		void GetComponents() {
-			movingObject = GetComponent<MovingObject2D>();
-			sprite = sprite ?? GetComponentInChildren<SpriteRenderer>();
+		public async void OnExternalTriggerStay2D(object source, ExternalTriggerStay2DEventArgs args) {
+			if (IsFrozen || IsInvincible) return;
+
+			HitBox2D hitBox = args.Other.GetComponent<HitBox2D>();
+
+			// if hitbox exists and it is not mine then i need to take damage
+			if (hitBox != null && hitBox.Owner != movingObject2D) 
+				await TakeDamageAsync(hitBox, hitBox.Damage);		
 		}
+
+		// ---
 		
-		protected void Update () {
-			if (health <= 0) Die();
-		}
-
-		public virtual void Die() {
+		public void Die() {
+			OnBeforeDie();
 			Destroy(gameObject);
 		}
 
-		public void TakeDamage(HitBox2D hitBox, float damage, float bleed = 0) {
-			health -= damage;
+		public async virtual Task TakeDamageAsync(HitBox2D hitBox, int damage) {
 
-			// movingObject.QueueRecoil(hitBox.transform.position);
+			StopAllCoroutines();
+			Color color = spriteRenderer.color;
+			spriteRenderer.color = new Color(color.r, color.g, color.b, 1);
+
+			OnBeforeTakeDamage(hitBox);
+
+			Health -= damage;
+
+			OnAfterTakeDamage(hitBox);
 			
-			sprite.material = Resources.Load<Material>("Materials/sprite_hurt");
-
-			frozen = true;
-			StartCoroutine(UnFreeze(frozenTime));
-
-			invincible = true;
-			StartCoroutine(EndInvincibility(inviTime));
-
-			StartCoroutine(Blink());
-		}
-
-		Vector2 GetDirectionToHitBox(Transform trans) {
-			return Vector2.zero;
-		}
-
-		IEnumerator UnFreeze(float wait) {
-			yield return new WaitForSeconds(wait);
-			sprite.material = Resources.Load<Material>("Materials/sprite");
-			frozen = false;
-		}
-
-		IEnumerator EndInvincibility(float wait) {
-			yield return new WaitForSeconds(wait);
-			sprite.color = Color.white;
-			invincible = false;
-		}
-
-		IEnumerator Blink() {
-			while (invincible) {
-				sprite.color = (sprite.color.a == 1) ? new Color(1,1,1,0) : new Color(1,1,1,1);
-				yield return new WaitForSeconds(0.1f);
-			}
-			sprite.color = new Color(1,1,1,1);
-		}
-
-		protected void CreateHitEffect() {
-			if (!hurtParticle) return;
-			GameObject particleInstance = Instantiate(hurtParticle, transform);
-			particleInstance.transform.localPosition = Vector3.back;
-		}
-
-		#region DetectHit
-
-		bool ValidHit(HitBox2D hitBox) {
-			if (!hitBox) throw new Exception("Could not find component 'HitBox' on gameobject.");
-			// Not my hitbox
-			return hitBox.Owner != this.gameObject;
-		}
-
-		protected virtual void OnTriggerStay2D(Collider2D col) {
-			HitBox2D hitBox = col.GetComponent<HitBox2D>();
-
-			if (col.tag == "Kill") {
+			if (Health <= 0) { 
+				await FreezeAsync();
 				Die();
-				return;
-			}
-
-			if (invincible) {
-				return;
-			}
-
-			foreach (string weakness in weakTo) {
-				if (col.tag == weakness) {
-
-					if (ValidHit(hitBox)) {
-						CreateHitEffect();
-						TakeDamage(hitBox, hitBox.Damage);
-					}
-					return;
-				}
+			} else {
+				await FreezeAsync();
+				await InvincibilityAsync();
 			}
 		}
 
-		#endregion
+		// ---
 
+		private async Task FreezeAsync() {
+			IsFrozen = true;
+			IsInvincible = true;
+
+			Color originalColor = spriteRenderer.color;
+			spriteRenderer.color = Color.black;
+
+			await new WaitForSeconds(freezeDuration);
+
+			IsFrozen = false;
+			spriteRenderer.color = originalColor;
+		}
+
+		private async Task InvincibilityAsync() {
+			IsInvincible = true;
+
+			StartCoroutine(BlinkCoroutine());
+			await new WaitForSeconds(invincibilityDuration);
+
+			IsInvincible = false;
+		}
+
+		private IEnumerator BlinkCoroutine() {
+
+			Color color = spriteRenderer.color;
+
+			while(IsInvincible) {
+				spriteRenderer.color = (spriteRenderer.color.a == 1) 
+					? new Color(color.r, color.g, color.b, 0) 
+					: new Color(color.r, color.g, color.b, 1);
+
+				yield return new WaitForSeconds(0.05f);
+			}
+
+			spriteRenderer.color = new Color(color.r, color.g, color.b, 1);
+		}
+
+		// ---
+		// Events
+
+		protected virtual void OnBeforeTakeDamage(HitBox2D hitBox) {
+			if (BeforeTakeDamage != null) 
+				BeforeTakeDamage(this, new DamageEventArgs(hitBox));
+		}
+
+		protected virtual void OnAfterTakeDamage(HitBox2D hitBox) {
+			if (AfterTakeDamage != null) 
+				AfterTakeDamage(this, new DamageEventArgs(hitBox));
+		}
+
+		protected virtual void OnBeforeDie() {
+			if (BeforeDie != null) 
+				BeforeDie(this, EventArgs.Empty);
+		}
 	}
-
 }

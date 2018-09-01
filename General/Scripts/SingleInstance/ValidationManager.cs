@@ -10,14 +10,7 @@ namespace Zeef {
     [AttributeUsage(AttributeTargets.Field)]
 	public class RequiredAttribute : Attribute { }
 
-    public class MissingRequiredFieldsException : Exception {
-
-        public List<string> Errors { get; private set; }
-
-        public MissingRequiredFieldsException(List<string> errors) {
-            Errors = errors;
-        }
-    }
+    // ---
 
     class ValidationError {
 
@@ -29,6 +22,8 @@ namespace Zeef {
             Subject = subject;
         }
     }
+
+    // ---
 
     public class ValidationManager : MonoBehaviour {
 
@@ -54,6 +49,8 @@ namespace Zeef {
         // A scene is "invalid" when it contains MonoBehaviours with 
         // fields that haven't been properly set
         public static bool SceneIsValid() => GetValidationErrors().Count < 1;
+
+        // ---
         
         private static List<ValidationError> GetValidationErrors() {
 

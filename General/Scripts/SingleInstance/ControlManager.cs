@@ -7,37 +7,31 @@ using UnityEngine.UI;
 
 namespace Zeef {
 
-    public class ControlManager : MonoBehaviour {
-
-        private static ControlManager controlManager;
-        private static ControlManager GetControlManager() {
-            if (controlManager == null) throw new Exception("No ControlManager exists.");
-            else return controlManager;
-        }
+    public class ControlManager : SingleInstance<ControlManager> {
 
         [SerializeField] private List<string> up = new List<string>() { "up" };
-        public static List<string> Up { get { return GetControlManager().up; } }
+        public static List<string> Up { get { return GetInstance().up; } }
 
         [SerializeField] private List<string> down = new List<string>() { "down" };
-        public static List<string> Down { get { return GetControlManager().down; } }
+        public static List<string> Down { get { return GetInstance().down; } }
 
         [SerializeField] private List<string> left = new List<string>() { "left" };
-        public static List<string> Left { get { return GetControlManager().left; } }
+        public static List<string> Left { get { return GetInstance().left; } }
 
         [SerializeField] private List<string> right = new List<string>() { "right" };
-        public static List<string> Right { get { return GetControlManager().right; } }
+        public static List<string> Right { get { return GetInstance().right; } }
 
         [SerializeField] private List<string> accept = new List<string>() { "z" };
-        public static List<string> Accept { get { return GetControlManager().accept; } }
+        public static List<string> Accept { get { return GetInstance().accept; } }
 
         [SerializeField] private List<string> deny = new List<string>() { "x" };
-        public static List<string> Deny { get { return GetControlManager().deny; } }
+        public static List<string> Deny { get { return GetInstance().deny; } }
 
         [SerializeField] private List<string> special = new List<string>() { "c" };
-        public static List<string> Special { get { return GetControlManager().special; } }
+        public static List<string> Special { get { return GetInstance().special; } }
 
         [SerializeField] private List<string> start = new List<string>() { "enter" };
-        public static List<string> Start { get { return GetControlManager().start; } }
+        public static List<string> Start { get { return GetInstance().start; } }
 
         // 0: Super sensitive
         // 1: Never trigger
@@ -50,9 +44,8 @@ namespace Zeef {
 
         // ---
 
-        void Awake() {
-            if (controlManager != null) throw new Exception("Only one ControlManager can be loaded at once.");
-            controlManager = this;
+        protected override void Awake() {
+            base.Awake();
             DontDestroyOnLoad(gameObject);
         }
 

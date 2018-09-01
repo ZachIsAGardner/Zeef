@@ -7,7 +7,7 @@ namespace Zeef.TwoDimensional {
         [SerializeField] private MovingObject2D movingObject;
 
         void OnTriggerEnter2D(Collider2D col) {
-            if (col.tag == "Player") movingObject.Active = true; 
+            if (col.tag == TagConstants.Player) movingObject.Active = true; 
         }
     }
 }

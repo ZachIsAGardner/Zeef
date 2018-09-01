@@ -11,24 +11,15 @@ using System.Threading.Tasks;
 
 namespace Zeef.GameManagement {
 
-	public class GameManager : MonoBehaviour {
-
-		private static GameManager gameManager;
-		private static GameManager GetGameManager() { 
-			if (gameManager == null) {
-				throw new Exception("No GameManager exists.");
-			} else { 
-				return gameManager;
-			}
-		}
+	public class GameManager : SingleInstance<GameManager> {
 
 		// Special actions are available only in dev mode
         [SerializeField] private bool isDev = true;
-		public static bool IsDev { get { return GetGameManager().isDev; } }
+		public static bool IsDev { get { return GetInstance().isDev; } }
 
 		[Required]
 		[SerializeField] private Canvas canvas;
-		public static Canvas Canvas { get { return GetGameManager().canvas; }}
+		public static Canvas Canvas { get { return GetInstance().canvas; }}
 
 		[Range(0, 5)]
 		[SerializeField] private float transitionTime = 1;
@@ -40,7 +31,7 @@ namespace Zeef.GameManagement {
 		private object scenePackage { get; set; }
 
         protected GameStatesEnum gameState = GameStatesEnum.Play;
-		public static GameStatesEnum GameState { get { return GetGameManager().gameState; } }
+		public static GameStatesEnum GameState { get { return GetInstance().gameState; } }
 
 		protected string lastLoadedScene;
 
@@ -55,8 +46,7 @@ namespace Zeef.GameManagement {
 		// Setup
 
 		protected virtual void Awake() {
-			if (gameManager != null) throw new Exception("Only one GameManager may exist at a time."); 
-			gameManager = this;	
+			base.Awake();
 			DontDestroyOnLoad(gameObject);
 
 			Application.targetFrameRate = 60;			
@@ -81,8 +71,17 @@ namespace Zeef.GameManagement {
 				gameState = (IsPlaying()) ? GameStatesEnum.Pause : GameStatesEnum.Play;
 		}
 
-		public static void SpawnActor(GameObject prefab, Vector3 position) {
-			Instantiate(
+		public static GameObject SpawnActor(Vector2 position) {
+			GameObject actor =  new GameObject();
+
+			actor.gameObject.transform.parent = Utility.FindGameObjectWithTagWithError(TagConstants.DynamicFolder).transform;
+			actor.gameObject.transform.position = position;
+
+			return actor;
+		}
+
+		public static GameObject SpawnActor(GameObject prefab, Vector2 position) {
+			return Instantiate(
 				original: prefab, 
 				position: position, 
 				rotation: Quaternion.identity, 
@@ -102,48 +101,53 @@ namespace Zeef.GameManagement {
 		// ---
 		// Loading
 
-		public static T OpenPackage<T>() where T : class =>	(T)GetGameManager().scenePackage;
+		public static T OpenPackage<T>() where T : class =>	(T)GetInstance().scenePackage;
 		
-		public static async Task LoadSceneAsync(string scene, LoadSceneMode loadMode = LoadSceneMode.Single, object package = null) {
-			GetGameManager().lastLoadedScene = scene;
-			GetGameManager().scenePackage = package;
+		public static async Task LoadSceneAsync(string scene, LoadSceneMode loadMode = LoadSceneMode.Single, object package = null, bool transition = true) {
 
-			GetGameManager().gameState = GameStatesEnum.Loading;
-			await new WaitForUpdate();
+			if (transition) {
+				GetInstance().lastLoadedScene = scene;
+				GetInstance().scenePackage = package;
 
-			ScreenTransition screenTransition = ScreenTransition.Initialize(
-				GetGameManager().canvas.gameObject, 
-				GetGameManager().transitionColor
-			);
+				GetInstance().gameState = GameStatesEnum.Loading;
+				await new WaitForUpdate();
 
-			await screenTransition.FadeOutAsync(GetGameManager().transitionTime);
+				ScreenTransition screenTransition = ScreenTransition.Initialize(
+					GetInstance().canvas.gameObject, 
+					GetInstance().transitionColor
+				);
 
-			SceneManager.LoadScene(scene, loadMode);
+				await screenTransition.FadeOutAsync(GetInstance().transitionTime);
 
-			await screenTransition.FadeInAsync(GetGameManager().transitionTime);
+				SceneManager.LoadScene(scene, loadMode);
 
-			Destroy(screenTransition.gameObject);
+				await screenTransition.FadeInAsync(GetInstance().transitionTime);
 
-			GetGameManager().gameState = GameStatesEnum.Play;
+				Destroy(screenTransition.gameObject);
+
+				GetInstance().gameState = GameStatesEnum.Play;
+			} else {
+				SceneManager.LoadScene(scene, loadMode);
+			}
 		} 
 
 		// ---
 		// GameState
 
-		public static bool IsPaused() => GetGameManager().gameState == GameStatesEnum.Pause;
+		public static bool IsPaused() => GetInstance().gameState == GameStatesEnum.Pause;
 		
-		public static bool IsPlaying() => GetGameManager().gameState == GameStatesEnum.Play;
+		public static bool IsPlaying() => GetInstance().gameState == GameStatesEnum.Play;
 		
-		public static bool IsInCutscene() => GetGameManager().gameState == GameStatesEnum.Cutscene;
+		public static bool IsInCutscene() => GetInstance().gameState == GameStatesEnum.Cutscene;
 		
-		public static bool IsLoading() => GetGameManager().gameState == GameStatesEnum.Loading;
+		public static bool IsLoading() => GetInstance().gameState == GameStatesEnum.Loading;
 		
 		public static void EnterCutscene() {
-			GetGameManager().gameState = GameStatesEnum.Cutscene;
+			GetInstance().gameState = GameStatesEnum.Cutscene;
 		}
 
 		public static void ExitCutscene() {
-			GetGameManager().gameState = GameStatesEnum.Play;
+			GetInstance().gameState = GameStatesEnum.Play;
 		}
 	}
 }

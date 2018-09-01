@@ -76,7 +76,7 @@ namespace Zeef.TwoDimensional {
                     LivingObject owner = col.GetComponentInParent<LivingObject>();
 
                     if (owner) {
-                        owner.TakeDamage(null, 1);
+                        owner.TakeDamageAsync(null, 1);
                     }
                 } 
             }

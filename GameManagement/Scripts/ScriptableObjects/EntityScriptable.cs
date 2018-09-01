@@ -7,7 +7,7 @@ namespace Zeef.GameManagement
 	[CreateAssetMenu(menuName ="SO/Entity")]
 	public class EntityScriptable : ScriptableObject 
 	{
-		public EntitiesEnum ID;
+		public int ID;
 		public GameObject Prefab;
 	}
 }

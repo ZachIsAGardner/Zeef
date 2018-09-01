@@ -12,6 +12,7 @@ namespace Zeef.GameManagement {
 
         public int ID { get; set; }
 
+        // Set my ID to first available int
         void Awake() {
             Spawn[] spawns = FindObjectsOfType<Spawn>();
 
