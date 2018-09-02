@@ -35,6 +35,8 @@ namespace Zeef.GameManagement {
 
 		protected string lastLoadedScene;
 
+		public static event EventHandler BeforeLeaveScene;
+
 		public enum GameStatesEnum {
 			Play,
 			Pause,
@@ -117,8 +119,10 @@ namespace Zeef.GameManagement {
 					GetInstance().transitionColor
 				);
 
+
 				await screenTransition.FadeOutAsync(GetInstance().transitionTime);
 
+				GetInstance().OnBeforeLeaveScene();
 				SceneManager.LoadScene(scene, loadMode);
 
 				await screenTransition.FadeInAsync(GetInstance().transitionTime);
@@ -130,6 +134,14 @@ namespace Zeef.GameManagement {
 				SceneManager.LoadScene(scene, loadMode);
 			}
 		} 
+
+		// ---
+		// Events
+
+		protected virtual void OnBeforeLeaveScene() {
+			if (BeforeLeaveScene != null) 
+				BeforeLeaveScene(this, EventArgs.Empty);
+		}
 
 		// ---
 		// GameState

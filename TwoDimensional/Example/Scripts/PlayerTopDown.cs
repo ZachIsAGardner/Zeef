@@ -20,6 +20,8 @@ namespace Zeef.TwoDimensional.Example {
 		protected override void Start() {
 			base.Start();
 
+			GameManager.BeforeLeaveScene += OnBeforeLeaveScene;
+
 			// Get and setup LivingObject
 			livingObject = GetComponent<LivingObject>();
 			if (ExampleSession.PlayerHealth > 0) livingObject.Health = ExampleSession.PlayerHealth;
@@ -31,16 +33,24 @@ namespace Zeef.TwoDimensional.Example {
 			barUI.UpdateDisplayAsync(livingObject.HealthPercentage, 0);
 		}
 
+		public async void OnBeforeLeaveScene(object source, EventArgs args) {
+			ExampleSession.UpdateData(livingObject.Health);
+		}
+
 		public async void OnAfterTakeDamage(object source, DamageEventArgs args) {
 			await barUI.UpdateDisplayAsync(livingObject.HealthPercentage);
 		}
 
 		public async void OnBeforeDie(object source, EventArgs args) {
-			GameManager.LoadSceneAsync(
+			await GameManager.LoadSceneAsync(
 				scene: "_GameOver", 
 				loadMode: LoadSceneMode.Additive,
 				transition: false
 			);
+		}
+
+		protected void OnDestroy() {
+			GameManager.BeforeLeaveScene -= OnBeforeLeaveScene;
 		}
 
 		protected override void Update() {

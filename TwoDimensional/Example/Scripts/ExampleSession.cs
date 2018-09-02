@@ -13,6 +13,10 @@ namespace Zeef.TwoDimensional.Example {
 		[SerializeField] float playTime;
 		public static float PlayTime { get { return GetInstance().playTime; } }
 
+		public static void UpdateData(int playerHealth) {
+			GetInstance().playerHealth = playerHealth;
+		}
+
 		void Update() {
 			playTime += Time.deltaTime;
 		}
