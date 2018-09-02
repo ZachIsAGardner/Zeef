@@ -15,12 +15,12 @@ namespace Zeef.Perform {
 		// is currently performing
 		public bool Performing { get; private set; }
 
+		private TextBoxUI textBoxUIInstance;
+		private GameObject border;
+
 		protected abstract Branch BranchStart();
 		protected virtual void AdditionalSetup() { }
 		protected virtual void AdditionalEnd() { }
-
-		// All performance ui elements get placed in here
-		private GameObject border;
 
 		// ---
 
@@ -36,7 +36,9 @@ namespace Zeef.Perform {
 			await DigestBranchAsync(BranchStart());
 		}
 		
-		protected virtual void EndPerformance() {
+ 		void EndPerformance() {
+			if (textBoxUIInstance != null) textBoxUIInstance.Close();
+
 			Destroy(border);
 			
 			GameManager.ExitCutscene();
@@ -71,6 +73,7 @@ namespace Zeef.Perform {
 			// Execute action if there is one
 			if (section.Action != null) section.Action();
 
+			// Combine branch and section models with priority to section
 			TextBoxUIModel model = new TextBoxUIModel(
 				section.TextBoxUIModel.Text,
 				(!string.IsNullOrEmpty(section.TextBoxUIModel.Speaker)) ? section.TextBoxUIModel.Speaker : branch.TextBoxUIModel.Speaker,
@@ -79,27 +82,41 @@ namespace Zeef.Perform {
 				(section.TextBoxUIModel.CrawlTime != null) ? section.TextBoxUIModel.CrawlTime : branch.TextBoxUIModel.CrawlTime
 			);
 
+			// Create and execute text box
 			if (section.TextBoxUIModel != null) {
-				// Create textbox
-				TextBoxUI textBoxUI = TextBoxUI.Initialize(
-					PerformanceContent.TextBoxPrefab,
-					Utility.FindObjectOfTypeWithError<Canvas>().transform,
-					Vector2.zero,
-					model
-				);
+				if (textBoxUIInstance == null) {
+					textBoxUIInstance = TextBoxUI.Initialize(
+						PerformanceContent.TextBoxPrefab,
+						Utility.FindObjectOfTypeWithError<Canvas>().transform,
+						Vector2.zero,
+						model
+					);
 
-				// Wait for text box to finish running
-				await textBoxUI.ExecuteAsync();
+					await textBoxUIInstance.ExecuteAsync();
+				} else {
+					await textBoxUIInstance.ExecuteAsync(model);
+				}
 			}
 		}
 
-		private async Task<Path> GetPathAsync(Branch branch) {			
-			Path selection = (Path)await VerticalMenuSelectUI
-				.Initialize(
-					PerformanceContent.ResponseBoxPrefab, 
-					FindObjectOfType<Canvas>().GetComponent<RectTransform>(),
-					branch.Paths.Select(p => new MenuItemUIModel(p, p.Text)).ToList()
-				).GetSelectionAsync();
+		private async Task<Path> GetPathAsync(Branch branch) {	
+			await new WaitForSeconds(0.25f);
+
+			int attempt = 0;
+			Path selection = null;
+			while (selection == null) {
+
+				selection = (Path)await VerticalMenuSelectUI
+					.Initialize(
+						PerformanceContent.ResponseBoxPrefab, 
+						FindObjectOfType<Canvas>().GetComponent<RectTransform>(),
+						branch.Paths.Select(p => new MenuItemUIModel(p, p.Text)).ToList())
+					.GetSelectionAsync();
+
+				await new WaitForUpdate();
+				attempt += 1;
+				if (attempt > 10) break;
+			}
 
 			return selection;
 		}

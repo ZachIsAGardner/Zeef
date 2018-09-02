@@ -13,14 +13,17 @@ namespace Zeef.Menu {
         [SerializeField] Text pageCountComponent;
 
         private List<PageUI> pages;
+        private bool cancelable;
 
-        public static PagedVerticalMenuSelectUI Initialize(PagedVerticalMenuSelectUI prefab, RectTransform parent, List<MenuItemUIModel> models, int pageLength) {
+        public static PagedVerticalMenuSelectUI Initialize(PagedVerticalMenuSelectUI prefab, RectTransform parent, List<MenuItemUIModel> models, int pageLength, bool cancelable = false) {
             PagedVerticalMenuSelectUI instance = Instantiate(prefab, parent).GetComponentWithError<PagedVerticalMenuSelectUI>();
 
             instance.pages = new List<PageUI>();
-            // instance.containerComponent.DestroyChildren();
+            instance.cancelable = cancelable;
 
             // Create menu items
+            // instance.containerComponent.DestroyChildren();
+            
             int idx = 0;
             int pageIdx = 0;
             while (idx < models.Count) {
@@ -80,7 +83,7 @@ namespace Zeef.Menu {
                     Close();
                     return pages[pageFocus].MenuItems[focus].Data;
                 }
-                if (ControlManager.GetInputDown(ControlManager.Deny)) { 
+                if (ControlManager.GetInputDown(ControlManager.Deny) && cancelable) { 
                     Close();
                     return null;
                 }

@@ -47,8 +47,21 @@ namespace Zeef.Perform {
 			return instance;
 		}
 
-		public async Task ExecuteAsync() {
+		public async Task ExecuteAsync(TextBoxUIModel model) {
+
+			text = model.Text;
+			speaker = model.Speaker;
+
+			auto = model.Auto == true;
+			crawlTime = model.CrawlTime ?? 0;
+			tone = model.Tone;
 	
+			await ExecuteAsync();
+		}
+
+		public async Task ExecuteAsync() {
+			skipToEnd = false;
+
 			maxLineLength = (forceLineLength > 0) ? forceLineLength : 500;
 
 			if (speakerComponent != null) speakerComponent.text = speaker ?? "";
@@ -85,8 +98,6 @@ namespace Zeef.Perform {
 
 			if (auto) await new WaitForSeconds(1);
 			else await ControlManager.WaitForInputDownAsync(ControlManager.Accept);
-			
-			Close();
 		}
 
 		// Wait an amount of time based on character
@@ -96,11 +107,11 @@ namespace Zeef.Perform {
 				case '?':
 				case '!':
 				case ':':
-					yield return new WaitForSeconds(crawlTime * 4f);
+					yield return new WaitForSeconds(crawlTime * 4.5f);
 					break;
 				case ',':
 				case ';':
-					yield return new WaitForSeconds(crawlTime * 2f);
+					yield return new WaitForSeconds(crawlTime * 3f);
 					break;
 				case ' ':
 					break;

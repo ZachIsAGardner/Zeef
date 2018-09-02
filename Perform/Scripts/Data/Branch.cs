@@ -12,19 +12,19 @@ namespace Zeef.Perform {
         public Branch (List<Section> sections) {
             Sections = sections;
         }
-        public Branch (List<Section> sections, TextBoxUIModel textBoxUIModel) {
+        public Branch (List<Section> sections, TextBoxUIModel model) {
             Sections = sections;
-            TextBoxUIModel = textBoxUIModel;
+            TextBoxUIModel = model;
         }
         public Branch (List<Section> sections, List<Path> paths) {
             Sections = sections;
             Paths = paths;
             TextBoxUIModel = TextBoxUIModel;
         }
-        public Branch (List<Section> sections, List<Path> paths, TextBoxUIModel textBoxUIModel) {
+        public Branch (List<Section> sections, List<Path> paths, TextBoxUIModel model) {
             Sections = sections;
             Paths = paths;
-            TextBoxUIModel = textBoxUIModel;
+            TextBoxUIModel = model;
         }
     }
 }

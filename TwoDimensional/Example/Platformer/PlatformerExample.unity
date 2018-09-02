@@ -873,5 +873,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 5217099775028222067, guid: 9ad1ec421ff1142e78fb9a6bec1033ec,
+        type: 3}
+      propertyPath: maxJumpStrength
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 5217099775028222067, guid: 9ad1ec421ff1142e78fb9a6bec1033ec,
+        type: 3}
+      propertyPath: minJumpStrength
+      value: 15
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9ad1ec421ff1142e78fb9a6bec1033ec, type: 3}

@@ -13,14 +13,17 @@ namespace Zeef.Menu {
         [SerializeField] RectTransform container;
 
         private List<List<MenuItemUI>> menuItems;
+        private bool cancelable;
 
-        public static MatrixMenuSelectUI Initialize(MatrixMenuSelectUI prefab, RectTransform parent, List<List<MenuItemUIModel>> models) {
+        public static MatrixMenuSelectUI Initialize(MatrixMenuSelectUI prefab, RectTransform parent, List<List<MenuItemUIModel>> models, bool cancelable = false) {
             MatrixMenuSelectUI instance = Instantiate(prefab, parent).GetComponentWithError<MatrixMenuSelectUI>();
 
             instance.menuItems = new List<List<MenuItemUI>>();
-            instance.container.DestroyChildren();
+            instance.cancelable = cancelable;
 
             // Create menu items
+            instance.container.DestroyChildren();
+
             int rowIdx = 0;
             foreach (List<MenuItemUIModel> row in models) {
 
@@ -80,7 +83,7 @@ namespace Zeef.Menu {
                     Close();
                     return menuItems[focus.Row][focus.Col].Data;
                 }
-                if (ControlManager.GetInputDown(ControlManager.Deny)) { 
+                if (ControlManager.GetInputDown(ControlManager.Deny) && cancelable) { 
                     Close();
                     return null;
                 }

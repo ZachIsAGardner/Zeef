@@ -11,8 +11,8 @@ namespace Zeef.Perform{
 		public TextBoxUIModel TextBoxUIModel { get; set; }
 		public Action Action { get; set; }
 		
-		public Section(TextBoxUIModel textBoxUIModel, Action action = null) {
-			TextBoxUIModel = textBoxUIModel;
+		public Section(TextBoxUIModel model, Action action = null) {
+			TextBoxUIModel = model;
 			Action = action;
 		}
 	}
