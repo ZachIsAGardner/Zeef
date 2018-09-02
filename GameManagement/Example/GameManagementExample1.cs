@@ -21,9 +21,6 @@ namespace Zeef.GameManagement.Example {
 	public class GameManagementExample1 : MonoBehaviour {
 
 		[Required]
-		[SerializeField] VerticalMenuSelectUI verticalMenuSelectUI;
-
-		[Required]
 		[SerializeField] string sceneToLoad;
 
 		private async void Start() {

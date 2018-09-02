@@ -22,7 +22,7 @@ namespace Zeef.TwoDimensional.Example {
 
 			// Get and setup LivingObject
 			livingObject = GetComponent<LivingObject>();
-			livingObject.Health = ExampleSession.PlayerHealth;
+			if (ExampleSession.PlayerHealth > 0) livingObject.Health = ExampleSession.PlayerHealth;
 			livingObject.AfterTakeDamage += OnAfterTakeDamage;
 			livingObject.BeforeDie += OnBeforeDie;
 

@@ -24,8 +24,6 @@ namespace Zeef.GameManagement.Example {
 
         void Start() {
             GameManagementExample2Package package = GameManager.OpenPackage<GameManagementExample2Package>();
-            Debug.Log(package);
-            Debug.Log(package.Name);
             textComponent.text = package.Name;
         }
 	}

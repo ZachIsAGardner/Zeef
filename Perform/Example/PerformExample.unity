@@ -251,6 +251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b0eb83d43fff44cbae7e6757a4ba257, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tone: {fileID: 11400000, guid: 4fa006fd0e1004a82a7dd1da0ac85275, type: 2}
 --- !u!1 &1950928432
 GameObject:
   m_ObjectHideFlags: 0
@@ -528,6 +529,11 @@ PrefabInstance:
     - target: {fileID: 4237546026740886, guid: 330c1a27539384d8fa5cc7001b47b323, type: 3}
       propertyPath: m_RootOrder
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114591195496522552, guid: 330c1a27539384d8fa5cc7001b47b323,
+        type: 3}
+      propertyPath: soundEffectVolume
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 330c1a27539384d8fa5cc7001b47b323, type: 3}
