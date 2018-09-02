@@ -29,10 +29,6 @@ namespace Zeef.Sound {
 		// ---
 		// Music
 
-		public static void ChangeSong(SongsEnum songID) {
-			ChangeSong(AudioContent.GetSong(songID));
-		}
-
 		public static void ChangeSong(SongScriptable song) {
 			// Stop if were already playing that song
 			if (song == GetInstance().currentSong) return;
@@ -48,7 +44,7 @@ namespace Zeef.Sound {
 			GetInstance().audioSource.clip = song.Clip;
 			GetInstance().audioSource.Play();
 
-			GetInstance().audioSource.volume = MusicVolume;
+			GetInstance().audioSource.volume = MusicVolume - (1 - song.Volume);
 
 			GetInstance().StartCoroutine(LoopSongCoroutine(song));
 		}
@@ -67,17 +63,9 @@ namespace Zeef.Sound {
 		// ---
 		// SFX
 
-		public static void PlaySoundEffect(AudioSource source, SoundEffectScriptable obj) {
-			if (obj == null) return;
-			source.PlayOneShot(obj.Clip, SoundEffectVolume - (1 - obj.Volume));
-		}
-
-		public static void PlaySoundEffect(AudioSource source, SoundEffectsEnum id) {
-			PlaySoundEffect(source, AudioContent.GetSoundEffect(id));
-		}
-
-		public static void PlaySoundEffect(AudioSource source, string name) {
-			PlaySoundEffect(source, AudioContent.GetSoundEffect(name));
+		public static void PlaySoundEffect(AudioSource source, SoundEffectScriptable sfx) {
+			if (sfx == null) return;
+			source.PlayOneShot(sfx.Clip, SoundEffectVolume - (1 - sfx.Volume));
 		}
 	}
 }

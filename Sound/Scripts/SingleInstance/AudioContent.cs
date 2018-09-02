@@ -15,14 +15,14 @@ namespace Zeef.Sound {
 		// ---
 		// Music
 		
-		public static SongScriptable GetSong(SongsEnum id) => GetInstance().songsScriptablesContainer.Songs.First(s => s.ID == id);
+		public static SongScriptable GetSong(int id) => GetInstance().songsScriptablesContainer.Songs.First(s => s.ID == id);
 		
 		public static SongScriptable GetSong(string name) => GetInstance().songsScriptablesContainer.Songs.First(s => s.name == name);
 		
 		// ---
 		// SFX
 		
-		public static SoundEffectScriptable GetSoundEffect(SoundEffectsEnum id) =>
+		public static SoundEffectScriptable GetSoundEffect(int id) =>
 			GetInstance().soundEffectScriptablesContainer.SoundEffects.FirstOrDefault(s => s.ID == id);
 
 		public static SoundEffectScriptable GetSoundEffect(string name) =>

@@ -9,6 +9,7 @@ using Zeef.GameManagement;
 namespace Zeef.TwoDimensional {
 
     public class ParticleCreator : MonoBehaviour {
+        
         public Particle Particle;
 
         public bool ParticlesBecomeChildren;
@@ -17,7 +18,6 @@ namespace Zeef.TwoDimensional {
 
         public int Amount = 5;
 
-        public float Vel;
         public Vector2Range Dir = new Vector2Range(
             new Vector2(-1,-1),
             new Vector2(1,1)
@@ -60,7 +60,7 @@ namespace Zeef.TwoDimensional {
                 Particle.Initialize(
                     prefab: Particle.gameObject, 
                     lifeTime: LifeTime.RandomValue(), 
-                    vel: Dir.RandomValue() * Vel, 
+                    vel: Dir.RandomValue(),
                     fade: Fade, 
                     grav: Grav,
                     parent: (ParticlesBecomeChildren) ? transform : null,

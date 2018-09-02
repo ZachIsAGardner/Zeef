@@ -2,19 +2,18 @@
 using System.Collections;
  
 namespace Zeef.GameManagement {
+
 	// I did not write this
-	public class FPSDisplay : MonoBehaviour
-	{
-		float deltaTime = 0.0f;
-		public int fontSize = 2;
+	public class FPSDisplay : MonoBehaviour {
+
+		float deltaTime;
+		[SerializeField] int fontSize = 2;
 	
-		void Update()
-		{
+		void Update() {
 			deltaTime += (Time.unscaledDeltaTime - deltaTime) * 0.1f;
 		}
 	
-		void OnGUI()
-		{
+		void OnGUI() {
 			int w = Screen.width, h = Screen.height;
 	
 			GUIStyle style = new GUIStyle();

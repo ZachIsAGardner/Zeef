@@ -6,8 +6,7 @@ namespace Zeef {
 
 	public class DrawBoxCollider2D : MonoBehaviour {
 
-		public Color color = new Color(1, 1, 1, 0.5f);
-		public Vector2 defaultSize = new Vector2(1,1);
+		[SerializeField] Color color = new Color(1, 1, 1, 0.5f);
 
 		void OnDrawGizmos() {
 			Vector3 size = Vector3.one;
@@ -17,8 +16,6 @@ namespace Zeef {
 			if (box != null) {
 				size = box.bounds.size;
 				offset = box.offset;
-			} else {
-				size = defaultSize;
 			}
 
 			Gizmos.color = color;

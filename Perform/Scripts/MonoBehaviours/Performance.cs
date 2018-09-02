@@ -71,13 +71,21 @@ namespace Zeef.Perform {
 			// Execute action if there is one
 			if (section.Action != null) section.Action();
 
+			TextBoxUIModel model = new TextBoxUIModel(
+				section.TextBoxUIModel.Text,
+				(!string.IsNullOrEmpty(section.TextBoxUIModel.Speaker)) ? section.TextBoxUIModel.Speaker : branch.TextBoxUIModel.Speaker,
+				(section.TextBoxUIModel.Auto.HasValue) ? section.TextBoxUIModel.Auto : branch.TextBoxUIModel.Auto,
+				(section.TextBoxUIModel.Tone != null) ? section.TextBoxUIModel.Tone : branch.TextBoxUIModel.Tone,
+				(section.TextBoxUIModel.CrawlTime != null) ? section.TextBoxUIModel.CrawlTime : branch.TextBoxUIModel.CrawlTime
+			);
+
 			if (section.TextBoxUIModel != null) {
 				// Create textbox
 				TextBoxUI textBoxUI = TextBoxUI.Initialize(
 					PerformanceContent.TextBoxPrefab,
 					Utility.FindObjectOfTypeWithError<Canvas>().transform,
 					Vector2.zero,
-					section.TextBoxUIModel
+					model
 				);
 
 				// Wait for text box to finish running

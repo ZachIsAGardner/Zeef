@@ -5,21 +5,21 @@ namespace Zeef {
 
     public static class GameObjectExtensions {
         
-        public static T GetComponentWithError<T> (this GameObject behaviour) where T : Component {
-            T result = behaviour.GetComponent<T>();
-            if (result == null) throw new MissingComponentException($"Could not find a {result.GetType().ToString()} component attached to {behaviour.name}");
+        public static T GetComponentWithError<T> (this GameObject gameObject) where T : Component {
+            T result = gameObject.GetComponent<T>();
+            if (result == null) throw new MissingComponentException($"Could not find a {result.GetType().ToString()} component attached to {gameObject.name}");
             return result;
         }
 
-        public static T GetComponentInChildrenWithError<T> (this GameObject behaviour) where T : Component {
-            T result = behaviour.GetComponentInChildren<T>();
-            if (result == null) throw new MissingComponentException($"Could not find a {result.GetType().ToString()} component attached to {behaviour.name} or any of it's children");
+        public static T GetComponentInChildrenWithError<T> (this GameObject gameObject) where T : Component {
+            T result = gameObject.GetComponentInChildren<T>();
+            if (result == null) throw new MissingComponentException($"Could not find a {result.GetType().ToString()} component attached to {gameObject.name} or any of it's children");
             return result;
         }
 
-        public static T FindObjectOfTypeWithError<T> (this UnityEngine.Object unityObject) where T : UnityEngine.Object {
-            T result = UnityEngine.Object.FindObjectOfType<T>();
-            if (result == null) throw new Exception($"Could not find any objects with the '{typeof(T).ToString()}' component attached.");
+        public static T GetComponentInParentWithError<T> (this GameObject gameObject) where T : Component {
+            T result = gameObject.GetComponentInParent<T>();
+            if (result == null) throw new MissingComponentException($"Could not find {result.GetType().ToString()} component.");
             return result;
         }
     }

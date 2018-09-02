@@ -16,5 +16,11 @@ namespace Zeef {
             if (result == null) throw new MissingComponentException($"Could not find a {result.GetType().ToString()} component attached to {behaviour.name} or any of it's children");
             return result;
         }
+
+        public static T GetComponentInParentWithError<T> (this MonoBehaviour behaviour) where T : Component {
+            T result = behaviour.GetComponentInParent<T>();
+            if (result == null) throw new MissingComponentException($"Could not find {result.GetType().ToString()} component.");
+            return result;
+        }
     }
 }

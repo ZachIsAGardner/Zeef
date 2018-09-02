@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 namespace Zeef.Menu {
 
+    // Are you sure about the thing?
+    // |Yes| No
     public class ConfirmUI : MonoBehaviour {
 
         [SerializeField] Image imageComponent;

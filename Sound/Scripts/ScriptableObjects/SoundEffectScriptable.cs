@@ -6,7 +6,7 @@ namespace Zeef.Sound {
 
 	[CreateAssetMenu(menuName="SO/Sound Effect")]
 	public class SoundEffectScriptable : ScriptableObject {
-		public SoundEffectsEnum ID;
+		public int ID;
 		
 		public AudioClip Clip;
 

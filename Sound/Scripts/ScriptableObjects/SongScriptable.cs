@@ -12,7 +12,7 @@ namespace Zeef.Sound {
     [CreateAssetMenu(menuName = "SO/Song")]
     public class SongScriptable : ScriptableObject {
 
-        public SongsEnum ID;
+        public int ID;
 
         public AudioClip Clip;
 

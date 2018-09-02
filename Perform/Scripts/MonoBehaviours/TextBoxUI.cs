@@ -10,25 +10,6 @@ using Zeef.Sound;
 
 namespace Zeef.Perform {
 
-	public class TextBoxUIModel {
-		
-		public string Text { get; private set; }
-		public string Speaker { get; private set; }
-
-		public bool Auto { get; private set; }
-		public SoundEffectsEnum Tone { get; private set; }
-		public float CrawlTime { get; private set; }
-
-		public TextBoxUIModel(string text, string speaker = "", bool auto = false, SoundEffectsEnum tone = 0, float crawlSpeed = 0.05f, Vector3? position = null) {
-			Text = text;
-			Speaker = speaker;
-
-			Auto = auto;
-			Tone = tone;
-			CrawlTime = crawlSpeed;
-		}
-	}
-
 	[RequireComponent (typeof (AudioSource))]
 	public class TextBoxUI : MonoBehaviour {
 
@@ -38,8 +19,6 @@ namespace Zeef.Perform {
 		// text component, rather than just guess and checking
 		[SerializeField] private int forceLineLength = -1;
 
-		AudioSource audioSource;
-
 		private string text; // Text to be displayed
 		private string speaker; // Speaker to be displayed
 
@@ -47,10 +26,10 @@ namespace Zeef.Perform {
 		
 		private int maxLineLength; // Max character length for a line of text
 
-		private bool auto; // Text box closes once it has finished crawling the text
-		private float crawlTime; // Time between letters
-		private SoundEffectsEnum tone; // The noise made when the text is crawling
-
+		private bool auto; // Text box closes automatically once it has finished crawling the text
+		private float crawlTime; // Wait time between letters
+		private SoundEffectScriptable tone; // The noise made when the text is crawling
+		
 		void Update() {
 			if (ControlManager.GetInputDown(ControlManager.Accept)) skipToEnd = true;	
 		}
@@ -61,8 +40,8 @@ namespace Zeef.Perform {
 			instance.text = model.Text;
 			instance.speaker = model.Speaker;
 
-			instance.auto = model.Auto;
-			instance.crawlTime = model.CrawlTime;
+			instance.auto = model.Auto == true;
+			instance.crawlTime = model.CrawlTime ?? 0;
 			instance.tone = model.Tone;
 
 			return instance;
@@ -95,7 +74,7 @@ namespace Zeef.Perform {
 					
 					textComponent.text += letter;
 
-					// AudioManager.PlaySoundEffect(source: audioSource, id: tone);
+					if (tone != null) AudioManager.PlaySoundEffect(GetComponent<AudioSource>(), tone);
 					await WaitAsync(letter);
 				}
 

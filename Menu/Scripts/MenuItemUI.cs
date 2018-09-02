@@ -5,9 +5,6 @@ using UnityEngine.UI;
 
 namespace Zeef.Menu {
 
-    // Generates menu items
-    // Picks from one of them
-
     public class MenuItemUIModel {
         public string Text { get; set; }
         public object Data { get; set; }
@@ -18,7 +15,7 @@ namespace Zeef.Menu {
         }
     }
 
-    public class MenuItemUI : UIElement {
+    public class MenuItemUI : SelectableUIElement {
 
         [SerializeField] Text textComponent;
         public object Data { get; set; }

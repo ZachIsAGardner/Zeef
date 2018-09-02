@@ -483,6 +483,12 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114401627859285964, guid: d0ee32c10c94d481687ff527d213c170,
+        type: 3}
+      propertyPath: textBoxPrefab
+      value: 
+      objectReference: {fileID: 986791489593395683, guid: 3881c5deab1f342fb82f0c8d50ff41ea,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d0ee32c10c94d481687ff527d213c170, type: 3}
 --- !u!1001 &962479084

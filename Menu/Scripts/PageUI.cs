@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Zeef.Menu {
     
     public class PageUI : MonoBehaviour {
+        
         public List<MenuItemUI> MenuItems { get; private set; }
 
         public static PageUI Initialize(GameObject parent, List<MenuItemUIModel> models, MenuItemUI menuItemPrefab, int pageIdx, int? selected = null) {

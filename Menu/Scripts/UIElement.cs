@@ -5,13 +5,16 @@ using System.Collections.Generic;
 
 namespace Zeef.Menu {
 
-    public class UIElement : MonoBehaviour {
+    public class SelectableUIElement : MonoBehaviour {
 
         [SerializeField] private Image imageComponent;
         public Image ImageComponent { get { return imageComponent; } }
+
         public RectTransform RectTransform { get { return GetComponent<RectTransform>(); } }
 
         private Color initialColor;
+
+        // ---
         
         protected virtual void Awake() {
             imageComponent = imageComponent ?? GetComponentInChildren<Image>();
@@ -24,7 +27,6 @@ namespace Zeef.Menu {
 
         public virtual void UnHighlight() {
             imageComponent.color = initialColor;
-        }
-        
+        }  
     }
 }
