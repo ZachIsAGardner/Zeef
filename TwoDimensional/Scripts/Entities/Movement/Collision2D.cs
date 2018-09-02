@@ -13,7 +13,6 @@ namespace Zeef.TwoDimensional {
 		[SerializeField] private float skin = 0.1f;
 		[SerializeField] private int rayCount = 4;
 
-
 		private CollisionInfo collisions;
 		public CollisionInfo Collisions { get { return collisions; } }
 
@@ -28,10 +27,10 @@ namespace Zeef.TwoDimensional {
 			Bounds bounds = boxCollider2D.bounds;
 			bounds.Expand (skin * -2);
 
-			origins.bottomLeft = new Vector2(boxCollider2D.bounds.min.x, boxCollider2D.bounds.min.y);
-			origins.bottomRight = new Vector2(boxCollider2D.bounds.max.x, boxCollider2D.bounds.min.y);
-			origins.topLeft = new Vector2(boxCollider2D.bounds.min.x, boxCollider2D.bounds.max.y);
-			origins.topRight = new Vector2(boxCollider2D.bounds.max.x, boxCollider2D.bounds.max.y);
+			origins.BottomLeft = new Vector2(boxCollider2D.bounds.min.x, boxCollider2D.bounds.min.y);
+			origins.BottomRight = new Vector2(boxCollider2D.bounds.max.x, boxCollider2D.bounds.min.y);
+			origins.TopLeft = new Vector2(boxCollider2D.bounds.min.x, boxCollider2D.bounds.max.y);
+			origins.TopRight = new Vector2(boxCollider2D.bounds.max.x, boxCollider2D.bounds.max.y);
 		}
 
 		// ---
@@ -55,7 +54,7 @@ namespace Zeef.TwoDimensional {
 		// For moving platforms
 		public void Move(Vector2 vel, bool forceGrounded) {
 			collisions.Reset();
-			collisions.down = forceGrounded;
+			collisions.Down = forceGrounded;
 			GetRayOrigins();
 			HorizontalCollisions(ref vel);
 			if (vel.y != 0) {
@@ -74,7 +73,7 @@ namespace Zeef.TwoDimensional {
 			// check for descending slope
 			float distanceToSlopeStart = 0;
 
-			if (slopeAngle != horizontalSlopeInfo.slopeAngleOld) {
+			if (slopeAngle != horizontalSlopeInfo.SlopeAngleOld) {
 				distanceToSlopeStart = hit.distance - skin;
 				vel.x -= distanceToSlopeStart * dir;
 			}
@@ -90,8 +89,8 @@ namespace Zeef.TwoDimensional {
 			if (vel.y <= climbAmountY) {
 				vel.y = climbAmountY;
 				vel.x = Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * moveDistance * Mathf.Sign (vel.x);
-				collisions.down = true;
-				horizontalSlopeInfo.climbingSlope = true;
+				collisions.Down = true;
+				horizontalSlopeInfo.ClimbingSlope = true;
 			}
 		}
 
@@ -104,7 +103,7 @@ namespace Zeef.TwoDimensional {
 			
 			for (int i = 0; i < rayCount; i ++) {
 
-				Vector2 rayOrigin = (dir == -1) ? origins.bottomLeft : origins.bottomRight;
+				Vector2 rayOrigin = (dir == -1) ? origins.BottomLeft : origins.BottomRight;
 				rayOrigin += Vector2.up * (spacing * i);
 				RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * dir, length, layerMask);
 
@@ -122,8 +121,8 @@ namespace Zeef.TwoDimensional {
 					vel.x = (hit.distance - skin) * dir;
 					length = hit.distance;
 
-					collisions.left = dir == -1;
-					collisions.right = dir == 1;
+					collisions.Left = dir == -1;
+					collisions.Right = dir == 1;
 					collisions.col = hit.collider;
 					
 				}
@@ -139,7 +138,7 @@ namespace Zeef.TwoDimensional {
 
 			float distanceToSlopeStart = 0;
 
-			if (slopeAngle != verticalSlopeInfo.slopeAngleOld) {
+			if (slopeAngle != verticalSlopeInfo.SlopeAngleOld) {
 				distanceToSlopeStart = hit.distance - skin;
 				vel.y -= distanceToSlopeStart * dir;
 			}
@@ -165,7 +164,7 @@ namespace Zeef.TwoDimensional {
 
 			for (int i = 0; i < rayCount; i ++) {
 
-				Vector2 rayOrigin = (dir == -1) ? origins.bottomLeft : origins.topLeft;
+				Vector2 rayOrigin = (dir == -1) ? origins.BottomLeft : origins.TopLeft;
 				rayOrigin += Vector2.right * (spacing * i + vel.x);
 				RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * dir, length, layerMask);
 
@@ -182,8 +181,8 @@ namespace Zeef.TwoDimensional {
 					vel.y = (hit.distance - skin) * dir;
 					length = hit.distance;
 
-					collisions.down = dir == -1;
-					collisions.up = dir == 1;
+					collisions.Down = dir == -1;
+					collisions.Up = dir == 1;
 					collisions.col = hit.collider;	
 				}
 			}
@@ -193,42 +192,42 @@ namespace Zeef.TwoDimensional {
 		// Structs
 
 		public struct OriginInfo {
-			public Vector2 bottomLeft, bottomRight, topLeft, topRight;
+			public Vector2 BottomLeft, BottomRight, TopLeft, TopRight;
 		}
 
 		public struct CollisionInfo {
-			public bool up, down, left, right;
+			public bool Up, Down, Left, Right;
 			public Collider2D col;
 
 			public void Reset() {
 				col = null;
-				up = down = false;
-				left = right = false;
+				Up = Down = false;
+				Left = Right = false;
 			
 			}
 		}
 
 		private struct HorizontalSlopeInfo {
-			public float slopeAngle, slopeAngleOld;
-			public bool climbingSlope;
+			public float SlopeAngle, SlopeAngleOld;
+			public bool ClimbingSlope;
 
 			public void Reset() {
-				slopeAngleOld = slopeAngle;
-				slopeAngle = 0;
+				SlopeAngleOld = SlopeAngle;
+				SlopeAngle = 0;
 
-				climbingSlope = false;
+				ClimbingSlope = false;
 			}
 		}
 
 		private struct VerticalSlopeInfo {
-			public float slopeAngle, slopeAngleOld;
-			public bool climbingSlope;
+			public float SlopeAngle, SlopeAngleOld;
+			public bool ClimbingSlope;
 
 			public void Reset() {
-				slopeAngleOld = slopeAngle;
-				slopeAngle = 0;
+				SlopeAngleOld = SlopeAngle;
+				SlopeAngle = 0;
 
-				climbingSlope = false;
+				ClimbingSlope = false;
 			}
 		}
 	}

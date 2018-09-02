@@ -12,6 +12,10 @@ namespace Zeef.TwoDimensional {
 
 		[SerializeField] private Vector3 offset;
 		[SerializeField] private Transform target;
+
+		// 0: Never move
+		// 1: Insta snap
+		[Range (0, 1)]
 		[SerializeField] private float acc = .5f;
 
 		private float normalZoom;
@@ -119,9 +123,13 @@ namespace Zeef.TwoDimensional {
 
 		public void Move() {
 			Vector2 moveTo = Vector2.zero;
-			moveTo.x = Mathf.Lerp(transform.position.x, target.position.x + offset.x, acc); 
-			moveTo.y = Mathf.Lerp(transform.position.y, target.position.y + offset.y, acc); 
-		
+			if (acc < 1) {	
+				moveTo.x = Mathf.Lerp(transform.position.x, target.position.x + offset.x, acc); 
+				moveTo.y = Mathf.Lerp(transform.position.y, target.position.y + offset.y, acc); 
+			} else {
+				moveTo.x = target.position.x + offset.x;
+				moveTo.y = target.position.y + offset.y;
+			}
 			transform.position = new Vector3(moveTo.x, moveTo.y, transform.position.z);
 		}
 

@@ -1,7 +1,8 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Zeef.Sound {
-    
+
     [System.Serializable]
     public class LoopTime {
         public float Start;
@@ -9,10 +10,8 @@ namespace Zeef.Sound {
         public float End;
     }
 
-    [CreateAssetMenu(menuName = "SO/Song")]
+    [CreateAssetMenu(menuName = "Scriptables/Song")]
     public class SongScriptable : ScriptableObject {
-
-        public int ID;
 
         public AudioClip Clip;
 

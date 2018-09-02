@@ -9,23 +9,13 @@ namespace Zeef.Sound {
 
 	public class AudioContent : SingleInstance<AudioContent> {
 
-		[SerializeField] private SongScriptablesContainer songsScriptablesContainer;	    
-		[SerializeField] private SoundEffectScriptablesContainer soundEffectScriptablesContainer;
+		[SerializeField] private List<SongScriptable> songScriptables;	    
+		[SerializeField] private List<SoundEffectScriptable> soundEffectScriptables;
+						
+		public static SongScriptable GetSong(string name) => 
+			GetInstance().songScriptables.First(s => s.name == name);
 		
-		// ---
-		// Music
-		
-		public static SongScriptable GetSong(int id) => GetInstance().songsScriptablesContainer.Songs.First(s => s.ID == id);
-		
-		public static SongScriptable GetSong(string name) => GetInstance().songsScriptablesContainer.Songs.First(s => s.name == name);
-		
-		// ---
-		// SFX
-		
-		public static SoundEffectScriptable GetSoundEffect(int id) =>
-			GetInstance().soundEffectScriptablesContainer.SoundEffects.FirstOrDefault(s => s.ID == id);
-
 		public static SoundEffectScriptable GetSoundEffect(string name) =>
-			GetInstance().soundEffectScriptablesContainer.SoundEffects.FirstOrDefault(s => s.name == name);	
+			GetInstance().soundEffectScriptables.First(s => s.name == name);	
 	}
 }

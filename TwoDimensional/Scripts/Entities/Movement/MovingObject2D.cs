@@ -15,10 +15,10 @@ namespace Zeef.TwoDimensional {
     }
 
 	// Sets up basic movement and collision
-	[RequireComponent(typeof(Collision2D))]
 	[RequireComponent(typeof(AudioSource))]
 	[RequireComponent(typeof(Rigidbody2D))]
 	[RequireComponent(typeof(BoxCollider2D))]
+	[RequireComponent(typeof(Collision2D))]
 	public abstract class MovingObject2D : MonoBehaviour {
 
 		// State
@@ -86,8 +86,8 @@ namespace Zeef.TwoDimensional {
 		public bool IsFacingRight() => Facing == FacingsEnum.Right;	
 
 		public bool AnyCollisions() {
-			if (Collision.Collisions.up || Collision.Collisions.down 
-			|| Collision.Collisions.left || Collision.Collisions.right) {
+			if (Collision.Collisions.Up || Collision.Collisions.Down 
+			|| Collision.Collisions.Left || Collision.Collisions.Right) {
 				return true;
 			} else {
 				return false;

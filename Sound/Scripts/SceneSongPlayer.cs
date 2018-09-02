@@ -4,10 +4,12 @@ namespace Zeef.Sound {
 
     public class SceneSongPlayer : MonoBehaviour {
 
-        public SongScriptable songObject;
+        public SongScriptable songScriptable;
+        public string songScriptableName;
 
         protected virtual void Start() {
-            AudioManager.ChangeSong(songObject);
+            if (songScriptable) AudioManager.ChangeSong(songScriptable);
+            else AudioManager.ChangeSong(AudioContent.GetSong(songScriptableName));
         }
     }
 }

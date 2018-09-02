@@ -9,6 +9,7 @@ namespace Zeef {
 
     public class ControlManager : SingleInstance<ControlManager> {
 
+        // Directions
         [SerializeField] private List<string> up = new List<string>() { "up" };
         public static List<string> Up { get { return GetInstance().up; } }
 
@@ -21,6 +22,7 @@ namespace Zeef {
         [SerializeField] private List<string> right = new List<string>() { "right" };
         public static List<string> Right { get { return GetInstance().right; } }
 
+        // Face Buttons
         [SerializeField] private List<string> accept = new List<string>() { "z" };
         public static List<string> Accept { get { return GetInstance().accept; } }
 
@@ -30,8 +32,15 @@ namespace Zeef {
         [SerializeField] private List<string> special = new List<string>() { "c" };
         public static List<string> Special { get { return GetInstance().special; } }
 
+        [SerializeField] private List<string> special2 = new List<string>() { "v" };
+        public static List<string> Special2 { get { return GetInstance().special2; } }
+
+        // Middle
         [SerializeField] private List<string> start = new List<string>() { "enter" };
         public static List<string> Start { get { return GetInstance().start; } }
+
+        [SerializeField] private List<string> select = new List<string>() { "enter" };
+        public static List<string> Select { get { return GetInstance().select; } }
 
         // 0: Super sensitive
         // 1: Never trigger
@@ -52,6 +61,13 @@ namespace Zeef {
         // ---
         // Get Input
 
+        // Down / Press
+        public static bool GetInputDown(List<string> inputs) {
+            foreach (string input in inputs) {
+                if (GetInputDown(input)) return true;
+            }
+            return false;
+        }
         public static bool GetInputDown(string input) {
             try { if (Input.GetKeyDown(input)) return true; } 
             catch(ArgumentException e) { };
@@ -62,13 +78,7 @@ namespace Zeef {
             return false;
         }
 
-        public static bool GetInputDown(List<string> inputs) {
-            foreach (string input in inputs) {
-                if (GetInputDown(input)) return true;
-            }
-            return false;
-        }
-
+        // Held
         public static bool GetInputHeld(List<string> inputs) {
             foreach (string input in inputs) 
                 if (GetInputHeld(input)) return true;
@@ -85,16 +95,21 @@ namespace Zeef {
             return false;
         }
 
+
+        // Up/ Release
         public static bool GetInputUp(List<string> inputs) {
             foreach (string input in inputs) {
-                if (Input.GetKeyUp(input)) return true;
-                if (Input.GetButtonUp(input)) return true;
+                if (GetInputUp(input)) return true;
             }
             return false;
         }
         public static bool GetInputUp(string input) {
-            if (Input.GetKeyUp(input)) return true;
-            if (Input.GetButtonUp(input)) return true;
+            try { if (Input.GetKeyUp(input)) return true; }
+            catch(ArgumentException e) { };
+
+            try { if (Input.GetButtonUp(input)) return true; }
+            catch(ArgumentException e) { };
+
             return false;
         }
 
@@ -146,6 +161,8 @@ namespace Zeef {
                 await new WaitForUpdate();
             } 
         }
+
+        // Menu Selection
 
         public static async Task<int?> HorizontalSelectAsync(int max) {
             int? result = 0;

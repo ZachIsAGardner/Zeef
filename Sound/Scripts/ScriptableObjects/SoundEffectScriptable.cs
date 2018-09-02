@@ -4,10 +4,8 @@ using UnityEngine;
 
 namespace Zeef.Sound {
 
-	[CreateAssetMenu(menuName="SO/Sound Effect")]
-	public class SoundEffectScriptable : ScriptableObject {
-		public int ID;
-		
+	[CreateAssetMenu(menuName="Scriptables/Sound Effect")]
+	public class SoundEffectScriptable : ScriptableObject {		
 		public AudioClip Clip;
 
 		[Range(0, 1)]
