@@ -47,9 +47,11 @@ namespace Zeef.TwoDimensional {
 		[SerializeField] private SpriteRenderer spriteRenderer;
 		[SerializeField] private Image imageRenderer;
 		[SerializeField] private MeshRenderer meshRenderer;
+		[Required]
 		[SerializeField] protected T advisor;
 
 		// Art
+		[Required]
 		[SerializeField] private SpritesScriptable spritesScriptable;
 		private Sprite[] sprites = new Sprite[]{};
 

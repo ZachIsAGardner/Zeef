@@ -99,7 +99,7 @@ namespace Zeef.TwoDimensional {
 			}
 		}
 
-		public bool IsMoving() => (Mathf.Abs(vel.x) > 0.1f || Mathf.Abs(vel.y) > 0.1f);
+		public bool IsMoving() => (Mathf.Abs(vel.x) > 0.5f || Mathf.Abs(vel.y) > 0.5f);
 		
 		public bool IsMovingDown() => vel.y < 0;
 	}
