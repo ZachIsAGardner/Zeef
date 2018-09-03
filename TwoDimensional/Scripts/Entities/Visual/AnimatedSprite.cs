@@ -1,172 +1,144 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using Zeef.GameManagement;
 
 namespace Zeef.TwoDimensional {
 
-	public abstract class AnimatedSprite : MonoBehaviour {
+	public class AnimationEvent {
 
-		public class AnimationEvent {
-			public string[] states;
-			public int frame;
-			public Action action;
+		public int SpriteIndex;
+		public Action Action;
 
-			public AnimationEvent(string[] newStates, int newFrame, Action newAction) {
-				states = newStates;
-				frame = newFrame;
-				action = newAction;
-			}
-
-			public static bool IncludesString(string[] arr, string target) {
-				foreach (var el in arr) {
-					if (el == target) {
-						return true;
-					}
-				}
-				return false;
-			}
+		public AnimationEvent(int spriteIndex, Action newAction) {
+			SpriteIndex = spriteIndex;
+			Action = newAction;
 		}
+
+		public static bool IncludesString(string[] strings, string target) => strings.Any(s => s == target);
+	}
+
+	public class AnimationState {
+
+		public string Name { get; private set; }
+		// The range on the sprite sheet this state is mapped to
+		public IntegerRange Range { get; private set; }
+		public List<AnimationEvent> AnimationEvents { get; private set; }
+		public bool Loop { get; private set; }
+		public float Speed { get; private set; }
+
+		public AnimationState(string name, IntegerRange range, List<AnimationEvent> animationEvents = null, bool loop = true, float speed = 1) {
+			Name = name;
+			Range = range;
+			AnimationEvents = animationEvents;
+			Loop = loop;
+			Speed = speed;
+		}
+	}
+
+	// ---
+
+	public abstract class AnimatedSprite<T> : MonoBehaviour {
 
 		// References
 		[SerializeField] private SpriteRenderer spriteRenderer;
 		[SerializeField] private Image imageRenderer;
 		[SerializeField] private MeshRenderer meshRenderer;
+		[SerializeField] protected T advisor;
 
 		// Art
-		[SerializeField] private SpritesScriptable spritesObject;
+		[SerializeField] private SpritesScriptable spritesScriptable;
 		private Sprite[] sprites = new Sprite[]{};
+
+		public AnimationState State { get; private set; }
 
 		// Frame Rate
 		private float tick;
-		private float ticksPerFrame = 1;
+		private float ticksPerFrame = 0.12f;
 
-		// Current Sprite
-		private string animationState;
-		private int spriteIdx = 1;
-		private int[] range = new int[1];
-		private int frame;
-		protected bool loop = true;
+		private int spriteIndex;
 
-		private string forcedState = null;
+		// Abstract
+		protected abstract AnimationState GetAnimationState();
 
-		// Animation Events
-		private AnimationEvent[] events = new AnimationEvent[]{};
-		private int executedFrame = -1;
-		private string executedState = "";
+		// ---
 
-		protected abstract void GetAdvisor();
-		protected abstract string GetAnimationState();
-		protected abstract int[] ParseAnimationState(string state);
-		protected abstract AnimationEvent[] GetAnimationEvents();
-
-		protected virtual void Start () {
-
+		protected virtual void Start () {	
+			// Get components
 			spriteRenderer = spriteRenderer ?? GetComponent<SpriteRenderer>();
 			imageRenderer = imageRenderer ?? GetComponent<Image>();
 			meshRenderer = meshRenderer ?? GetComponent<MeshRenderer>();
 
-			GetAdvisor();
-
-			if (sprites.Length == 0  && spritesObject != null) sprites = spritesObject.Sprites.ToArray();
-
-			events = GetAnimationEvents();
-
-			range = new int[] {0, 0};
+			// Fill sprites
+			sprites = spritesScriptable.Sprites.ToArray();
 		}
 
 		void Update() {
-			if (!GameManager.IsPaused()) {
-				EvaluateState();
-				ExecuteAnimationEvents();
-				RenderSprite();
+			if (GameManager.IsPaused()) return;
+
+			AnimationState newState = GetAnimationState();
+			if (newState != State) {
+				State = newState;
+				spriteIndex = State.Range.Min;
+				tick = 0;
+
+				ExecuteAnimationState();
 			}
+
+			Animate();
 		}
 
-		// --
-
-		public void ForceState(string state) {
-			forcedState = state;
-		}
+		// ---
 
 		public void SetSprites(Sprite[] sprites) {
 			this.sprites = sprites;
 		}
 
-		private void EvaluateState() {
-			string newState = forcedState ?? GetAnimationState();
-
-			if (newState != animationState) {
-				loop = true;
-				ChangeSpeed(1);
-				ChangeState(ParseAnimationState(newState), newState);
-			}
-		}
-
 		// ---
 
-		private void RenderSprite() {
-			if (sprites.Length < 1) return;
+		// Display sprite and execute events
+		private void ExecuteAnimationState() {
+				
+			// Display sprite
+			if (spriteRenderer != null) spriteRenderer.sprite = sprites[spriteIndex];
+			else if (imageRenderer != null) imageRenderer.sprite = sprites[spriteIndex];
+			else if (meshRenderer != null) meshRenderer.material.mainTexture = sprites[spriteIndex].texture;
+			else throw new Exception("This GameObject does not have any visual components attached.");	
 
-			tick += 10 * Time.deltaTime;
+			// Execute events
+			if (!State.AnimationEvents.IsNullOrEmpty())
+				foreach (AnimationEvent animationEvent in State.AnimationEvents) 
+					if (spriteIndex == animationEvent.SpriteIndex) animationEvent.Action();
+		}
+
+		// Increment sprite index
+		private void Animate() {
+
+			tick += State.Speed * Time.deltaTime;
+			int oldSpriteIndex = spriteIndex;
 
 			if (tick > ticksPerFrame) {
-				spriteIdx += 1;
+				spriteIndex += 1;
 				tick = 0;
-			}
 
-			if (spriteIdx > range[1]) {
-				if (loop) spriteIdx = range[0];
-				else spriteIdx = range[1];	
-			}
-			
-			if (spriteIdx > sprites.Length - 1) {
-				if (loop) spriteIdx = 0;
-				else spriteIdx = sprites.Length - 1;	
-			} 
-			
-			frame = spriteIdx - range[0];
-
-			// Change image on first present renderer
-			if (spriteRenderer != null) spriteRenderer.sprite = sprites[spriteIdx];
-			else if (imageRenderer != null) imageRenderer.sprite = sprites[spriteIdx];
-			else if (meshRenderer != null) meshRenderer.material.mainTexture = sprites[spriteIdx].texture;
-			else throw new Exception("This component doesn't have any sort of visual renderer");	
-		}
-
-		protected void ChangeSpeed(float speed) {
-			ticksPerFrame = speed;
-		}
-
-		protected void ChangeState(int[] newRange, string name = "na", int offset = 0, float newTick = 0) {
-			range = newRange;
-			tick = newTick;
-			spriteIdx = range[0] + offset;
-			frame = offset;
-			animationState = name;
-		}
-
-		// ---
-		// Event
-
-		private void ExecuteAnimationEvents() {
-			if (events == null) {
-				return;
-			}
-			for (int i = 0; i < events.Length; i++){
-				AnimationEvent item = events[i];
-				if (AnimationEvent.IncludesString(item.states, animationState) && frame == item.frame) {
-					if (executedFrame != frame) {
-						item.action();
-						executedFrame = frame;
-						executedState = animationState;
-					}
+				// Index is greater than state range
+				if (spriteIndex > State.Range.Max) {
+					if (State.Loop) spriteIndex = State.Range.Min;
+					else spriteIndex = State.Range.Max;	
 				}
-				if (frame != executedFrame || animationState != executedState) {
-					executedFrame = -1;
-				}
+				
+				// Index is greater than entire sprite sheet length
+				if (spriteIndex > sprites.Length - 1) {
+					if (State.Loop) spriteIndex = 0;
+					else spriteIndex = sprites.Length - 1;	
+				} 	
+
+				// If our sprite index is still the same we 
+				// don't really need to do anything
+				if (oldSpriteIndex != spriteIndex) ExecuteAnimationState();
 			}
 		}
 	}

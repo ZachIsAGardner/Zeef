@@ -27,12 +27,15 @@ namespace Zeef.TwoDimensional {
 		// The position this MonoBehaviour was at on Start()
 		public Vector3 StartPosition { get; protected set; }
 
-		// Status
+		// Stats
 
 		[SerializeField] protected Vector2 velMax = new Vector2(100, 100);
+
 		[Range (0, 1)]
 		[SerializeField] protected float acc = .01f;
+
 		[SerializeField] protected float moveSpeed = 5;
+		public float MoveSpeed { get { return moveSpeed; }}
 
 		[SerializeField] private bool active = true;
 		public bool Active { get { return active; } set { active = value; } }
@@ -41,6 +44,8 @@ namespace Zeef.TwoDimensional {
 
 		protected BoxCollider2D BoxCollider2D { get; private set; }
 		protected Collision2D Collision { get; private set; }
+
+		// -
 		
 		private Vector2 vel;
 		public Vector2 Vel { get { return vel; } }
