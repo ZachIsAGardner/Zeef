@@ -103,7 +103,7 @@ namespace Zeef.GameManagement {
 		// ---
 		// Loading
 
-		public static T OpenPackage<T>() where T : class =>	(T)GetInstance().scenePackage;
+		public static object OpenPackage() => GetInstance().scenePackage;
 		
 		public static async Task LoadSceneAsync(string scene, LoadSceneMode loadMode = LoadSceneMode.Single, object package = null, bool transition = true) {
 

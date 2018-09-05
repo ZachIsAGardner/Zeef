@@ -18,7 +18,7 @@ namespace Zeef.TwoDimensional.Example {
 	public class SceneSetup : MonoBehaviour {
 
 		void Start() {
-			SceneSetupPackage package = GameManager.OpenPackage<SceneSetupPackage>();
+			SceneSetupPackage package = (SceneSetupPackage)GameManager.OpenPackage();
 			
 			Transform spawn = (package != null) 
 				? FindObjectsOfType<Spawn>().First(s => s.ID == package.SpawnID).transform

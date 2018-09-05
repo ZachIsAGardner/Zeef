@@ -23,7 +23,7 @@ namespace Zeef.GameManagement.Example {
         [SerializeField] Text textComponent;
 
         void Start() {
-            GameManagementExample2Package package = GameManager.OpenPackage<GameManagementExample2Package>();
+            GameManagementExample2Package package = (GameManagementExample2Package)GameManager.OpenPackage();
             textComponent.text = package.Name;
         }
 	}
