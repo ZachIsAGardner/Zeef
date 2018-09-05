@@ -44,8 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f549baea320364b3ea9334543d0f9860, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: {r: 0.772892, g: 0, b: 1, a: 0.73333335}
-  defaultSize: {x: 0.5, y: 0.5}
+  color: {r: 0.7765498, g: 0, b: 1, a: 0.73333335}
 --- !u!114 &4303324414456797866
 MonoBehaviour:
   m_ObjectHideFlags: 0
