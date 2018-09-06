@@ -75,11 +75,11 @@ namespace Zeef.TwoDimensional {
 			meshRenderer = meshRenderer ?? GetComponent<MeshRenderer>();
 
 			// Fill sprites
-			sprites = spritesScriptable.Sprites.ToArray();
+			sprites = spritesScriptable?.Sprites.ToArray();
 		}
 
 		void Update() {
-			if (GameManager.IsPaused()) return;
+			if (GameManager.IsPaused() || sprites.IsNullOrEmpty()) return;
 
 			AnimationState newState = GetAnimationState();
 			if (newState != State) {
