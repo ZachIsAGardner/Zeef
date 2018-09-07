@@ -168,11 +168,11 @@ namespace Zeef {
             int? result = 0;
 
             while (true) {
-                if (Input.GetKeyDown("Key")) result--;
-                if (Input.GetKeyDown("right")) result++;
+                if (GetInputDown(Left)) result--;
+                if (GetInputDown(Right)) result++;
 
-                if (Input.GetKeyDown("Fire1")) return result;
-                if (Input.GetKeyDown("Fire2")) return null;
+                if (GetInputDown(Accept)) return result;
+                if (GetInputDown(Deny)) return null;
 
                 await new WaitForUpdate();
             }
@@ -182,35 +182,39 @@ namespace Zeef {
             int? result = 0;
 
             while (true) {
-                if (Input.GetKeyDown("KeyUp")) result--;
-                if (Input.GetKeyDown("KeyDown")) result++;
+                if (GetInputDown(Up)) result--;
+                if (GetInputDown(Down)) result++;
 
-                if (Input.GetKeyDown("Fire1")) return result;
-                if (Input.GetKeyDown("Fire2")) return null;
+                if (GetInputDown(Accept)) return result;
+                if (GetInputDown(Deny)) return null;
 
                 await new WaitForUpdate();
             }
         }
 
-        public static async Task<Coordinates> MatrixSelectAsync(int columnMax, int rowMax) {
+        public static async Task<Coordinates> MatrixSelectAsync(int columnMax, int rowMax, Action<Coordinates> changeAction) {
             Coordinates result = new Coordinates();
 
             while (true) {
-                if (Input.GetKeyDown("up")) result.Col--;
-                if (Input.GetKeyDown("down")) result.Col++;
-                if (Input.GetKeyDown("left")) result.Row--;
-                if (Input.GetKeyDown("right")) result.Row++;
+                var old = new Coordinates(result.Col, result.Row);
 
-                if (Input.GetKeyDown("Fire1")) break;
-                if (Input.GetKeyDown("Fire2")) {
-                    result = null;
-                    break;
-                }
+                if (GetInputDown(Up)) result.Row--;
+                if (GetInputDown(Down)) result.Row++;
+                if (GetInputDown(Left)) result.Col--;
+                if (GetInputDown(Right)) result.Col++;
+
+                if (result.Col < 0) result.Col = 0;
+                if (result.Col > columnMax - 1) result.Col = columnMax - 1;
+                if (result.Row < 0) result.Row = 0;
+                if (result.Row > rowMax - 1) result.Row = rowMax - 1;
+
+                if (!old.SameAs(result)) changeAction(result);
+
+                if (GetInputDown(Accept)) return result;
+                if (GetInputDown(Deny)) return null;
 
                 await new WaitForUpdate();
             }
-
-            return result;
         }
     }
 }

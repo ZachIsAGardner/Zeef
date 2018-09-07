@@ -11,6 +11,6 @@ namespace Zeef.TwoDimensional {
 
         [SerializeField] List<SpritesScriptable> spritesScriptables;
 
-        public static SpritesScriptable GetSprites(string name) => GetInstance().spritesScriptables.First(sp => sp.name == name); 
+        public static SpritesScriptable GetSprites(string name) => GetInstance().spritesScriptables.First(sp => sp.name.ToLower() == name.ToLower()); 
     }    
 }

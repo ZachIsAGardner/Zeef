@@ -75,7 +75,7 @@ namespace Zeef.TwoDimensional {
 			meshRenderer = meshRenderer ?? GetComponent<MeshRenderer>();
 
 			// Fill sprites
-			sprites = spritesScriptable?.Sprites.ToArray();
+			sprites = sprites ?? spritesScriptable?.Sprites.ToArray();
 		}
 
 		void Update() {

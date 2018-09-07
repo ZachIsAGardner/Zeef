@@ -29,7 +29,6 @@ namespace Zeef.Perform {
 			if (Performing) return;
 
 			AdditionalSetup();	
-			GameManager.EnterCutscene();
 			Performing = true;
 
 			border = Instantiate(PerformanceContent.Border, FindObjectOfType<Canvas>().transform);
@@ -41,7 +40,6 @@ namespace Zeef.Perform {
 
 			Destroy(border);
 			
-			GameManager.ExitCutscene();
 			Performing = false;
 
 			AdditionalEnd();

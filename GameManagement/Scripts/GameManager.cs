@@ -11,6 +11,13 @@ using System.Threading.Tasks;
 
 namespace Zeef.GameManagement {
 
+	public enum GameStatesEnum {
+		Play,
+		Pause,
+		Cutscene,
+		Loading,
+	}
+
 	public class GameManager : SingleInstance<GameManager> {
 
 		// Special actions are available only in dev mode
@@ -30,25 +37,18 @@ namespace Zeef.GameManagement {
 
 		private object scenePackage { get; set; }
 
-        protected GameStatesEnum gameState = GameStatesEnum.Play;
-		public static GameStatesEnum GameState { get { return GetInstance().gameState; } }
+		public static GameStatesEnum GameState { get; private set; }
 
 		protected string lastLoadedScene;
 
 		public static event EventHandler BeforeLeaveScene;
-
-		public enum GameStatesEnum {
-			Play,
-			Pause,
-			Cutscene,
-			Loading,
-		}
 
 		// ---
 		// Setup
 
 		protected virtual void Awake() {
 			base.Awake();
+			GameState = GameStatesEnum.Play;
 			DontDestroyOnLoad(gameObject);
 
 			Application.targetFrameRate = 60;			
@@ -70,7 +70,7 @@ namespace Zeef.GameManagement {
 
 		void ListenForPause() {
 			if (ControlManager.GetInputDown(ControlManager.Start) && (IsPaused() || IsPlaying()))
-				gameState = (IsPlaying()) ? GameStatesEnum.Pause : GameStatesEnum.Play;
+				GameState = (IsPlaying()) ? GameStatesEnum.Pause : GameStatesEnum.Play;
 		}
 
 		public static GameObject SpawnActor(Vector2 position) {
@@ -111,7 +111,7 @@ namespace Zeef.GameManagement {
 				GetInstance().lastLoadedScene = scene;
 				GetInstance().scenePackage = package;
 
-				GetInstance().gameState = GameStatesEnum.Loading;
+				GameState = GameStatesEnum.Loading;
 				await new WaitForUpdate();
 
 				ScreenTransition screenTransition = ScreenTransition.Initialize(
@@ -129,7 +129,7 @@ namespace Zeef.GameManagement {
 
 				Destroy(screenTransition.gameObject);
 
-				GetInstance().gameState = GameStatesEnum.Play;
+				GameState = GameStatesEnum.Play;
 			} else {
 				SceneManager.LoadScene(scene, loadMode);
 			}
@@ -146,20 +146,12 @@ namespace Zeef.GameManagement {
 		// ---
 		// GameState
 
-		public static bool IsPaused() => GetInstance().gameState == GameStatesEnum.Pause;
+		public static bool IsPaused() => GameState == GameStatesEnum.Pause;
 		
-		public static bool IsPlaying() => GetInstance().gameState == GameStatesEnum.Play;
+		public static bool IsPlaying() => GameState == GameStatesEnum.Play;
 		
-		public static bool IsInCutscene() => GetInstance().gameState == GameStatesEnum.Cutscene;
+		public static bool IsInCutscene() => GameState == GameStatesEnum.Cutscene;
 		
-		public static bool IsLoading() => GetInstance().gameState == GameStatesEnum.Loading;
-		
-		public static void EnterCutscene() {
-			GetInstance().gameState = GameStatesEnum.Cutscene;
-		}
-
-		public static void ExitCutscene() {
-			GetInstance().gameState = GameStatesEnum.Play;
-		}
+		public static bool IsLoading() => GameState == GameStatesEnum.Loading;	
 	}
 }
