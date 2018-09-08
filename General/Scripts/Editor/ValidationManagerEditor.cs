@@ -17,7 +17,7 @@ namespace Zeef {
             );
 
             if (GUILayout.Button("Validate MonoBehaviours")) { 
-                Utility.ClearConsole();
+                // Utility.ClearConsole();
 
                 if (ValidationManager.SceneIsValid()) {
                     Debug.Log("Success: Scene is valid.");
