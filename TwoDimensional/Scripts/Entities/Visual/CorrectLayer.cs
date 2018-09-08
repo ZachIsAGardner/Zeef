@@ -15,7 +15,7 @@ namespace Zeef.TwoDimensional {
 		void Update() {
 			if (transform.position.y == y) return;
 
-			transform.position = new Vector3(
+			transform.localPosition = new Vector3(
 				transform.position.x,
 				transform.position.y,
 				transform.position.y / 10

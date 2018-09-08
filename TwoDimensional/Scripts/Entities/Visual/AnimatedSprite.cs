@@ -75,14 +75,15 @@ namespace Zeef.TwoDimensional {
 			meshRenderer = meshRenderer ?? GetComponent<MeshRenderer>();
 
 			// Fill sprites
-			sprites = sprites ?? spritesScriptable?.Sprites.ToArray();
+			sprites = (sprites == null || sprites.Length < 1) ? spritesScriptable?.Sprites.ToArray() : sprites;
+			Debug.Log(sprites.Length);
 		}
 
 		void Update() {
 			if (GameManager.IsPaused() || sprites.IsNullOrEmpty()) return;
 
 			AnimationState newState = GetAnimationState();
-			if (newState != State) {
+			if (State == null || newState.Name != State.Name) {
 				State = newState;
 				spriteIndex = State.Range.Min;
 				tick = 0;
@@ -118,7 +119,7 @@ namespace Zeef.TwoDimensional {
 
 		// Increment sprite index
 		private void Animate() {
-
+			
 			tick += State.Speed * Time.deltaTime;
 			int oldSpriteIndex = spriteIndex;
 

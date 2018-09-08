@@ -37,7 +37,7 @@ namespace Zeef.TwoDimensional {
 
 			normalZoom = cam.orthographicSize;
 
-			GetTarget();
+			if (target == null) GetTarget();
 			GetBoundaries();
 			
 			SceneManager.sceneLoaded += OnSceneLoaded;
