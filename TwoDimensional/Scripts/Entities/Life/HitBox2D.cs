@@ -18,15 +18,21 @@ namespace Zeef.TwoDimensional {
 		// 1) Sword swing would be parented
 		// 2) Projectile would not be parented, but 
 		// we still want to know who the owner is
-		private bool parented;
+		public bool Parented { get; private set; }
 
 		// ---
 
-		public static HitBox2D Initialize(MovingObject2D owner, int damage, Vector2 position, bool parented) {
-			HitBox2D instance = GameManager.SpawnActor(position).GetComponentWithError<HitBox2D>();
+		public static HitBox2D Initialize(MovingObject2D owner, int damage, Vector2 position, Vector2 size, bool Parented) {
+			HitBox2D instance = GameManager.SpawnActor(position)
+				.AddComponent<DrawBoxCollider2D>().gameObject
+				.AddComponent<HitBox2D>();
 
-			if (parented) instance.transform.parent = owner.transform;
+			instance.GetComponentWithError<BoxCollider2D>().isTrigger = true;
+
+			if (Parented) instance.transform.parent = owner.transform;
 			instance.transform.position = position;
+			instance.transform.localScale = size;
+			instance.Owner = owner;
 			instance.damage = damage;
 
 			return instance;
