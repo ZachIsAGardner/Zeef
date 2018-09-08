@@ -76,7 +76,6 @@ namespace Zeef.TwoDimensional {
 
 			// Fill sprites
 			sprites = (sprites == null || sprites.Length < 1) ? spritesScriptable?.Sprites.ToArray() : sprites;
-			Debug.Log(sprites.Length);
 		}
 
 		void Update() {

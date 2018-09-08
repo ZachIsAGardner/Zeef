@@ -119,7 +119,6 @@ namespace Zeef.GameManagement {
 					GetInstance().transitionColor
 				);
 
-
 				await screenTransition.FadeOutAsync(GetInstance().transitionTime);
 
 				GetInstance().OnBeforeLeaveScene();

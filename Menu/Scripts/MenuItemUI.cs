@@ -5,16 +5,6 @@ using UnityEngine.UI;
 
 namespace Zeef.Menu {
 
-    public class MenuItemUIModel {
-        public string Text { get; set; }
-        public object Data { get; set; }
-
-        public MenuItemUIModel(object data, string text) {
-            Data = data;
-            Text = text;
-        }
-    }
-
     public class MenuItemUI : SelectableUIElement {
 
         [SerializeField] Text textComponent;
@@ -24,6 +14,7 @@ namespace Zeef.Menu {
             MenuItemUI instance = Instantiate(prefab, parent).GetComponentWithError<MenuItemUI>();
 
             instance.textComponent.text = model.Text;
+            if (model.Color != null) instance.textComponent.color = model.Color.Value;
             instance.Data = model.Data;
 
             return instance;
