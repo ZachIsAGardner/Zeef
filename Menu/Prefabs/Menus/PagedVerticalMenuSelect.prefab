@@ -88,7 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edc9af91a2f1c4f2e8c266788d6a828b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  menuItemPrefab: {fileID: 3412493288017398940, guid: 90b7810111448433887dc270e9d78669,
+  menuItemPrefab: {fileID: 4457027031274265542, guid: 90b7810111448433887dc270e9d78669,
     type: 3}
   containerComponent: {fileID: 1431276201517834}
   pageCountComponent: {fileID: 114891456519413004}

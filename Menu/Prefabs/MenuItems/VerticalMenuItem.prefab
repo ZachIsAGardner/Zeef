@@ -162,7 +162,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224059904818591214}
   - component: {fileID: 222764412726975180}
-  - component: {fileID: 3412493288017398940}
+  - component: {fileID: 4457027031274265542}
   m_Layer: 5
   m_Name: VerticalMenuItem
   m_TagString: Untagged
@@ -199,7 +199,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1528392597960640}
   m_CullTransparentMesh: 0
---- !u!114 &3412493288017398940
+--- !u!114 &4457027031274265542
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

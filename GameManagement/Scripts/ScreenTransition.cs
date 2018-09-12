@@ -23,7 +23,7 @@ namespace Zeef.GameManagement {
             instance.imageComponent = instance.gameObject.AddComponent<Image>();
             instance.imageComponent.color = new Color(color.r, color.g, color.b, 0);
             instance.imageComponent.rectTransform.anchoredPosition = Vector2.zero;
-            instance.imageComponent.rectTransform.sizeDelta = new Vector2(900, 600);
+            instance.imageComponent.rectTransform.sizeDelta = new Vector2(9000, 6000);
             instance.imageComponent.rectTransform.anchorMin = new Vector2(0, 0);
             instance.imageComponent.rectTransform.anchorMax = new Vector2(1, 1);
 
