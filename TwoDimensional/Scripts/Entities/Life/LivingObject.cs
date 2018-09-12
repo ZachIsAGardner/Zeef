@@ -74,13 +74,12 @@ namespace Zeef.TwoDimensional {
 			OnBeforeTakeDamage(hitBox);
 
 			Health -= damage;
-
-			OnAfterTakeDamage(hitBox);
-			
+				
 			if (Health <= 0) { 
 				await FreezeAsync();
 				Die();
 			} else {
+				OnAfterTakeDamage(hitBox);
 				await FreezeAsync();
 				await InvincibilityAsync();
 			}

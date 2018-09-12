@@ -43,6 +43,7 @@ namespace Zeef.Menu {
             // Set loss to old top size
             barLoss.rectTransform.sizeDelta = barTop.rectTransform.sizeDelta;
             // Set top size to new size
+
             barTop.rectTransform.sizeDelta = new Vector2(
                 GetComponent<RectTransform>().sizeDelta.x * percentage, 
                 barTop.rectTransform.sizeDelta.y

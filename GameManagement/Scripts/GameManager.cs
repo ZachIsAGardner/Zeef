@@ -82,7 +82,7 @@ namespace Zeef.GameManagement {
 			return actor;
 		}
 
-		public static GameObject SpawnActor(GameObject prefab, Vector2 position) {
+		public static GameObject SpawnActor(GameObject prefab, Vector3 position) {
 			return Instantiate(
 				original: prefab, 
 				position: position, 
@@ -91,8 +91,8 @@ namespace Zeef.GameManagement {
 			);
 		}
 
-		public static void SpawnCanvasElement(GameObject prefab, Vector3 position) {
-			Instantiate(
+		public static GameObject SpawnCanvasElement(GameObject prefab, Vector2 position) {
+			return Instantiate(
 				original: prefab, 
 				position: position, 
 				rotation: Quaternion.identity, 

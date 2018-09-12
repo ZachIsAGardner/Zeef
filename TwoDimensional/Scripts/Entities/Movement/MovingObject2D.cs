@@ -31,6 +31,8 @@ namespace Zeef.TwoDimensional {
 
 		[SerializeField] protected Vector2 velMax = new Vector2(100, 100);
 
+		// 0: instant
+		// 1: never
 		[Range (0, 1)]
 		[SerializeField] protected float acc = .01f;
 
