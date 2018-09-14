@@ -37,7 +37,7 @@ namespace Zeef.TwoDimensional {
 		public bool IsFrozen { get; private set ; }
 
 		public event EventHandler<DamageEventArgs> BeforeTakeDamage;
-		public event EventHandler<DamageEventArgs> AfterTakeDamage;
+		public event EventHandler<DamageEventArgs> AfterSurviveTakeDamage;
 		public event EventHandler BeforeDie;
 
 		// ---	
@@ -133,8 +133,8 @@ namespace Zeef.TwoDimensional {
 		}
 
 		protected virtual void OnAfterTakeDamage(HitBox2D hitBox) {
-			if (AfterTakeDamage != null) 
-				AfterTakeDamage(this, new DamageEventArgs(hitBox));
+			if (AfterSurviveTakeDamage != null) 
+				AfterSurviveTakeDamage(this, new DamageEventArgs(hitBox));
 		}
 
 		protected virtual void OnBeforeDie() {

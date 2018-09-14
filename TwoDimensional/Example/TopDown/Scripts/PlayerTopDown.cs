@@ -25,7 +25,7 @@ namespace Zeef.TwoDimensional.Example {
 			// Get and setup LivingObject
 			livingObject = GetComponent<LivingObject>();
 			if (ExampleSession.PlayerHealth > 0) livingObject.Health = ExampleSession.PlayerHealth;
-			livingObject.AfterTakeDamage += OnAfterTakeDamage;
+			livingObject.AfterSurviveTakeDamage += OnAfterSurviveTakeDamage;
 			livingObject.BeforeDie += OnBeforeDie;
 
 			// Get and setup BarUI
@@ -37,7 +37,7 @@ namespace Zeef.TwoDimensional.Example {
 			ExampleSession.UpdateData(livingObject.Health);
 		}
 
-		public async void OnAfterTakeDamage(object source, DamageEventArgs args) {
+		public async void OnAfterSurviveTakeDamage(object source, DamageEventArgs args) {
 			await barUI.UpdateDisplayAsync(livingObject.HealthPercentage);
 		}
 
