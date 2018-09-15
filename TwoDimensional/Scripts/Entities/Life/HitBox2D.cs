@@ -6,13 +6,21 @@ using Zeef.GameManagement;
 
 namespace Zeef.TwoDimensional {
 
+	public class LandedHitArgs {
+		public GameObject Victim { get; private set; }
+
+		public LandedHitArgs(GameObject victim) {
+			Victim = victim;
+		}
+	}
+
 	[RequireComponent(typeof(BoxCollider2D))]
 	public class HitBox2D : MonoBehaviour {
 
 		[SerializeField] int damage = 1;
 		public int Damage { get { return damage; } }
 
-		public MovingObject2D Owner { get; private set; }
+		public GameObject Owner { get; private set; }
 		// Parented hitboxes are attached to owner
 		// ex)
 		// 1) Sword swing would be parented
@@ -20,13 +28,16 @@ namespace Zeef.TwoDimensional {
 		// we still want to know who the owner is
 		public bool Parented { get; private set; }
 
+		public event EventHandler<LandedHitArgs> AfterLandedHit;
+
 		// ---
 
-		public static HitBox2D Initialize(MovingObject2D owner, int damage, Vector2 position, Vector2 size, bool Parented) {
+		public static HitBox2D Initialize(GameObject owner, int damage, Vector2 position, Vector2 size, bool Parented) {
 			HitBox2D instance = GameManager.SpawnActor(position)
 				.AddComponent<DrawBoxCollider2D>().gameObject
 				.AddComponent<HitBox2D>();
 
+			instance.name = "HitBox";
 			instance.GetComponentWithError<BoxCollider2D>().isTrigger = true;
 
 			if (Parented) instance.transform.parent = owner.transform;
@@ -38,8 +49,12 @@ namespace Zeef.TwoDimensional {
 			return instance;
 		}
 
-		public void LandedHit(GameObject victim) {
-			// owner.LandedHit(victim);
+		// ---
+		// Events
+
+		public virtual void OnAfterLandedHit(GameObject victim) {
+			if (AfterLandedHit != null) 
+				AfterLandedHit(this, new LandedHitArgs(victim));
 		}
 	}
 }

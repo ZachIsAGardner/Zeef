@@ -26,16 +26,18 @@ namespace Zeef.TwoDimensional {
 		[SerializeField] float invincibilityDuration = 0.5f;
 		[SerializeField] float freezeDuration = 0.25f;
 
-		[Required]
-		[SerializeField] SpriteRenderer spriteRenderer;
-		[SerializeField] MovingObject2D movingObject2D;
-		[Required]
+		[Required]	
 		[SerializeField] List<HurtBox2D> weakPoints;
+
 
 		public float HealthPercentage { get { return (float)Health / (float)MaxHealth; } }
 		public bool IsInvincible { get; private set; }
 		public bool IsFrozen { get; private set ; }
 
+		public event EventHandler BeforeFreeze;
+		public event EventHandler AfterFreeze;
+		public event EventHandler BeforeInvincibility;
+		public event EventHandler AfterInvincibility;
 		public event EventHandler<DamageEventArgs> BeforeTakeDamage;
 		public event EventHandler<DamageEventArgs> AfterSurviveTakeDamage;
 		public event EventHandler BeforeDie;
@@ -43,7 +45,6 @@ namespace Zeef.TwoDimensional {
 		// ---	
 
 		void Start() {
-			movingObject2D = movingObject2D ?? GetComponent<MovingObject2D>();
 			foreach (HurtBox2D hurtBox in weakPoints) 
 				hurtBox.ExternalTriggerStay2D += OnExternalTriggerStay2D;
 		}
@@ -54,8 +55,8 @@ namespace Zeef.TwoDimensional {
 			HitBox2D hitBox = args.Other.GetComponent<HitBox2D>();
 
 			// if hitbox exists and it is not mine then i need to take damage
-			if (hitBox != null && hitBox.Owner != movingObject2D) 
-				await TakeDamageAsync(hitBox, hitBox.Damage);		
+			if (hitBox != null && hitBox.Owner != gameObject) 
+				await TakeDamageAsync(hitBox.Damage, hitBox);		
 		}
 
 		// ---
@@ -65,13 +66,14 @@ namespace Zeef.TwoDimensional {
 			Destroy(gameObject);
 		}
 
-		public async virtual Task TakeDamageAsync(HitBox2D hitBox, int damage) {
+		public async virtual Task TakeDamageAsync(int damage) {
+			await TakeDamageAsync(damage, null);
+		}
 
-			StopAllCoroutines();
-			Color color = spriteRenderer.color;
-			spriteRenderer.color = new Color(color.r, color.g, color.b, 1);
-
+		public async virtual Task TakeDamageAsync(int damage, HitBox2D hitBox) {
 			OnBeforeTakeDamage(hitBox);
+
+			if (hitBox != null) hitBox.OnAfterLandedHit(gameObject);
 
 			Health -= damage;
 				
@@ -79,7 +81,7 @@ namespace Zeef.TwoDimensional {
 				await FreezeAsync();
 				Die();
 			} else {
-				OnAfterTakeDamage(hitBox);
+				OnAfterSurviveTakeDamage(hitBox);
 				await FreezeAsync();
 				await InvincibilityAsync();
 			}
@@ -91,37 +93,25 @@ namespace Zeef.TwoDimensional {
 			IsFrozen = true;
 			IsInvincible = true;
 
-			Color originalColor = spriteRenderer.color;
-			spriteRenderer.color = Color.black;
+			OnBeforeFreeze();
 
 			await new WaitForSeconds(freezeDuration);
 
+			OnAfterFreeze();
+
 			IsFrozen = false;
-			spriteRenderer.color = originalColor;
 		}
 
 		private async Task InvincibilityAsync() {
 			IsInvincible = true;
 
-			StartCoroutine(BlinkCoroutine());
+			OnBeforeInvincibility();
+
 			await new WaitForSeconds(invincibilityDuration);
 
+			OnAfterInvincibility();
+
 			IsInvincible = false;
-		}
-
-		private IEnumerator BlinkCoroutine() {
-
-			Color color = spriteRenderer.color;
-
-			while(IsInvincible) {
-				spriteRenderer.color = (spriteRenderer.color.a == 1) 
-					? new Color(color.r, color.g, color.b, 0) 
-					: new Color(color.r, color.g, color.b, 1);
-
-				yield return new WaitForSeconds(0.05f);
-			}
-
-			spriteRenderer.color = new Color(color.r, color.g, color.b, 1);
 		}
 
 		// ---
@@ -132,9 +122,29 @@ namespace Zeef.TwoDimensional {
 				BeforeTakeDamage(this, new DamageEventArgs(hitBox));
 		}
 
-		protected virtual void OnAfterTakeDamage(HitBox2D hitBox) {
+		protected virtual void OnAfterSurviveTakeDamage(HitBox2D hitBox) {
 			if (AfterSurviveTakeDamage != null) 
 				AfterSurviveTakeDamage(this, new DamageEventArgs(hitBox));
+		}
+
+		protected virtual void OnBeforeFreeze() {
+			if (BeforeFreeze != null) 
+				BeforeFreeze(this, EventArgs.Empty);
+		}
+
+		protected virtual void OnAfterFreeze() {
+			if (AfterFreeze != null) 
+				AfterFreeze(this, EventArgs.Empty);
+		}
+
+		protected virtual void OnBeforeInvincibility() {
+			if (BeforeInvincibility != null) 
+				BeforeInvincibility(this, EventArgs.Empty);
+		}
+
+		protected virtual void OnAfterInvincibility() {
+			if (AfterInvincibility != null) 
+				AfterInvincibility(this, EventArgs.Empty);
 		}
 
 		protected virtual void OnBeforeDie() {
