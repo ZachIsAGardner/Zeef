@@ -152,5 +152,13 @@ namespace Zeef.GameManagement {
 		public static bool IsInCutscene() => GameState == GameStatesEnum.Cutscene;
 		
 		public static bool IsLoading() => GameState == GameStatesEnum.Loading;	
+
+		public static void EnterCutscene() {
+			GameState = GameStatesEnum.Cutscene;
+		}
+
+		public static void ExitCutscene() {
+			GameState = GameStatesEnum.Play;
+		}
 	}
 }

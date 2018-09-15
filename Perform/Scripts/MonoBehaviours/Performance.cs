@@ -18,15 +18,21 @@ namespace Zeef.Perform {
 		private TextBoxUI textBoxUIInstance;
 		private GameObject border;
 
+		public event EventHandler BeforePerformanceStart;
+		public event EventHandler BeforePerformanceEnd;
+
 		protected abstract Branch BranchStart();
 		protected virtual void AdditionalSetup() { }
 		protected virtual void AdditionalEnd() { }
+
 
 		// ---
 
 		// Start performance
 		public async Task ExecuteAsync() {
 			if (Performing) return;
+
+			OnBeforePerformanceStart();
 
 			AdditionalSetup();	
 			Performing = true;
@@ -36,6 +42,8 @@ namespace Zeef.Perform {
 		}
 		
  		void EndPerformance() {
+			OnBeforePerformanceEnd();
+
 			if (textBoxUIInstance != null) textBoxUIInstance.Close();
 
 			Destroy(border);
@@ -117,6 +125,19 @@ namespace Zeef.Perform {
 			}
 
 			return selection;
+		}
+
+		// ---
+		// Events
+
+		protected virtual void OnBeforePerformanceStart() {
+			if (BeforePerformanceStart != null) 
+				BeforePerformanceStart(this, EventArgs.Empty);
+		}
+
+		protected virtual void OnBeforePerformanceEnd() {
+			if (BeforePerformanceEnd != null) 
+				BeforePerformanceEnd(this, EventArgs.Empty);
 		}
 	}
 }
