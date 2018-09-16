@@ -6,7 +6,7 @@ namespace Zeef {
 
 	public class DrawBoxCollider2D : MonoBehaviour {
 
-		[SerializeField] Color color = new Color(1, 1, 1, 0.5f);
+		public Color Color = new Color(1, 1, 1, 0.5f);
 
 		void OnDrawGizmos() {
 			Vector3 size = Vector3.one;
@@ -18,7 +18,7 @@ namespace Zeef {
 				offset = box.offset;
 			}
 
-			Gizmos.color = color;
+			Gizmos.color = Color;
 			Gizmos.DrawCube(transform.position + offset, size);
 		}
 	}
