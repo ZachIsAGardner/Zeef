@@ -34,7 +34,7 @@ namespace Zeef.Perform {
 			if (ControlManager.GetInputDown(ControlManager.Accept)) skipToEnd = true;	
 		}
 
-		public static TextBoxUI Initialize(TextBoxUI prefab, Transform parent, Vector2 position, TextBoxUIModel model) {
+		public static TextBoxUI Initialize(TextBoxUI prefab, Transform parent, Vector2 position, TextBoxUIFullModel model) {
 			TextBoxUI instance = Instantiate(prefab, parent).GetComponentWithError<TextBoxUI>();
 
 			instance.text = model.Text;
@@ -47,7 +47,7 @@ namespace Zeef.Perform {
 			return instance;
 		}
 
-		public async Task ExecuteAsync(TextBoxUIModel model) {
+		public async Task ExecuteAsync(TextBoxUIFullModel model) {
 
 			text = model.Text;
 			speaker = model.Speaker;

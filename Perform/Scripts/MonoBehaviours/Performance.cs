@@ -80,12 +80,12 @@ namespace Zeef.Perform {
 			if (section.Action != null) section.Action();
 
 			// Combine branch and section models with priority to section
-			TextBoxUIModel model = new TextBoxUIModel(
+			TextBoxUIFullModel model = new TextBoxUIFullModel(
 				section.TextBoxUIModel.Text,
-				(!string.IsNullOrEmpty(section.TextBoxUIModel.Speaker)) ? section.TextBoxUIModel.Speaker : branch.TextBoxUIModel.Speaker,
-				(section.TextBoxUIModel.Auto.HasValue) ? section.TextBoxUIModel.Auto : branch.TextBoxUIModel.Auto,
-				(section.TextBoxUIModel.Tone != null) ? section.TextBoxUIModel.Tone : branch.TextBoxUIModel.Tone,
-				(section.TextBoxUIModel.CrawlTime != null) ? section.TextBoxUIModel.CrawlTime : branch.TextBoxUIModel.CrawlTime
+				(!string.IsNullOrEmpty(section.TextBoxUIModel.Speaker)) ? section.TextBoxUIModel.Speaker : branch.TextBoxUIPartialModel?.Speaker,
+				(section.TextBoxUIModel.Auto.HasValue) ? section.TextBoxUIModel.Auto : branch.TextBoxUIPartialModel?.Auto,
+				(section.TextBoxUIModel.Tone != null) ? section.TextBoxUIModel.Tone : branch.TextBoxUIPartialModel?.Tone,
+				(section.TextBoxUIModel.CrawlTime != null) ? section.TextBoxUIModel.CrawlTime : branch.TextBoxUIPartialModel?.CrawlTime
 			);
 
 			// Create and execute text box

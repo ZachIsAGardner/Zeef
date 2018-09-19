@@ -7,24 +7,23 @@ namespace Zeef.Perform {
 
         public List<Section> Sections { get; private set; }
         public List<Path> Paths { get; private set; }
-        public TextBoxUIModel TextBoxUIModel { get; private set; }
+        public TextBoxUIPartialModel TextBoxUIPartialModel { get; private set; }
 
         public Branch (List<Section> sections) {
             Sections = sections;
         }
-        public Branch (List<Section> sections, TextBoxUIModel model) {
+        public Branch (List<Section> sections, TextBoxUIPartialModel textBoxModel) {
             Sections = sections;
-            TextBoxUIModel = model;
+            TextBoxUIPartialModel = textBoxModel;
         }
         public Branch (List<Section> sections, List<Path> paths) {
             Sections = sections;
             Paths = paths;
-            TextBoxUIModel = TextBoxUIModel;
         }
-        public Branch (List<Section> sections, List<Path> paths, TextBoxUIModel model) {
+        public Branch (List<Section> sections, List<Path> paths, TextBoxUIPartialModel textBoxModel) {
             Sections = sections;
             Paths = paths;
-            TextBoxUIModel = model;
+            TextBoxUIPartialModel = textBoxModel;
         }
     }
 }

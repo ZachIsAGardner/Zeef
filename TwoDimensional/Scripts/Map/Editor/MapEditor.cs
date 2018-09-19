@@ -7,43 +7,20 @@ using UnityEditor;
 using UnityEngine;
 
 namespace Zeef.TwoDimensional {
-
-	public class FolderListItem {
-
-		public string Name { get; set; }
-		public int SelectionIdx { get; set; }
-		public bool Visible { get; set; }
-		public List<GameObject> Tiles { get; set; }
-
-		public FolderListItem(TileFolderScriptable folder) {
-			Name = folder.name;
-			SelectionIdx = -1;
-			Visible = false;
-			Tiles = folder.Tiles;
-		}
-	}
     
 	[CustomEditor(typeof(Map))]
 	public class MapEditor : Editor {
         
 		Map map;
 
-		GameObject currentTile;
-
-		string currentLayer { get { return map.LayerOptions[map.CurrentLayerIdx]; } }
-
-		private GameObject cursor;
-		private List<FolderListItem> folderListItems;
-
 		// --- 
 		// Inspector
 
 		void OnEnable() {
-			map = (Map)target;
+			map = (Map)target; 
 		}
 
 		public override void OnInspectorGUI() {
-
 			if (!GameObject.FindObjectOfType<Map>()) {
 				GUILayout.Label("Drag me into scene to make stuff! :)");
 				return;
@@ -64,19 +41,19 @@ namespace Zeef.TwoDimensional {
 			GUILayout.Label("Map Editor", EditorStyles.boldLabel);
 
 			// Load folders from scriptables
-			if (GUILayout.Button("Reload Folders") || folderListItems.IsNullOrEmpty()) {
+			if (GUILayout.Button("Reload Folders") || map.FolderListItems.IsNullOrEmpty()) {
 				var folders = FillObjectList<TileFolderScriptable>(nameof(Map.TileFolders));			
-				folderListItems = new List<FolderListItem>();
+				map.FolderListItems = new List<FolderListItem>();
 				foreach (var folder in folders) 
-					folderListItems.Add(new FolderListItem(folder));
+					map.FolderListItems.Add(new FolderListItem(folder));
 			}
 
 			// Layer select
 			map.CurrentLayerIdx = EditorGUILayout.Popup("Layer", map.CurrentLayerIdx, map.LayerOptions.ToArray());
 			
 			// Render folders selection
-			if (!folderListItems.IsNullOrEmpty()) {
-				foreach (var folder in folderListItems) {
+			if (!map.FolderListItems.IsNullOrEmpty()) {
+				foreach (var folder in map.FolderListItems) {
 					folder.Visible = EditorGUILayout.Foldout(folder.Visible, folder.Name);
 					if (folder.Visible) { 
 						RenderButtons(folder);					
@@ -98,34 +75,20 @@ namespace Zeef.TwoDimensional {
 			);
 			
 			if (old != folder.SelectionIdx) {
-				currentTile = folder.Tiles[folder.SelectionIdx];
-				FocusSceneView();
-				foreach (var item in folderListItems) {
+				map.CurrentTile = folder.Tiles[folder.SelectionIdx];
+
+				foreach (var item in map.FolderListItems) {
 					if (folder == item) continue;
 					item.SelectionIdx = -1;				
 				}
 			}
 		}
 
-		Texture2D GetTextureFromSheet(Sprite sprite) {
-			Texture2D texture = new Texture2D((int)sprite.textureRect.width, (int)sprite.textureRect.height);
-			Color[] pixels = sprite.texture.GetPixels( 
-				(int)sprite.textureRect.x,
-				(int)sprite.textureRect.y,
-				(int)sprite.textureRect.width,
-				(int)sprite.textureRect.height
-			);
-
-			texture.SetPixels(pixels);
-			texture.Apply();
-
-			return texture;
-		}
-
 		// ---
 		// Scene
 
 		void OnSceneGUI() {
+			if (EditorWindow.focusedWindow != (SceneView)SceneView.sceneViews[0]) return;
 			RenderSceneBoxes();
 			HandleInput();
 		}
@@ -138,16 +101,16 @@ namespace Zeef.TwoDimensional {
 
 			GUI.color = Color.yellow;
 			if (EditorWindow.focusedWindow != (SceneView)SceneView.sceneViews[0]) GUILayout.Box("Scene view is not focused");
-			if (currentTile == null) { 
+			if (map.CurrentTile == null) { 
 				GUI.color = Color.yellow;
 				GUILayout.Box("No tile selected");
 			} else  {
 				GUI.color = Color.cyan;
-				GUILayout.Box($"Tile: {currentTile.name}");
+				GUILayout.Box($"Tile: {map.CurrentTile.name}");
 			}
 
 			GUI.color = Color.cyan;
-			GUILayout.Box($"Layer: {currentLayer}");
+			GUILayout.Box($"Layer: {map.CurrentLayer}");
 			
 			Handles.EndGUI();
 		}
@@ -160,21 +123,21 @@ namespace Zeef.TwoDimensional {
 			MoveCursor(GridPosition(clickPosition));
 
 			if (Event.current.type == EventType.KeyDown && 
-				Event.current.keyCode.ToString().ToLower() == serializedObject.FindProperty(nameof(Map.DeleteKey)).stringValue.ToLower()) {
+				Event.current.keyCode.ToString().ToLower() == map.DeleteKey.ToLower()) {
 				Delete(GridPosition(clickPosition));
 				Event.current.Use(); // This gets rid of the error boop
 			}
 			if (Event.current.type == EventType.KeyDown && 
-				Event.current.keyCode.ToString().ToLower() == serializedObject.FindProperty(nameof(Map.PickerKey)).stringValue.ToLower()) {
+				Event.current.keyCode.ToString().ToLower() == map.PickerKey.ToLower()) {
 				PickTile(GridPosition(clickPosition));
 				Event.current.Use();
 			}
 
-			if (folderListItems.IsNullOrEmpty()) return;
+			if (map.FolderListItems.IsNullOrEmpty()) return;
 			
 			// Vector3 clickPosition = GUIUtility.GUIToScreenPoint(Event.current.mousePosition);
 			if (Event.current.type == EventType.KeyDown && 
-				Event.current.keyCode.ToString().ToLower() == serializedObject.FindProperty(nameof(Map.PlaceKey)).stringValue.ToLower()) {
+				Event.current.keyCode.ToString().ToLower() == map.PlaceKey.ToLower()) {
 				Delete(GridPosition(clickPosition));
 				Spawn(GridPosition(clickPosition));
 				Event.current.Use();
@@ -184,43 +147,55 @@ namespace Zeef.TwoDimensional {
 		// Interactions
 
 		void Spawn(Vector3 position) {
-			if (GameObject.Find(currentLayer) == null) {
-				Debug.Log("The current layer requested does not exist in the scene.");
+			if (map.CurrentTile == null) {
+				Debug.Log("No tile is selected. Select a tile to place it.");
 				return;
 			}
-			GameObject go = (GameObject)PrefabUtility.InstantiatePrefab(currentTile);
+			if (GameObject.Find(map.CurrentLayer) == null) {
+				if (map.CreateLayerIfMissing) {
+					new GameObject(map.CurrentLayer);
+				} else {
+					Debug.Log($"The '{map.CurrentLayer}' layer does not exist in the scene.");
+					return;
+				}
+			} 
 
-			go.transform.parent = GameObject.Find(currentLayer).transform;
+			GameObject go = (GameObject)PrefabUtility.InstantiatePrefab(map.CurrentTile);
+
+			go.transform.parent = GameObject.Find(map.CurrentLayer).transform;
 			go.transform.localPosition = position;
 
-			Undo.RegisterCreatedObjectUndo(go, "Create " + currentTile.name.ToString());
+			Undo.RegisterCreatedObjectUndo(go, "Create " + map.CurrentTile.name.ToString());
 		}
 
 		void Delete(Vector3 position) {
-			GameObject layer = GameObject.Find(currentLayer);
+			GameObject layer = GameObject.Find(map.CurrentLayer);
 
 			if (layer == null) return;
 
 			foreach (var child in layer.GetComponentsInChildren<Transform>()) {
 				if (child.name == layer.name) continue;
 
-				if (Mathf.Abs(child.transform.position.x - position.x) < 0.1f && Mathf.Abs(child.transform.position.y - position.y) < 0.1f) {
-					GameObject garbage =  GameObject.Find("_Garbage");
-
-					if (garbage == null) { 
-						garbage = new GameObject("_Garbage");
-						garbage.transform.parent = FindObjectOfType<Map>().transform;
-						garbage.transform.position = Vector3.up * -10000;
+				// Found a tile to delete
+				if (Mathf.Abs(child.transform.position.x - position.x) < 0.1f && Mathf.Abs(child.transform.position.y - position.y) < 0.1f) {					
+					if (map.Garbage == null) {
+						map.Garbage = new GameObject("_Garbage");
+						map.Garbage.transform.parent = map.transform;
+						map.Garbage.transform.position = Vector2.down * -10000;
 					}
 
-					child.transform.parent = garbage.transform;
+					child.transform.parent = map.Garbage.transform;
 					child.transform.localPosition = Vector3.zero;
+
+					// Garbage is set to inactive to ensure there are no shenanigans 
+					// if it doesn't get deleted before runtime
+					map.Garbage.SetActive(false);
 				}	
 			}	
 		}
 
 		void PickTile(Vector3 position) {
-			GameObject layer = GameObject.Find(currentLayer);
+			GameObject layer = GameObject.Find(map.CurrentLayer);
 
 			if (layer == null) return;
 
@@ -228,10 +203,10 @@ namespace Zeef.TwoDimensional {
 				if (child.name == layer.name) continue;
 
 				if (child.transform.position.x == position.x && child.transform.position.y == position.y) {
-					foreach (var folder in folderListItems) {
+					foreach (var folder in map.FolderListItems) {
 						foreach (var tile in folder.Tiles) {
 							if (tile.name == RemoveIterationFromName(child.name)) { 
-								currentTile = tile;
+								map.CurrentTile = tile;
 								folder.SelectionIdx = folder.Tiles.IndexOf(tile);
 								return;
 							}
@@ -240,7 +215,6 @@ namespace Zeef.TwoDimensional {
 				}	
 			}		
 		}
-
 
 		// ---
 		// Helper

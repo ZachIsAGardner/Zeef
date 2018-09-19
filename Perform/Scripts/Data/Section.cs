@@ -8,11 +8,11 @@ namespace Zeef.Perform{
 
 	public class Section {
 
-		public TextBoxUIModel TextBoxUIModel { get; set; }
+		public TextBoxUIFullModel TextBoxUIModel { get; set; }
 		public Action Action { get; set; }
 		
-		public Section(TextBoxUIModel model, Action action = null) {
-			TextBoxUIModel = model;
+		public Section(TextBoxUIFullModel textBoxModel, Action action = null) {
+			TextBoxUIModel = textBoxModel;
 			Action = action;
 		}
 	}

@@ -8,8 +8,8 @@ namespace Zeef.Perform.Example {
 
 		[SerializeField] SoundEffectScriptable tone;
 		
-		private TextBoxUIModel BranchOptions() {
-			return new TextBoxUIModel(
+		private TextBoxUIPartialModel BranchOptions() {
+			return new TextBoxUIPartialModel(
 				speaker: "Pebbles",
 				crawlTime: 0.05f,
 				tone: tone
@@ -22,17 +22,17 @@ namespace Zeef.Perform.Example {
         protected override Branch BranchStart() {
 
 			return new Branch(
-				model: BranchOptions(),
+				textBoxModel: BranchOptions(),
 
 				sections: new List<Section>() {
 					new Section(
-						model: new TextBoxUIModel(
+						textBoxModel: new TextBoxUIFullModel(
 							text: "Hey what's good my dude. I hope you're enjoying Zeef. I'd like to think it's pretty neat..."
 						)
 					),
 
 					new Section(
-						model: new TextBoxUIModel(
+						textBoxModel: new TextBoxUIFullModel(
 							text: "There's a few cool things you can do with the Zeef.Perform namespace."
 						),
 						action: () => {
@@ -41,7 +41,7 @@ namespace Zeef.Perform.Example {
 					),
 
 					new Section(
-						model: new TextBoxUIModel(
+						textBoxModel: new TextBoxUIFullModel(
 							text: "Would you like to see?"
 						)
 					)
@@ -56,21 +56,21 @@ namespace Zeef.Perform.Example {
 
 		private Branch Yes() {
 			return new Branch(
-				model: BranchOptions(),
+				textBoxModel: BranchOptions(),
 
 				sections: new List<Section>() {
 					new Section(
-						model: new TextBoxUIModel(
+						textBoxModel: new TextBoxUIFullModel(
 							text: "Okay so that was one of them. You know, being able to answer questions is pretty cool..."
 						)
 					),
 					new Section(
-						model: new TextBoxUIModel(
+						textBoxModel: new TextBoxUIFullModel(
 							text: "Okay I'm done for now actually... I'll come up with more examples later."
 						)
 					),
 					new Section(
-						model: new TextBoxUIModel(
+						textBoxModel: new TextBoxUIFullModel(
 							text: "Only so many hours in a day na mean?"
 						)
 					)
@@ -80,17 +80,17 @@ namespace Zeef.Perform.Example {
 
 		private Branch No() {
 			return new Branch(
-				model: BranchOptions(),
+				textBoxModel: BranchOptions(),
 
 				sections: new List<Section>() {
 					new Section(
-						new TextBoxUIModel(
-							"Oh okay, that's fair I guess."
+						textBoxModel: new TextBoxUIFullModel(
+							text: "Oh okay, that's fair I guess."
 						)
 					),
 					new Section(
-						new TextBoxUIModel(
-							"Bye."
+						textBoxModel: new TextBoxUIFullModel(
+							text: "Bye."
 						)
 					),
 				}
