@@ -19,7 +19,7 @@ namespace Zeef.TwoDimensional.Example {
 
 		void Start() {
 			SceneSetupPackage package = (SceneSetupPackage)GameManager.OpenPackage();
-			
+
 			Transform spawn = (package != null) 
 				? FindObjectsOfType<Spawn>().First(s => s.ID == package.SpawnID).transform
 				: FindObjectsOfType<Spawn>().First().transform;

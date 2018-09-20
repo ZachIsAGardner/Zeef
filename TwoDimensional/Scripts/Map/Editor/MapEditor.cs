@@ -12,12 +12,15 @@ namespace Zeef.TwoDimensional {
 	public class MapEditor : Editor {
         
 		Map map;
+		private string keyHeld;
+		private Vector2 lastGridDragPosition; 
 
 		// --- 
 		// Inspector
 
 		void OnEnable() {
 			map = (Map)target; 
+			keyHeld = null;
 		}
 
 		public override void OnInspectorGUI() {
@@ -116,31 +119,40 @@ namespace Zeef.TwoDimensional {
 		}
 
 		void HandleInput() {
+
 			Vector2 mousePosition = Event.current.mousePosition;
 			mousePosition.y = Camera.current.pixelHeight - mousePosition.y;
 			Vector3 clickPosition = Camera.current.ScreenPointToRay(mousePosition).origin;
-			
-			MoveCursor(GridPosition(clickPosition));
+			Vector2 gridPos = GridPosition(clickPosition);
 
-			if (Event.current.type == EventType.KeyDown && 
-				Event.current.keyCode.ToString().ToLower() == map.DeleteKey.ToLower()) {
-				Delete(GridPosition(clickPosition));
-				Event.current.Use(); // This gets rid of the error boop
+			MoveCursor(gridPos);
+
+			Event e = Event.current;
+			if (e.type == EventType.KeyDown && e.keyCode.ToString().ToLower() != "none") { 
+				keyHeld = e.keyCode.ToString().ToLower();
+				e.Use(); // This gets rid of the error boop
 			}
-			if (Event.current.type == EventType.KeyDown && 
-				Event.current.keyCode.ToString().ToLower() == map.PickerKey.ToLower()) {
-				PickTile(GridPosition(clickPosition));
-				Event.current.Use();
+			if (e.type == EventType.KeyUp) keyHeld = null;
+
+			// Delete
+			if (keyHeld == map.DeleteKey.ToLower() && gridPos != lastGridDragPosition) {
+				Delete(gridPos);
+				lastGridDragPosition = gridPos;
+			}
+
+			// Pick
+			if (keyHeld == map.PickerKey.ToLower() && gridPos != lastGridDragPosition) {
+				PickTile(gridPos);
+				lastGridDragPosition = gridPos;
 			}
 
 			if (map.FolderListItems.IsNullOrEmpty()) return;
 			
-			// Vector3 clickPosition = GUIUtility.GUIToScreenPoint(Event.current.mousePosition);
-			if (Event.current.type == EventType.KeyDown && 
-				Event.current.keyCode.ToString().ToLower() == map.PlaceKey.ToLower()) {
-				Delete(GridPosition(clickPosition));
-				Spawn(GridPosition(clickPosition));
-				Event.current.Use();
+			// Spawn
+			if (keyHeld == map.PlaceKey.ToLower() && gridPos != lastGridDragPosition) {
+				Delete(gridPos);
+				Spawn(gridPos);
+				lastGridDragPosition = gridPos;
 			}
 		}
 
