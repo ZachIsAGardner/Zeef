@@ -45,7 +45,7 @@ namespace Zeef.TwoDimensional {
 		// Components
 
 		protected BoxCollider2D BoxCollider2D { get; private set; }
-		protected Collision2D Collision { get; private set; }
+		public Collision2D Collision { get; private set; }
 
 		// -
 		

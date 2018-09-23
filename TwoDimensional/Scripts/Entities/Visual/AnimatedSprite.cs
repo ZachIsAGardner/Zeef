@@ -55,6 +55,8 @@ namespace Zeef.TwoDimensional {
 		[SerializeField] private SpritesScriptable spritesScriptable;
 		private Sprite[] sprites = new Sprite[]{};
 
+		public bool IsPaused { get; set; }
+
 		public AnimationState State { get; private set; }
 
 		// Frame Rate
@@ -79,7 +81,7 @@ namespace Zeef.TwoDimensional {
 		}
 
 		void Update() {
-			if (GameManager.IsPaused() || sprites.IsNullOrEmpty()) return;
+			if (GameManager.IsPaused() || sprites.IsNullOrEmpty() || IsPaused) return;
 
 			AnimationState newState = GetAnimationState();
 			if (State == null || newState.Name != State.Name) {
