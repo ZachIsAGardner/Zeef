@@ -25,6 +25,9 @@ namespace Zeef.TwoDimensional {
         void Awake() {
             livingObject = GetComponent<LivingObject>();
             spriteRenderers = GetComponentsInChildren<SpriteRenderer>().ToList();
+
+            colors = spriteRenderers.Select(sp => sp.color).ToList();
+
             
             livingObject.BeforeFreeze += OnBeforeFreeze;
             livingObject.AfterFreeze += OnAfterFreeze;
@@ -33,8 +36,17 @@ namespace Zeef.TwoDimensional {
             livingObject.BeforeDie += OnBeforeDie;
         }
 
+        void Update() {
+            if (!livingObject.IsFrozen && !livingObject.IsInvincible) {
+                int i = 0;
+                foreach (SpriteRenderer spriteRenderer in spriteRenderers) {
+                    spriteRenderer.color = colors[i];
+                    i++;
+                }
+            }
+        }
+
         private void OnBeforeFreeze(object source, EventArgs args) {
-            colors = spriteRenderers.Select(sp => sp.color).ToList();
             foreach (var s in spriteRenderers)
                 s.color = Color.black;
         }
@@ -61,9 +73,6 @@ namespace Zeef.TwoDimensional {
         }
 
         private async Task BlinkAsync() {
-
-            colors = spriteRenderers.Select(sp => sp.color).ToList();
-
             bool visible = true;
 
 			while(!exitBlink) {

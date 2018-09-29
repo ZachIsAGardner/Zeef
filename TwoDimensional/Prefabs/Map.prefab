@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4252581415892900633}
   - component: {fileID: 4257505639502443782}
   m_Layer: 0
-  m_Name: Map 1
+  m_Name: Map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24,7 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4256651606530048453}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -43,12 +43,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 095310829ebc74b89b0738aeb1444a4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentLayer: GROUND
+  PlaceKey: E
+  DeleteKey: D
+  PickerKey: F
+  CreateLayerIfMissing: 1
   LayerOptions:
   - _Tiles
   - _Entities
   - _Decorations
-  GridSize: 1
-  TileFolders: []
+  - _Background
+  - _Spawns
+  GridSize: 2.56
+  TileFolders:
+  - {fileID: 11400000, guid: 5ee7d148247584739b00019b9369fe57, type: 2}
+  - {fileID: 11400000, guid: 95c9b2cfedb2c46f5a1319a95fed566a, type: 2}
   CursorColor: {r: 0.32988465, g: 0.2516465, b: 0.8207547, a: 0.88235295}
-  CursorPosition: {x: -12, y: 12, z: 0}
+  CurrentTile: {fileID: 5278938174604279911, guid: 3cc8426aa0e734ab89b1e37e033ce021,
+    type: 3}
+  CurrentLayerIdx: 0
+  CursorPosition: {x: -25.599998, y: 20.48, z: 0}
+  Garbage: {fileID: 0}

@@ -83,6 +83,13 @@ namespace Zeef.GameManagement {
 		}
 
 		public static GameObject SpawnActor(GameObject prefab, Vector3 position) {
+			GameObject folder = GameObject.FindGameObjectWithTag(TagConstants.DynamicFolder);
+			
+			if (folder == null) {
+				folder = new GameObject("_DyanamicFolder");
+				folder.tag = TagConstants.DynamicFolder;
+			}
+
 			return Instantiate(
 				original: prefab, 
 				position: position, 
@@ -92,6 +99,14 @@ namespace Zeef.GameManagement {
 		}
 
 		public static GameObject SpawnCanvasElement(GameObject prefab, Vector2 position) {
+			GameObject folder = GameObject.FindGameObjectWithTag(TagConstants.DynamicCanvasFolder);
+			
+			if (folder == null) {
+				folder = new GameObject("_DyanamicCanvasFolder");
+				folder.transform.parent = Utility.FindGameObjectWithTagWithError(TagConstants.SceneCanvas).transform;
+				folder.tag = TagConstants.DynamicCanvasFolder;
+			}
+
 			return Instantiate(
 				original: prefab, 
 				position: position, 

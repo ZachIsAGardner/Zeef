@@ -13,7 +13,7 @@ namespace Zeef.TwoDimensional {
         
 		Map map;
 		private string keyHeld;
-		private Vector2 lastGridDragPosition; 
+		private Vector2? lastGridDragPosition; 
 
 		// --- 
 		// Inspector
@@ -69,6 +69,8 @@ namespace Zeef.TwoDimensional {
 		}
 
 		void RenderButtons(FolderListItem folder) {
+			if (folder.Tiles.IsNullOrEmpty()) return;
+
 			int old = folder.SelectionIdx;
 
 			folder.SelectionIdx = GUILayout.SelectionGrid(
@@ -132,7 +134,10 @@ namespace Zeef.TwoDimensional {
 				keyHeld = e.keyCode.ToString().ToLower();
 				e.Use(); // This gets rid of the error boop
 			}
-			if (e.type == EventType.KeyUp) keyHeld = null;
+			if (e.type == EventType.KeyUp) { 
+				keyHeld = null;
+				lastGridDragPosition = null;
+			}
 
 			// Delete
 			if (keyHeld == map.DeleteKey.ToLower() && gridPos != lastGridDragPosition) {
