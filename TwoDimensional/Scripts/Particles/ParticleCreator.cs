@@ -10,33 +10,32 @@ namespace Zeef.TwoDimensional {
 
     public class ParticleCreator : MonoBehaviour {
         
-        public Particle Particle;
+        [SerializeField] Particle particle;
 
-        public bool ParticlesBecomeChildren;
-        public bool StartPositionFromBoxCollider2DBounds = true;
-        public FloatRange LifeTime = new FloatRange(1, 2);
+        [SerializeField] bool particlesBecomeChildren;
+        [SerializeField] bool startPositionFromBoxCollider2DBounds = true;
+        [SerializeField] FloatRange lifeTime = new FloatRange(1, 2);
 
-        public int Amount = 5;
+        [SerializeField] int amount = 5;
 
-        public Vector2Range Dir = new Vector2Range(
-            new Vector2(-1,-1),
-            new Vector2(1,1)
-        );
-        public float Grav;
+        [SerializeField] Vector2 velMin;
+        [SerializeField] Vector2 velMax;
+        [SerializeField] float grav;
 
-        public bool Fade = false;
+        [SerializeField] bool fadeOverTime = false;
+        [SerializeField] bool fadeOnDestroy = false;
 
         // time between bursts
-        public float LoopTime = -1;
+        [SerializeField] float loopLength = -1;
         // time between individual particle generations
-        public float OffsetTime = -1;
+        [SerializeField] float offsetLength = -1;
 
         void Start() {
             StartCoroutine(RunCoroutine());
         }
 
         private IEnumerator RunCoroutine() {
-            if (LoopTime > 0) {
+            if (loopLength > 0) {
                 while (true) yield return StartCoroutine(CreateParticlesCoroutine());
             } else {
                 StartCoroutine(CreateParticlesCoroutine());
@@ -48,31 +47,35 @@ namespace Zeef.TwoDimensional {
         private IEnumerator CreateParticlesCoroutine() {
             int i = 0;
 
-            while (i < Amount) {
+            while (i < amount) {
                 Vector2 pos = Vector2.zero;
                 BoxCollider2D col = GetComponent<BoxCollider2D>();
-                if (col != null && StartPositionFromBoxCollider2DBounds) {
+                if (col != null && startPositionFromBoxCollider2DBounds) {
                     FloatRange x = new FloatRange(col.bounds.min.x, col.bounds.max.x);
                     FloatRange y = new FloatRange(col.bounds.min.y, col.bounds.max.y);
                     pos = new Vector2(x.RandomValue(), y.RandomValue());
                 }
                 
                 Particle.Initialize(
-                    prefab: Particle.gameObject, 
-                    lifeTime: LifeTime.RandomValue(), 
-                    vel: Dir.RandomValue(),
-                    fade: Fade, 
-                    grav: Grav,
-                    parent: (ParticlesBecomeChildren) ? transform : null,
+                    prefab: particle.gameObject, 
+                    lifeTime: lifeTime.RandomValue(), 
+                    vel: new Vector2(
+                        new Vector2(velMin.x, velMax.x).RandomValue() * transform.localScale.x,
+                        new Vector2(velMin.y, velMax.y).RandomValue() * transform.localScale.y
+                    ),
+                    fadeOverTime: fadeOverTime, 
+                    fadeOnDestroy: fadeOnDestroy, 
+                    grav: grav,
+                    parent: (particlesBecomeChildren) ? transform : null,
                     pos: pos
                 );
 
-                if (OffsetTime > 0) yield return new WaitForSeconds(OffsetTime);
+                if (offsetLength > 0) yield return new WaitForSeconds(offsetLength);
                 
                 i++;
             }
 
-            if (LoopTime > 0) yield return new WaitForSeconds(LoopTime); 
+            if (loopLength > 0) yield return new WaitForSeconds(loopLength); 
         }
     }
 }

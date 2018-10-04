@@ -10,39 +10,28 @@ namespace Zeef.TwoDimensional {
 	public class Particle : MonoBehaviour  {
 
 		// Whether or not this gets created from a particle creator
-		[SerializeField] bool independant;
-		[SerializeField] float lifeTime = 1;
-		[SerializeField] bool fade;
-		[SerializeField] float grav;
-		[SerializeField] Vector2 velocityMin;
-		[SerializeField] Vector2 velocityMax;
 
+		private float lifeTime = 1;
+		private bool fadeOverTime;
+		private bool fadeOnDestroy;
+		private float grav;
 		private Vector2 vel;
+
 		private Color originalColor;
 
 		[SerializeField] private Image imageComponent;
 		[SerializeField] private SpriteRenderer spriteRenderer;
 		[SerializeField] private MeshRenderer meshRenderer;
-		[SerializeField]private Text textComponent;
+		[SerializeField] private Text textComponent;
 
-		void Start() {
-			if (independant) { 
-				vel = new Vector2(
-					UnityEngine.Random.Range(velocityMin.x, velocityMax.x),
-					UnityEngine.Random.Range(velocityMin.y, velocityMax.y)
-				);
-				GetComponents();
-				StartCoroutine(RunCoroutine());
-			}
-		}
-
-		public static Particle Initialize(GameObject prefab, float lifeTime, Vector2? vel = null, bool fade = false, float grav = 0, Transform parent = null, Vector2 pos = new Vector2()) {
+		public static Particle Initialize(GameObject prefab, float lifeTime, Vector2? vel = null, bool fadeOverTime = false, float grav = 0, Transform parent = null, Vector2 pos = new Vector2(), bool fadeOnDestroy = false) {
 			Particle instance = Instantiate(prefab, pos, Quaternion.identity, parent).GetComponent<Particle>();
 
 			instance.GetComponents();
 
 			instance.lifeTime = lifeTime;
-			instance.fade = fade;
+			instance.fadeOverTime = fadeOverTime;
+			instance.fadeOnDestroy = fadeOnDestroy;
 			instance.vel = (vel != null) ? (Vector2)vel : Vector2.zero;
 			instance.grav = grav;
 
@@ -89,17 +78,38 @@ namespace Zeef.TwoDimensional {
 				new Color(originalColor.r, originalColor.g, originalColor.b, alpha);	
 		}
 
+		private Color CurrentColor() {
+			if (imageComponent != null) return imageComponent.color;
+			if (spriteRenderer != null) return spriteRenderer.color;
+			if (meshRenderer != null) return meshRenderer.material.color;
+			if (textComponent != null) return textComponent.color;
+			throw new Exception("Not visual renderer could be found");
+		}
+
 		private IEnumerator RunCoroutine() {
 			while(lifeTime > 0) {	
 				while(GameManager.IsPaused()) yield return null;
 
-				if (fade) ChangeColor(lifeTime);
+				if (fadeOverTime) ChangeColor(lifeTime);
 				
 				vel.y -= grav * Time.deltaTime;
 				transform.position += (Vector3)vel * Time.deltaTime;
 
 				lifeTime -= 1 * Time.deltaTime;
 				yield return null;
+			}
+
+			if (fadeOnDestroy && !fadeOverTime) {
+				float fadeTime = 0.25f;
+				while (CurrentColor().a >= 0) {
+					vel.y -= grav * Time.deltaTime;
+					transform.position += (Vector3)vel * Time.deltaTime;
+
+					fadeTime -= Time.deltaTime;
+					ChangeColor(fadeTime);
+					
+					yield return null;
+				}
 			}
 
 			Destroy(gameObject);
