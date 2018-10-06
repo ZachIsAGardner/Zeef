@@ -42,11 +42,12 @@ namespace Zeef.TwoDimensional.Example {
 		}
 
 		public async void OnBeforeDie(object source, EventArgs args) {
-			await GameManager.LoadSceneAsync(
-				scene: "_GameOver", 
-				loadMode: LoadSceneMode.Additive,
-				transition: false
-			);
+			barUI.UpdateDisplay(0);
+			// await GameManager.LoadSceneAsync(
+			// 	scene: "_GameOver", 
+			// 	loadMode: LoadSceneMode.Additive,
+			// 	transition: false
+			// );
 		}
 
 		protected void OnDestroy() {

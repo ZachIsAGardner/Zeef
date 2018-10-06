@@ -43,4 +43,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cca2aced06f2846ddbdcf6e18ec2af0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  centerPrefab: {fileID: 0}
+  centerPrefab: {fileID: 6371636326223406051, guid: d3fb7cbe5927b48c4abde3bc52f6d8d5,
+    type: 3}

@@ -7,6 +7,26 @@ using UnityEditor;
 using UnityEngine;
 
 namespace Zeef.TwoDimensional {
+
+	public class LayerColorSet {
+		public string Layer { get; set; }
+		public List<SpriteRendererColorSet> SpriteRendererColorSets { get; set; }
+
+		public LayerColorSet(string layer) {
+			Layer = layer;
+			SpriteRendererColorSets = new List<SpriteRendererColorSet>();
+		}
+	}
+
+	public class SpriteRendererColorSet {
+		public SpriteRenderer SpriteRenderer { get; set; }
+		public Color Color { get; set; }
+
+		public SpriteRendererColorSet(SpriteRenderer spriteRenderer, Color color) {
+			SpriteRenderer = spriteRenderer;
+			Color = color;
+		}
+	}
     
 	[CustomEditor(typeof(Map))]
 	public class MapEditor : Editor {
@@ -14,6 +34,7 @@ namespace Zeef.TwoDimensional {
 		Map map;
 		private string keyHeld;
 		private Vector2? lastGridDragPosition; 
+		private List<LayerColorSet> LayerColorSets { get; set; }
 
 		// --- 
 		// Inspector
@@ -21,6 +42,10 @@ namespace Zeef.TwoDimensional {
 		void OnEnable() {
 			map = (Map)target; 
 			keyHeld = null;
+		}
+
+		void OnDisable() {
+
 		}
 
 		public override void OnInspectorGUI() {
@@ -52,8 +77,26 @@ namespace Zeef.TwoDimensional {
 			}
 
 			// Layer select
+			// int oldLayerIdx = map.CurrentLayerIdx;
 			map.CurrentLayerIdx = EditorGUILayout.Popup("Layer", map.CurrentLayerIdx, map.LayerOptions.ToArray());
-			
+			// Fade unselected layers
+			// if (map.CurrentLayerIdx != oldLayerIdx) {
+
+			// 	if (LayerColorSets != null) {
+			// 		foreach (string layer in map.LayerOptions) {
+			// 			LayerColorSet layerColorSet = LayerColorSets.FirstOrDefault(l => l.Layer == layer);
+
+			// 			if (layerColorSet != null) {
+			// 				foreach (SpriteRendererColorSet colorSet in layerColorSet.SpriteRendererColorSets) {
+			// 					colorSet.SpriteRenderer.color = (map.CurrentLayer == layer) ? colorSet.Color : Color.gray;
+			// 				}
+			// 			}
+			// 		}
+			// 	}
+
+			// 	PopulateLayerColorSets();
+			// }
+
 			// Render folders selection
 			if (!map.FolderListItems.IsNullOrEmpty()) {
 				foreach (var folder in map.FolderListItems) {
@@ -66,6 +109,26 @@ namespace Zeef.TwoDimensional {
 			} else {
 				GUILayout.Label("-- No folders to display --");
 			}
+		}
+
+		void PopulateLayerColorSets() {
+			if (LayerColorSets == null) LayerColorSets = new List<LayerColorSet>();
+
+			GameObject layerGameObject = GameObject.Find(map.CurrentLayer);
+
+			if (layerGameObject != null) {
+
+				LayerColorSet layerColorSet = LayerColorSets.FirstOrDefault(l => l.Layer == map.CurrentLayer);
+
+				if (layerColorSet == null) { 
+					layerColorSet = new LayerColorSet(map.CurrentLayer);
+					LayerColorSets.Add(layerColorSet);
+				}
+
+				layerColorSet.SpriteRendererColorSets = layerGameObject.GetComponentsInChildren<SpriteRenderer>()
+					.Select(s => new SpriteRendererColorSet(s, s.color))
+					.ToList();
+			}			
 		}
 
 		void RenderButtons(FolderListItem folder) {

@@ -54,9 +54,7 @@ MonoBehaviour:
   - _Background
   - _Spawns
   GridSize: 2.56
-  TileFolders:
-  - {fileID: 11400000, guid: 5ee7d148247584739b00019b9369fe57, type: 2}
-  - {fileID: 11400000, guid: 95c9b2cfedb2c46f5a1319a95fed566a, type: 2}
+  TileFolders: []
   CursorColor: {r: 0.32988465, g: 0.2516465, b: 0.8207547, a: 0.88235295}
   CurrentTile: {fileID: 5278938174604279911, guid: 3cc8426aa0e734ab89b1e37e033ce021,
     type: 3}

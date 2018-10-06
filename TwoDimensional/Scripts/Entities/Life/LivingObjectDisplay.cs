@@ -69,7 +69,8 @@ namespace Zeef.TwoDimensional {
         }
 
         private void OnBeforeDie(object source, EventArgs args) {
-            GameManager.SpawnActor(explosionPrefab, this.transform.position + explosionOffset);
+            if (explosionPrefab != null)
+                GameManager.SpawnActor(explosionPrefab, this.transform.position + explosionOffset);
         }
 
         private async Task BlinkAsync() {

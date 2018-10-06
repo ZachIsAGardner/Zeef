@@ -75,6 +75,7 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+  m_UseSpriteMesh: 0
 --- !u!114 &2190764042951548448
 MonoBehaviour:
   m_ObjectHideFlags: 0

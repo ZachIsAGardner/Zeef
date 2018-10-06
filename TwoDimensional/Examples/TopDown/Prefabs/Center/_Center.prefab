@@ -101,6 +101,7 @@ MonoBehaviour:
 --- !u!1001 &1228646472591365661
 PrefabInstance:
   m_ObjectHideFlags: 0
+  serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 7176378130149592616}
     m_Modifications:
@@ -219,6 +220,7 @@ PrefabInstance:
 --- !u!1001 &5187212261693272181
 PrefabInstance:
   m_ObjectHideFlags: 0
+  serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 6956222922253467819}
     m_Modifications:
@@ -293,6 +295,7 @@ PrefabInstance:
 --- !u!1001 &6835477550433640673
 PrefabInstance:
   m_ObjectHideFlags: 0
+  serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 6956222922253467819}
     m_Modifications:
@@ -366,6 +369,7 @@ PrefabInstance:
 --- !u!1001 &6956222920614433250
 PrefabInstance:
   m_ObjectHideFlags: 0
+  serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 6956222922253467819}
     m_Modifications:
@@ -406,6 +410,7 @@ PrefabInstance:
 --- !u!1001 &6956222921786389302
 PrefabInstance:
   m_ObjectHideFlags: 0
+  serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 6956222922253467819}
     m_Modifications:
@@ -509,6 +514,7 @@ PrefabInstance:
 --- !u!1001 &6956222922030998892
 PrefabInstance:
   m_ObjectHideFlags: 0
+  serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 6956222922253467819}
     m_Modifications:
@@ -614,6 +620,7 @@ PrefabInstance:
 --- !u!1001 &6956222922423522427
 PrefabInstance:
   m_ObjectHideFlags: 0
+  serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 6956222922253467819}
     m_Modifications:
@@ -659,11 +666,17 @@ PrefabInstance:
       propertyPath: acc
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 20008768950604874, guid: 8ed5285655a9640ea989731ff36bb266,
+        type: 3}
+      propertyPath: orthographic size
+      value: 12.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8ed5285655a9640ea989731ff36bb266, type: 3}
 --- !u!1001 &6956222922630560340
 PrefabInstance:
   m_ObjectHideFlags: 0
+  serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 6956222922253467819}
     m_Modifications:
