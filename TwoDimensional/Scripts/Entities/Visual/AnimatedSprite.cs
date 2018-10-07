@@ -92,6 +92,11 @@ namespace Zeef.TwoDimensional {
 				ExecuteAnimationState();
 			}
 
+			// Update state without restarting
+			if (State != null && newState.Name == State.Name) {
+				State = newState;
+			}
+
 			Animate();
 		}
 
