@@ -32,8 +32,13 @@ namespace Zeef.TwoDimensional {
 	public class MapEditor : Editor {
         
 		Map map;
+
+		private bool placed;
 		private string keyHeld;
+		private int framesHeld;
 		private Vector2? lastGridDragPosition; 
+		private Vector2 cursorPosition;
+
 		private List<LayerColorSet> LayerColorSets { get; set; }
 
 		// --- 
@@ -42,10 +47,11 @@ namespace Zeef.TwoDimensional {
 		void OnEnable() {
 			map = (Map)target; 
 			keyHeld = null;
+			map.Editing = true;
 		}
 
 		void OnDisable() {
-
+			map.Editing = false;
 		}
 
 		public override void OnInspectorGUI() {
@@ -184,43 +190,48 @@ namespace Zeef.TwoDimensional {
 		}
 
 		void HandleInput() {
-
-			Vector2 mousePosition = Event.current.mousePosition;
-			mousePosition.y = Camera.current.pixelHeight - mousePosition.y;
-			Vector3 clickPosition = Camera.current.ScreenPointToRay(mousePosition).origin;
-			Vector2 gridPos = GridPosition(clickPosition);
-
-			MoveCursor(gridPos);
-
+			
 			Event e = Event.current;
+			if (e.type == EventType.MouseMove) {
+				Vector2 mousePosition = Event.current.mousePosition;
+				mousePosition.y = Camera.current.pixelHeight - mousePosition.y;
+				Vector3 clickPosition = Camera.current.ScreenPointToRay(mousePosition).origin;
+				cursorPosition = GridPosition(clickPosition);
+			}
+
+			MoveCursor(cursorPosition);
+
 			if (e.type == EventType.KeyDown && e.keyCode.ToString().ToLower() != "none") { 
 				keyHeld = e.keyCode.ToString().ToLower();
+				framesHeld++;
 				e.Use(); // This gets rid of the error boop
 			}
 			if (e.type == EventType.KeyUp) { 
 				keyHeld = null;
+				framesHeld = 0;
+				placed = false;
 				lastGridDragPosition = null;
 			}
 
 			// Delete
-			if (keyHeld == map.DeleteKey.ToLower() && gridPos != lastGridDragPosition) {
-				Delete(gridPos);
-				lastGridDragPosition = gridPos;
+			if (keyHeld == map.DeleteKey.ToLower() && cursorPosition != lastGridDragPosition) {
+				Delete(cursorPosition);
+				lastGridDragPosition = cursorPosition;
 			}
 
 			// Pick
-			if (keyHeld == map.PickerKey.ToLower() && gridPos != lastGridDragPosition) {
-				PickTile(gridPos);
-				lastGridDragPosition = gridPos;
+			if (keyHeld == map.PickerKey.ToLower() && cursorPosition != lastGridDragPosition) {
+				PickTile(cursorPosition);
+				lastGridDragPosition = cursorPosition;
 			}
 
 			if (map.FolderListItems.IsNullOrEmpty()) return;
 			
 			// Spawn
-			if (keyHeld == map.PlaceKey.ToLower() && gridPos != lastGridDragPosition) {
-				Delete(gridPos);
-				Spawn(gridPos);
-				lastGridDragPosition = gridPos;
+			if (keyHeld == map.PlaceKey.ToLower() && cursorPosition != lastGridDragPosition) {
+				Delete(cursorPosition);
+				Spawn(cursorPosition);
+				lastGridDragPosition = cursorPosition;
 			}
 		}
 

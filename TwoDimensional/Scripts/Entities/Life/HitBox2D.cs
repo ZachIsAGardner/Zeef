@@ -32,6 +32,17 @@ namespace Zeef.TwoDimensional {
 
 		// ---
 
+		public static HitBox2D Initialize(HitBox2D prefab, GameObject owner, Vector2 position, Vector2 size, bool Parented) {
+			HitBox2D instance = GameManager.SpawnActor(prefab.gameObject, position).GetComponent<HitBox2D>();
+
+			if (Parented) instance.transform.parent = owner.transform;
+			instance.transform.position = position;
+			instance.transform.localScale = size;
+			instance.Owner = owner;
+
+			return instance;
+		}
+
 		public static HitBox2D Initialize(GameObject owner, int damage, Vector2 position, Vector2 size, bool Parented) {
 			HitBox2D instance = GameManager.SpawnActor(position)
 				.AddComponent<DrawBoxCollider2D>().gameObject

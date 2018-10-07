@@ -54,8 +54,9 @@ namespace Zeef.TwoDimensional {
 			HitBox2D hitBox = args.Other.GetComponent<HitBox2D>();
 
 			// if hitbox exists and it is not mine then i need to take damage
-			if (hitBox != null && hitBox.Owner != gameObject) 
+			if (hitBox != null && hitBox.Owner != gameObject) {
 				await TakeDamageAsync(hitBox.Damage, hitBox);		
+			}
 		}
 
 		// ---

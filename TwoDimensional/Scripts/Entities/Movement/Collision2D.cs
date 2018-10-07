@@ -57,42 +57,42 @@ namespace Zeef.TwoDimensional {
 			collisions.Down = forceGrounded;
 			GetRayOrigins();
 			HorizontalCollisions(ref vel);
-			if (vel.y != 0) {
-				VerticalCollisions(ref vel);
-			}
+			// if (vel.y != 0) {
+			// 	VerticalCollisions(ref vel);
+			// }
 			transform.Translate(vel);
 		}	
 
 		// ---
 		// Horizontal
 
-		void HorizontalAdjustForSlope(RaycastHit2D hit, ref Vector2 vel) {
-			float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-			float dir = Mathf.Sign(vel.x);
+		// void HorizontalAdjustForSlope(RaycastHit2D hit, ref Vector2 vel) {
+		// 	float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+		// 	float dir = Mathf.Sign(vel.x);
 
-			// check for descending slope
-			float distanceToSlopeStart = 0;
+		// 	// check for descending slope
+		// 	float distanceToSlopeStart = 0;
 
-			if (slopeAngle != horizontalSlopeInfo.SlopeAngleOld) {
-				distanceToSlopeStart = hit.distance - skin;
-				vel.x -= distanceToSlopeStart * dir;
-			}
+		// 	if (slopeAngle != horizontalSlopeInfo.SlopeAngleOld) {
+		// 		distanceToSlopeStart = hit.distance - skin;
+		// 		vel.x -= distanceToSlopeStart * dir;
+		// 	}
 
-			HorizontalClimbSlope(ref vel, slopeAngle, hit.normal);
-			vel.x += distanceToSlopeStart * dir;
-		}
+		// 	HorizontalClimbSlope(ref vel, slopeAngle, hit.normal);
+		// 	vel.x += distanceToSlopeStart * dir;
+		// }
 
-		void HorizontalClimbSlope(ref Vector2 vel, float slopeAngle, Vector2 slopeNormal) {
-			float moveDistance = Mathf.Abs(vel.x);
-			float climbAmountY = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * moveDistance;
+		// void HorizontalClimbSlope(ref Vector2 vel, float slopeAngle, Vector2 slopeNormal) {
+		// 	float moveDistance = Mathf.Abs(vel.x);
+		// 	float climbAmountY = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * moveDistance;
 
-			if (vel.y <= climbAmountY) {
-				vel.y = climbAmountY;
-				vel.x = Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * moveDistance * Mathf.Sign (vel.x);
-				collisions.Down = true;
-				horizontalSlopeInfo.ClimbingSlope = true;
-			}
-		}
+		// 	if (vel.y <= climbAmountY) {
+		// 		vel.y = climbAmountY;
+		// 		vel.x = Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * moveDistance * Mathf.Sign (vel.x);
+		// 		collisions.Down = true;
+		// 		horizontalSlopeInfo.ClimbingSlope = true;
+		// 	}
+		// }
 
 		void HorizontalCollisions(ref Vector2 vel) {
 			float dir = Mathf.Sign(vel.x);
@@ -132,30 +132,30 @@ namespace Zeef.TwoDimensional {
 		// ---
 		// Vertical
 
-		void VerticalAdjustForSlope(RaycastHit2D hit, ref Vector2 vel) {
-			float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-			float dir = Mathf.Sign(vel.y);
+		// void VerticalAdjustForSlope(RaycastHit2D hit, ref Vector2 vel) {
+		// 	float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+		// 	float dir = Mathf.Sign(vel.y);
 
-			float distanceToSlopeStart = 0;
+		// 	float distanceToSlopeStart = 0;
 
-			if (slopeAngle != verticalSlopeInfo.SlopeAngleOld) {
-				distanceToSlopeStart = hit.distance - skin;
-				vel.y -= distanceToSlopeStart * dir;
-			}
+		// 	if (slopeAngle != verticalSlopeInfo.SlopeAngleOld) {
+		// 		distanceToSlopeStart = hit.distance - skin;
+		// 		vel.y -= distanceToSlopeStart * dir;
+		// 	}
 
-			VerticalClimbSlope(ref vel, slopeAngle, hit.normal);
-			vel.y += distanceToSlopeStart * dir;
-		}
+		// 	VerticalClimbSlope(ref vel, slopeAngle, hit.normal);
+		// 	vel.y += distanceToSlopeStart * dir;
+		// }
 
-		void VerticalClimbSlope(ref Vector2 vel, float slopeAngle, Vector2 slopeNormal) {
-			float moveDistance = Mathf.Abs(vel.y);
-			float climbAmountX = Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * moveDistance;
+		// void VerticalClimbSlope(ref Vector2 vel, float slopeAngle, Vector2 slopeNormal) {
+		// 	float moveDistance = Mathf.Abs(vel.y);
+		// 	float climbAmountX = Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * moveDistance;
 
-			if (vel.x <= climbAmountX) {
-				vel.y = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * moveDistance * Mathf.Sign (vel.y);
-				vel.x = climbAmountX;
-			}
-		}
+		// 	if (vel.x <= climbAmountX) {
+		// 		vel.y = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * moveDistance * Mathf.Sign (vel.y);
+		// 		vel.x = climbAmountX;
+		// 	}
+		// }
 
 		void VerticalCollisions(ref Vector2 vel) {
 			float dir = Mathf.Sign(vel.y);
