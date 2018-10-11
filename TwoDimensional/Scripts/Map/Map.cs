@@ -44,7 +44,7 @@ namespace Zeef.TwoDimensional {
         [HideInInspector] public GameObject Garbage;
 
 
-        protected override void Awake() {
+        void Start () {
             Destroy(this.gameObject);
         }
 

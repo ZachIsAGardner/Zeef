@@ -44,13 +44,15 @@ namespace Zeef.TwoDimensional {
 		// --- 
 		// Inspector
 
-		void OnEnable() {
+		void OnEnable() {	
 			map = (Map)target; 
+			if (map == null) return;
 			keyHeld = null;
 			map.Editing = true;
 		}
 
 		void OnDisable() {
+			if (map == null) return;
 			map.Editing = false;
 		}
 
