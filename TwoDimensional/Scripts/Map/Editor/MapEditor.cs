@@ -147,7 +147,7 @@ namespace Zeef.TwoDimensional {
 			folder.SelectionIdx = GUILayout.SelectionGrid(
 				selected: folder.SelectionIdx,
 				texts: folder.Tiles.Select(p => p.name).ToArray(), 
-				xCount: 4
+				xCount: 3
 			);
 			
 			if (old != folder.SelectionIdx) {
