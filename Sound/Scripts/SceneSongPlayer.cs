@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Zeef.Sound {
@@ -9,7 +10,8 @@ namespace Zeef.Sound {
 
         protected virtual void Start() {
             if (songScriptable) AudioManager.ChangeSong(songScriptable);
-            else AudioManager.ChangeSong(AudioContent.GetSong(songScriptableName));
+            else if (!String.IsNullOrEmpty(songScriptableName)) AudioManager.ChangeSong(AudioContent.GetSong(songScriptableName));
+            else AudioManager.ChangeSong(null);
         }
     }
 }
