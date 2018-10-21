@@ -19,8 +19,10 @@ namespace Zeef.TwoDimensional {
 		[SerializeField] private float acc = .5f;
 
 		private float normalZoom;
+		public float NormalZoom { get { return normalZoom; }}
 		private bool zooming;
-		private float zoom;
+		private float destinationZoom;
+		private float zoomTime = 0.125f;
 
 		private Bounds? bounds;
 
@@ -76,21 +78,28 @@ namespace Zeef.TwoDimensional {
 			CheckBoundaries();
 		}
 
-		// ---
-
-		public void ResetZoom() {
-			zoom = normalZoom;
+		public void ChangeTarget(Transform newTarget) {
+			target = newTarget;
 		}
 
-		public void ChangeZoom(float newZoom) {
+		// ---
+
+		public void ResetZoom(float zoomTime = 0.125f) {
+			this.zoomTime = zoomTime;
 			zooming = true;
-			zoom = newZoom;
+			destinationZoom = normalZoom;
+		}
+
+		public void ChangeZoom(float newZoom, float zoomTime = 0.125f) {
+			this.zoomTime = zoomTime;
+			zooming = true;
+			destinationZoom = newZoom;
 		}
 
 		void Zooming() {
-			cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, zoom, 0.125f);
-			if (Mathf.Abs(cam.orthographicSize - zoom) < 1) {
-				cam.orthographicSize = zoom;
+			cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, destinationZoom, zoomTime);
+			if (Mathf.Abs(cam.orthographicSize - destinationZoom) < 0.01f) {
+				cam.orthographicSize = destinationZoom;
 				zooming = false;
 			}
 		}
