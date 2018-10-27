@@ -67,7 +67,11 @@ namespace Zeef.Sound {
 			}
 		}
 
-		public static IEnumerator SlidePitchCoroutine(float pitch, float time) {
+		public static void SlidePitch(float pitch, float time) {
+			GetInstance().StartCoroutine(SlidePitchCoroutine(pitch, time));
+		}
+
+		private static IEnumerator SlidePitchCoroutine(float pitch, float time) {
 			if (time <= 0) yield break;
 
 			while(true) {

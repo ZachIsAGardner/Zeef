@@ -56,7 +56,12 @@ namespace Zeef.TwoDimensional {
 
 			// if hitbox exists and it is not mine then i need to take damage
 			if (hitBox != null && hitBox.Owner != gameObject) {
-				await TakeDamageAsync(hitBox.Damage, hitBox);		
+				LivingObject livingObject = null;
+				if (hitBox != null && hitBox.Owner != null) 
+					livingObject = hitBox.Owner.GetComponentInChildren<LivingObject>();
+
+				if (livingObject == null || livingObject != null && !livingObject.IsFrozen)
+					await TakeDamageAsync(hitBox.Damage, hitBox);		
 			}
 		}
 

@@ -58,6 +58,7 @@ namespace Zeef.Menu {
             // Move loss bar over time
             while (Mathf.Abs(barTop.rectTransform.sizeDelta.x - barLoss.rectTransform.sizeDelta.x) > 1) {
                 while(!GameManager.IsPlaying()) await new WaitForUpdate();
+                if (barLoss == null) return;
 
                 float time = Time.deltaTime / duration;
                 barLoss.rectTransform.sizeDelta = new Vector2(
