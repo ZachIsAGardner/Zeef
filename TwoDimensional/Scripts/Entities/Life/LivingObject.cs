@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using Zeef.GameManagement;
 
 namespace Zeef.TwoDimensional {
 
@@ -49,7 +50,7 @@ namespace Zeef.TwoDimensional {
 		}
 
 		public async void OnExternalTriggerStay2D(object source, ExternalTriggerStay2DEventArgs args) {
-			if (IsFrozen || IsInvincible) return;
+			if (IsFrozen || IsInvincible || !GameManager.IsPlaying()) return;
 
 			HitBox2D hitBox = args.Other.GetComponent<HitBox2D>();
 
@@ -95,7 +96,11 @@ namespace Zeef.TwoDimensional {
 
 			OnBeforeFreeze();
 
-			await new WaitForSeconds(freezeDuration);
+			float timeElapsed = 0;
+			while (timeElapsed < freezeDuration) {
+				if (GameManager.IsPlaying()) timeElapsed += Time.deltaTime;
+				await new WaitForUpdate();
+			}
 
 			OnAfterFreeze();
 
@@ -107,7 +112,11 @@ namespace Zeef.TwoDimensional {
 
 			OnBeforeInvincibility();
 
-			await new WaitForSeconds(invincibilityDuration);
+			float timeElapsed = 0;
+			while (timeElapsed < invincibilityDuration) {
+				if (GameManager.IsPlaying()) timeElapsed += Time.deltaTime;
+				await new WaitForUpdate();	
+			}
 
 			OnAfterInvincibility();
 

@@ -36,13 +36,17 @@ namespace Zeef.TwoDimensional {
             livingObject.BeforeDie += OnBeforeDie;
         }
 
+        void ResetColors() {
+            int i = 0;
+            foreach (SpriteRenderer spriteRenderer in spriteRenderers) {
+                spriteRenderer.color = colors[i];
+                i++;
+            }
+        }
+
         void Update() {
             if (!livingObject.IsFrozen && !livingObject.IsInvincible) {
-                int i = 0;
-                foreach (SpriteRenderer spriteRenderer in spriteRenderers) {
-                    spriteRenderer.color = colors[i];
-                    i++;
-                }
+                ResetColors();
             }
         }
 
@@ -52,11 +56,7 @@ namespace Zeef.TwoDimensional {
         }
 
         private void OnAfterFreeze(object source, EventArgs args) {
-            int i = 0;
-            foreach (var s in spriteRenderers) {
-                s.color = colors[i];
-                i++;
-            }
+            ResetColors();
         }
 
         private async void OnBeforeInvincibility(object source, EventArgs args) {
@@ -77,6 +77,11 @@ namespace Zeef.TwoDimensional {
             bool visible = true;
 
 			while(!exitBlink) {
+                while (!GameManager.IsPlaying()) {
+                    ResetColors();
+                    await new WaitForUpdate();
+                }
+
                 foreach (SpriteRenderer spriteRenderer in spriteRenderers) {
                     Color color = spriteRenderer.color;
 
@@ -90,11 +95,7 @@ namespace Zeef.TwoDimensional {
                 await new WaitForSeconds(0.05f);
 			}
 
-            int i = 0;
-			foreach (SpriteRenderer spriteRenderer in spriteRenderers) {
-                spriteRenderer.color = colors[i];
-                i++;
-            }
+            ResetColors();
         }
     }
 }
