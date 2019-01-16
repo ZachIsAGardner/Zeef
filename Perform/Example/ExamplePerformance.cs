@@ -8,8 +8,8 @@ namespace Zeef.Perform.Example {
 
 		[SerializeField] SoundEffectScriptable tone;
 		
-		private TextBoxUIPartialModel BranchOptions() {
-			return new TextBoxUIPartialModel(
+		private TextBoxUIPartialModel BranchOptions { get =>
+			new TextBoxUIPartialModel(
 				speaker: "Pebbles",
 				crawlTime: 0.05f,
 				tone: tone
@@ -22,7 +22,7 @@ namespace Zeef.Perform.Example {
         protected override Branch BranchStart() {
 
 			return new Branch(
-				textBoxModel: BranchOptions(),
+				textBoxModel: BranchOptions,
 
 				sections: new List<Section>() {
 					new Section(
@@ -48,15 +48,15 @@ namespace Zeef.Perform.Example {
 				},
 
 				paths: new List<Path>() {
-					new Path("No", No()),
-					new Path("Yes", Yes()),
+					new Path("No", No),
+					new Path("Yes", Yes),
 				}
 			);
         }
 
-		private Branch Yes() {
-			return new Branch(
-				textBoxModel: BranchOptions(),
+		private Branch Yes { get => 
+			new Branch(
+				textBoxModel: BranchOptions,
 
 				sections: new List<Section>() {
 					new Section(
@@ -68,19 +68,14 @@ namespace Zeef.Perform.Example {
 						textBoxModel: new TextBoxUIFullModel(
 							text: "Okay I'm done for now actually... I'll come up with more examples later."
 						)
-					),
-					new Section(
-						textBoxModel: new TextBoxUIFullModel(
-							text: "Only so many hours in a day na mean?"
-						)
 					)
 				}
 			);
-		} 
+		}
 
-		private Branch No() {
-			return new Branch(
-				textBoxModel: BranchOptions(),
+		private Branch No { get => 
+			new Branch(
+				textBoxModel: BranchOptions,
 
 				sections: new List<Section>() {
 					new Section(
@@ -95,6 +90,6 @@ namespace Zeef.Perform.Example {
 					),
 				}
 			);
-		} 
+		}
     }
 }

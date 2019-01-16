@@ -194,7 +194,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   layerMask:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 512
   skin: 0.1
   rayCount: 4
 --- !u!114 &5217099775028222067
@@ -210,13 +210,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   velMax: {x: 100, y: 100}
-  acc: 0.01
+  acc: 0.001
   moveSpeed: 15
   active: 1
   spriteRenderer: {fileID: 5217099776204406754}
-  gravity: 50
+  gravity: 65
   maxJumpStrength: 25
-  minJumpStrength: 12
+  minJumpStrength: 10
 --- !u!114 &5217099775028222066
 MonoBehaviour:
   m_ObjectHideFlags: 0
