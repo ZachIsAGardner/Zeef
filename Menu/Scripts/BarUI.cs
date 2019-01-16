@@ -2,6 +2,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using Zeef.GameManagement;
 
 namespace Zeef.Menu {
     
@@ -38,6 +39,7 @@ namespace Zeef.Menu {
             // Set top to white and pause for a moment
             Color topColor = barTop.color;
             barTop.color = Color.white;
+            while(!GameManager.IsPlaying()) await new WaitForUpdate();
             await new WaitForSeconds(0.1f);
 
             // Set loss to old top size
@@ -50,10 +52,14 @@ namespace Zeef.Menu {
             );
             barTop.color = topColor;
 
+            while(!GameManager.IsPlaying()) await new WaitForUpdate();
             await new WaitForSeconds(duration);
 
             // Move loss bar over time
             while (Mathf.Abs(barTop.rectTransform.sizeDelta.x - barLoss.rectTransform.sizeDelta.x) > 1) {
+                while(!GameManager.IsPlaying()) await new WaitForUpdate();
+                if (barLoss == null) return;
+
                 float time = Time.deltaTime / duration;
                 barLoss.rectTransform.sizeDelta = new Vector2(
                     Mathf.Lerp(barLoss.rectTransform.sizeDelta.x, barTop.rectTransform.sizeDelta.x, time),

@@ -20,7 +20,9 @@ namespace Zeef.TwoDimensional {
 		[SerializeField] int damage = 1;
 		public int Damage { get { return damage; } }
 
-		public GameObject Owner { get; private set; }
+		[SerializeField] GameObject owner;
+		public GameObject Owner { get { return owner; } private set { owner = value; } }
+
 		// Parented hitboxes are attached to owner
 		// ex)
 		// 1) Sword swing would be parented
@@ -31,6 +33,17 @@ namespace Zeef.TwoDimensional {
 		public event EventHandler<LandedHitArgs> AfterLandedHit;
 
 		// ---
+
+		public static HitBox2D Initialize(HitBox2D prefab, GameObject owner, Vector2 position, Vector2 size, bool Parented) {
+			HitBox2D instance = GameManager.SpawnActor(prefab.gameObject, position).GetComponent<HitBox2D>();
+
+			if (Parented) instance.transform.parent = owner.transform;
+			instance.transform.position = position;
+			instance.transform.localScale = size;
+			instance.Owner = owner;
+
+			return instance;
+		}
 
 		public static HitBox2D Initialize(GameObject owner, int damage, Vector2 position, Vector2 size, bool Parented) {
 			HitBox2D instance = GameManager.SpawnActor(position)

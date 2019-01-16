@@ -35,6 +35,7 @@ namespace Zeef.TwoDimensional {
         public List<TileFolderScriptable> TileFolders;
         public Color CursorColor = new Color(0.5f,0.5f,0.75f,0.75f);
 
+        [HideInInspector] public bool Editing;
         [HideInInspector] public GameObject CurrentTile;
         [HideInInspector] public int CurrentLayerIdx;
         public string CurrentLayer { get { return LayerOptions[CurrentLayerIdx]; } }
@@ -42,13 +43,16 @@ namespace Zeef.TwoDimensional {
         [HideInInspector] public List<FolderListItem> FolderListItems;
         [HideInInspector] public GameObject Garbage;
 
-        protected override void Awake() {
+
+        void Start () {
             Destroy(this.gameObject);
         }
 
         void OnDrawGizmos() {
-            Gizmos.color = CursorColor;
-            Gizmos.DrawCube(CursorPosition, new Vector3(GridSize, GridSize, 1));
+            if (Editing) {
+                Gizmos.color = CursorColor;
+                Gizmos.DrawCube(CursorPosition, new Vector3(GridSize, GridSize, 1));
+            }
         }
     }
 }

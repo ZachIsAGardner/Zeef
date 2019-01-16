@@ -30,6 +30,7 @@ namespace Zeef.GameManagement {
             return instance;
         }
 
+        // Darken Screen
         public async Task FadeOutAsync (float duration = 1) {
             
             while (imageComponent.color.a < 1) {
@@ -38,6 +39,7 @@ namespace Zeef.GameManagement {
             }
         }
 
+        // Undarken screen
         public async Task FadeInAsync (float duration = 1, Action callback = null) {
 
             while (imageComponent.color.a > 0) {

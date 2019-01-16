@@ -64,15 +64,6 @@ namespace Zeef.GameManagement {
 		// ---
 		// Running
 
-		protected virtual void Update() {
-			ListenForPause();
-		}
-
-		void ListenForPause() {
-			if (ControlManager.GetInputDown(ControlManager.Start) && (IsPaused() || IsPlaying()))
-				GameState = (IsPlaying()) ? GameStatesEnum.Pause : GameStatesEnum.Play;
-		}
-
 		public static GameObject SpawnActor(Vector2 position) {
 			GameObject actor =  new GameObject();
 
@@ -166,14 +157,24 @@ namespace Zeef.GameManagement {
 		
 		public static bool IsInCutscene() => GameState == GameStatesEnum.Cutscene;
 		
-		public static bool IsLoading() => GameState == GameStatesEnum.Loading;	
+		public static bool IsLoading() => GameState == GameStatesEnum.Loading;
+
+		public static void PauseGame() {
+			GameState = GameStatesEnum.Pause;
+		}	
+
+		public static void UnpauseGame() {
+			if (IsPaused())
+				GameState = GameStatesEnum.Play;
+		}
 
 		public static void EnterCutscene() {
 			GameState = GameStatesEnum.Cutscene;
 		}
 
 		public static void ExitCutscene() {
-			GameState = GameStatesEnum.Play;
+			if (IsInCutscene())
+				GameState = GameStatesEnum.Play;
 		}
 	}
 }

@@ -58,7 +58,7 @@ namespace Zeef.TwoDimensional {
 		protected virtual void Start () {
 			StartPosition = transform.position;
 
-			Collision = GetComponent<Collision2D>();
+			Collision = this.GetComponentWithError<Collision2D>();
 		}
 
 		protected virtual void Update () {

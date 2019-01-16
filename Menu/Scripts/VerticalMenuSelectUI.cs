@@ -41,6 +41,10 @@ namespace Zeef.Menu {
         }
 
         public async Task<object> GetSelectionAsync() {
+            return await GetSelectionAsync(ControlManager.Accept, ControlManager.Deny);
+        }
+
+        public async Task<object> GetSelectionAsync(List<string> acceptInputs, List<string> cancelInputs) {
 
             int focus = 0;
 
@@ -58,11 +62,11 @@ namespace Zeef.Menu {
                     menuItems[focus].Highlight();
                 }
                 
-                if (ControlManager.GetInputDown(ControlManager.Accept)) { 
+                if (ControlManager.GetInputDown(acceptInputs)) { 
                     Close();
                     return menuItems[focus].Data;
                 }
-                if (ControlManager.GetInputDown(ControlManager.Deny) && cancelable) {
+                if (ControlManager.GetInputDown(cancelInputs) && cancelable) {
                     Close();
                     return null;
                 }
