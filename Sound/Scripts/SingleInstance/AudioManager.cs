@@ -94,5 +94,15 @@ namespace Zeef.Sound {
 		public static void PlaySoundEffect(AudioSource source, string sfxName) {
 			PlaySoundEffect(source, AudioContent.GetSoundEffect(sfxName));
 		}
+
+		public static async Task PlaySoundEffectAsync(SoundEffectScriptable sfx) {
+			AudioSource source = new GameObject().AddComponent<AudioSource>();
+			source.transform.SetParent(GetInstance().transform);
+
+			PlaySoundEffect(source, sfx);
+			
+			await new WaitForSeconds(sfx.Clip.length);
+			Destroy(source.gameObject);
+		}
 	}
 }

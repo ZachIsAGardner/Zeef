@@ -5,8 +5,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using UnityEngine;
-using Zeef;
-using Zeef.Menu;
 
 namespace Zeef.Menu.Example {
 

@@ -5,6 +5,10 @@ using UnityEngine;
 
 namespace Zeef {
 
+	/// <summary>
+	/// A MonoBehaviour inherits from SingleInstance to ensure that only one instance of it can ever exist.
+	/// This Provides a static reference to the instance of the MonoBehaviour.
+	///</summary>
 	public class SingleInstance<T> : MonoBehaviour {
 
 		protected static T instance;

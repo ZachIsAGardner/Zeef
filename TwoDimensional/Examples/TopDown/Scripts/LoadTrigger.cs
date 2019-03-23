@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 // ---
-using Zeef.TwoDimensional;
 using Zeef.GameManagement;
 
 namespace Zeef.TwoDimensional.Example {

@@ -7,6 +7,9 @@ using UnityEngine.UI;
 
 namespace Zeef {
 
+    /// <summary>
+    /// Provides strongly typed references to input from the player.
+    /// </summary>
     public class ControlManager : SingleInstance<ControlManager> {
 
         // Directions

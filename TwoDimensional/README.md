@@ -6,5 +6,6 @@
 * Particle effects
 * Animated 2D sprites
 
-## Dependencies ##
+### References ###
 * Zeef.GameManagement
+* Zeef.Menu

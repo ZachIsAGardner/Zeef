@@ -1,20 +1,21 @@
 # Zeef.Perform #
 
 ## Features ##
-* Basic dialogue and cutscene system
-* Branches of dialogue that can lead to other branches or even other performances
-* Use actions to tell characters what to do during cutscenes
+* Basic dialogue and cutscene system.
+* Branches of dialogue that can lead to other Branches or even other Performances.
+* Use Actions to tell characters what to do during cutscenes.
 
 ## Info ##
 
 ### Branch ###
-* A branch is a spurt of text boxes
+* A branch is a spurt of text boxes.
 * A branch has paths that lead to other branches.
 
 ### Path ###
-* A question for the user
-* Leads to other branches
+* A question for the user.
+* Leads to other branches.
 
-### Depenencies ###
-* Zeef.TwoDimensional
+### References ###
+* Zeef.GameManagement
 * Zeef.Menu
+* Zeef.Sound

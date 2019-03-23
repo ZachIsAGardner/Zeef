@@ -1,7 +1,12 @@
 # Zeef.Persistence #
 
 ## Features ##
+* Persists data between play sessions.
 
-* Persist data between play sessions
-* Robust flag system for recording player actions and persisting their effects
-* The flag system can also be used for triggering future events
+### PersistenceManager.cs ###
+* Manager for handling interactions with save-data.
+
+### Flag System ###
+* WIP
+
+

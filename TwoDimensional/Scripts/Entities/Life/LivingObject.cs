@@ -16,7 +16,6 @@ namespace Zeef.TwoDimensional {
 	}
 
 	// Makes it so objects can live and die
-	[RequireComponent (typeof(BoxCollider2D))]
 	public class LivingObject : MonoBehaviour {
 
 		[SerializeField] int maxHealth = 1;
@@ -44,7 +43,7 @@ namespace Zeef.TwoDimensional {
 
 		// ---	
 
-		void Start() {
+		protected virtual void Start() {
 			foreach (HurtBox2D hurtBox in weakPoints) 
 				hurtBox.ExternalTriggerStay2D += OnExternalTriggerStay2D;
 		}
@@ -67,7 +66,7 @@ namespace Zeef.TwoDimensional {
 
 		// ---
 		
-		public void Die() {
+		public virtual async Task DieAsync() {
 			OnBeforeDie();
 			Destroy(gameObject);
 		}
@@ -84,8 +83,9 @@ namespace Zeef.TwoDimensional {
 			Health -= damage;
 				
 			if (Health <= 0) { 
-				await FreezeAsync();
-				Die();
+				// await FreezeAsync();
+				IsInvincible = true;
+				await DieAsync();
 			} else {
 				OnAfterSurviveTakeDamage(hitBox);
 				await FreezeAsync();

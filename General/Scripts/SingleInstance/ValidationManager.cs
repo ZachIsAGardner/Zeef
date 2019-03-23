@@ -25,6 +25,9 @@ namespace Zeef {
 
     // ---
 
+    /// <summary>
+    /// ValidationManager points out potential issues in any given Scene.
+    /// <summary>
     public class ValidationManager : MonoBehaviour {
 
         private void Awake() {
@@ -37,8 +40,9 @@ namespace Zeef {
 
         // ---
 
-        // Find all fields meant to be set in the 
-        // inspector that havent been set and warn the user
+        /// <summary>
+        /// Find all fields meant to be set in the inspector that haven't yet been set and warn the user.
+        /// </summary>
         public static void LogValidations() {
             List<ValidationError> validations = GetValidationErrors();
 
@@ -46,8 +50,9 @@ namespace Zeef {
                 Debug.Log(validation.Error, validation.Subject); 
         }
 
-        // A scene is "invalid" when it contains MonoBehaviours with 
-        // fields that haven't been properly set
+        /// <summary>
+        /// A scene is "invalid" when it contains MonoBehaviours with fields that haven't been properly set.
+        /// </summary>
         public static bool SceneIsValid() => GetValidationErrors().Count < 1;
 
         // ---

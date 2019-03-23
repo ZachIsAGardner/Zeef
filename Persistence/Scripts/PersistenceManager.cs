@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Zeef.Persistence {
 
+	/// <summary>
+	/// PersistenceManager handles interactions with save-data.
+	/// </summary>
     public class PersistenceManager : SingleInstance<PersistenceManager> {
 
         [Required]

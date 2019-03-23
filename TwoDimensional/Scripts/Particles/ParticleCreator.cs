@@ -12,6 +12,8 @@ namespace Zeef.TwoDimensional {
         
         [SerializeField] Particle particle;
 
+        [SerializeField] bool playOnStart = true;
+
         [SerializeField] bool particlesBecomeChildren;
         [SerializeField] bool startPositionFromBoxCollider2DBounds = true;
         [SerializeField] FloatRange lifeTime = new FloatRange(1, 2);
@@ -31,7 +33,8 @@ namespace Zeef.TwoDimensional {
         [SerializeField] float offsetLength = -1;
 
         void Start() {
-            StartCoroutine(RunCoroutine());
+            if (playOnStart) 
+                StartCoroutine(RunCoroutine());
         }
 
         private IEnumerator RunCoroutine() {
@@ -44,7 +47,7 @@ namespace Zeef.TwoDimensional {
             Destroy(gameObject);
         }
 
-        private IEnumerator CreateParticlesCoroutine() {
+        public IEnumerator CreateParticlesCoroutine() {
             int i = 0;
 
             while (i < amount) {
