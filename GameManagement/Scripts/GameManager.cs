@@ -60,20 +60,17 @@ namespace Zeef.GameManagement {
 		// ---
 		// Setup
 
-		protected virtual void Awake() {
+		protected override void Awake() {
 			base.Awake();
 			GameState = GameStatesEnum.Play;
 			DontDestroyOnLoad(gameObject);
 
 			Application.targetFrameRate = 60;			
-			SceneManager.sceneLoaded += OnSceneLoaded;
 		}
 
 		void Start() {
 			lastLoadedScene = SceneManager.GetActiveScene().name;
 		}
-
-		protected virtual void OnSceneLoaded(Scene scene, LoadSceneMode mode) { }
 
 		// ---
 		// Running
@@ -128,9 +125,6 @@ namespace Zeef.GameManagement {
 				parent: Utility.FindGameObjectWithTagWithError(TagConstants.DynamicCanvasFolder).transform
 			);
 		}
-
-		// ---
-		// Loading
 		
 		/// <summary>
 		/// Loads the first scene found with a name matching the provided <paramref name="scene"/> parameter.
