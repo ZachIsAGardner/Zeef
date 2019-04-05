@@ -45,7 +45,7 @@ namespace Zeef.GameManagement {
 		/// </summary>
 		public static object ScenePackage { get { return GetInstance().scenePackage; } }
 		private object scenePackage { get; set; }
-
+		
 		/// <summary>
 		/// The state of the game. Certain behaviours will act differenly depending on the state.
 		///
@@ -71,6 +71,13 @@ namespace Zeef.GameManagement {
 		void Start() {
 			lastLoadedScene = SceneManager.GetActiveScene().name;
 		}
+
+		// ---
+
+		/// <summary>
+		/// A "Package" is an object intended to serve as parameters or arguments for a scene.
+		/// </summary>
+		public static T OpenPackage<T>() => (T)GetInstance().scenePackage;
 
 		// ---
 		// Running
