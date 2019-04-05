@@ -107,7 +107,7 @@ namespace Zeef.Perform {
 				case '?':
 				case '!':
 				case ':':
-					yield return new WaitForSeconds(crawlTime * 4.5f);
+					yield return new WaitForSeconds(crawlTime * 5.5f);
 					break;
 				case ',':
 				case ';':
