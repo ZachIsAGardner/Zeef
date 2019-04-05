@@ -19,24 +19,38 @@ namespace Zeef.GameManagement {
 	}
 
 	public class GameManager : SingleInstance<GameManager> {
-
-		// Special actions are available only in dev mode
-        [SerializeField] private bool isDev = true;
+	
+		/// <summary>
+		/// Special actions are only available in dev mode.
+		/// </summary>
 		public static bool IsDev { get { return GetInstance().isDev; } }
+        [SerializeField] private bool isDev = true;
 
+		/// <summary>
+		/// The main canvas that persists between scenes.
+		/// </summary>
+		public static Canvas Canvas { get { return GetInstance().canvas; }}
 		[Required]
 		[SerializeField] private Canvas canvas;
-		public static Canvas Canvas { get { return GetInstance().canvas; }}
 
 		[Range(0, 5)]
 		[SerializeField] private float transitionTime = 1;
 
-		[SerializeField] Color transitionColor = Color.black;
+		[SerializeField] private Color transitionColor = Color.black;
 
 		// -
 
+		/// <summary>
+		/// A "Package" is an object intended to serve as parameters or arguments for a scene.
+		/// </summary>
+		public static object ScenePackage { get { return GetInstance().scenePackage; } }
 		private object scenePackage { get; set; }
 
+		/// <summary>
+		/// The state of the game. Certain behaviours will act differenly depending on the state.
+		///
+		/// Possible states are Play, Pause, Cutscene, and Loading
+		/// </summary>
 		public static GameStatesEnum GameState { get; private set; }
 
 		protected string lastLoadedScene;
@@ -64,7 +78,10 @@ namespace Zeef.GameManagement {
 		// ---
 		// Running
 
-		public static GameObject SpawnActor(Vector2 position) {
+		/// <summary>
+		/// Spawns an empty GameObject inside the DynamicFolder GameObject.
+		/// </summary>
+		public static GameObject SpawnActor(Vector3 position) {
 			GameObject actor =  new GameObject();
 
 			actor.gameObject.transform.parent = Utility.FindGameObjectWithTagWithError(TagConstants.DynamicFolder).transform;
@@ -73,6 +90,9 @@ namespace Zeef.GameManagement {
 			return actor;
 		}
 
+		/// <summary>
+		/// Spawns a copy of the provided prefab inside the DynamicFolder GameObject.
+		/// </summary>
 		public static GameObject SpawnActor(GameObject prefab, Vector3 position) {
 			GameObject folder = GameObject.FindGameObjectWithTag(TagConstants.DynamicFolder);
 			
@@ -89,6 +109,9 @@ namespace Zeef.GameManagement {
 			);
 		}
 
+		/// <summary>
+		/// Spawns a copy of the provided prefab inside the DynamicCanvasFolder GameObject.
+		/// </summary>
 		public static GameObject SpawnCanvasElement(GameObject prefab, Vector2 position) {
 			GameObject folder = GameObject.FindGameObjectWithTag(TagConstants.DynamicCanvasFolder);
 			
@@ -108,9 +131,10 @@ namespace Zeef.GameManagement {
 
 		// ---
 		// Loading
-
-		public static object OpenPackage() => GetInstance().scenePackage;
 		
+		/// <summary>
+		/// Loads the first scene found with a name matching the provided <paramref name="scene"/> parameter.
+		/// </summary>
 		public static async Task LoadSceneAsync(string scene, LoadSceneMode loadMode = LoadSceneMode.Single, object package = null, bool transition = true) {
 
 			if (transition) {
