@@ -1,5 +1,7 @@
 # Style Guide #
 
+* Notes to help me be consistent.
+
 ## General ##
 
 * Methods and related are written with the left bracket on the same line as the declaration
@@ -56,7 +58,7 @@ using JacketGame.Fights;
 
 <hr/>
 
-* This is how you deal with fields that are to be set in the inspector that also need to get referenced by other objects.
+* This is how you deal with fields that are to be set in the inspector that also need to get referenced by other Classes.
 ```
 [SerializeField] private GameObject player;
 public GameObject Player { get { return player; }}

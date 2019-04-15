@@ -35,6 +35,10 @@ namespace Zeef.TwoDimensional {
 
 		// ---
 
+		/// <summary>
+		/// Moves the entity. Provided the velocity to attempt to move the entity with. 
+		/// Velocity will change based on collision.
+		/// </summary>
 		public void Move(Vector2 vel) {
 			// Reset
 			collisions.Reset();
@@ -51,7 +55,9 @@ namespace Zeef.TwoDimensional {
 			transform.Translate(vel);
 		}	
 
-		// For moving platforms
+		/// <summary>
+		/// Moves the entity while on a moving platform.
+		/// </summary>
 		public void Move(Vector2 vel, bool forceGrounded) {
 			collisions.Reset();
 			collisions.Down = forceGrounded;
