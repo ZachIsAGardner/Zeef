@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // This is heavily influenced by Sebastian Lague's platformer repo
+// Check out his stuff, he's a cool dude.
 // https://github.com/SebLague/2DPlatformer-Tutorial
 namespace Zeef.TwoDimensional {
 
@@ -72,33 +73,40 @@ namespace Zeef.TwoDimensional {
 		// ---
 		// Horizontal
 
-		// void HorizontalAdjustForSlope(RaycastHit2D hit, ref Vector2 vel) {
-		// 	float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-		// 	float dir = Mathf.Sign(vel.x);
+		private void HorizontalAdjustForSlopeBottom(RaycastHit2D hit, ref Vector2 vel) {
+			float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+			float dir = Mathf.Sign(vel.x);
 
-		// 	// check for descending slope
-		// 	float distanceToSlopeStart = 0;
+			if (slopeAngle == 90)
+				return;
 
-		// 	if (slopeAngle != horizontalSlopeInfo.SlopeAngleOld) {
-		// 		distanceToSlopeStart = hit.distance - skin;
-		// 		vel.x -= distanceToSlopeStart * dir;
-		// 	}
+			vel.y = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(vel.x);
+			vel.x = (Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(vel.x)) * dir;
 
-		// 	HorizontalClimbSlope(ref vel, slopeAngle, hit.normal);
-		// 	vel.x += distanceToSlopeStart * dir;
-		// }
+			collisions.Down = true;
+		}
 
-		// void HorizontalClimbSlope(ref Vector2 vel, float slopeAngle, Vector2 slopeNormal) {
-		// 	float moveDistance = Mathf.Abs(vel.x);
-		// 	float climbAmountY = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * moveDistance;
+		private void HorizontalAdjustForSlopeTop(RaycastHit2D hit, ref Vector2 vel) {
 
-		// 	if (vel.y <= climbAmountY) {
-		// 		vel.y = climbAmountY;
-		// 		vel.x = Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * moveDistance * Mathf.Sign (vel.x);
-		// 		collisions.Down = true;
-		// 		horizontalSlopeInfo.ClimbingSlope = true;
-		// 	}
-		// }
+			float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+			float dir = Mathf.Sign(vel.x);
+
+			if (slopeAngle == 90)
+				return;
+
+			if (vel.x > vel.y) {
+				vel.y = -(Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(vel.x));
+				vel.x = ((Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(vel.x)) * dir);
+			}
+			else 
+			{
+				float attemptX = (Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(vel.y));
+				vel.y = (Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(vel.y));
+				vel.x = attemptX;
+			}
+
+			collisions.Up = true;
+		}
 
 		void HorizontalCollisions(ref Vector2 vel) {
 			float dir = Mathf.Sign(vel.x);
@@ -120,9 +128,14 @@ namespace Zeef.TwoDimensional {
 					if (hit.distance == 0 || hit.collider.tag == "Through") continue;
 					
 					// Make sure not setting vel to 0 on left or right collision if using slope
-					// if (i == 0) {
-					// 	HorizontalAdjustForSlope(hit, ref vel);
-					// }
+					// check bottom raycast only
+					if (i == 0) {
+						// HorizontalAdjustForSlopeBottom(hit, ref vel);
+					}
+					// check top raycast only
+					else if (i == rayCount - 1){
+						// HorizontalAdjustForSlopeTop(hit, ref vel);
+					}
 
 					vel.x = (hit.distance - skin) * dir;
 					length = hit.distance;
@@ -179,10 +192,9 @@ namespace Zeef.TwoDimensional {
 				if (hit) {
 
 					if (hit.collider.tag == "Through" && vel.y >= 0) continue;
-					
-					// if (i == 0) {
-					// 	VerticalAdjustForSlope(hit, ref vel);
-					// }
+
+					if (i == 0) 
+						HorizontalAdjustForSlopeTop(hit, ref vel);
 
 					vel.y = (hit.distance - skin) * dir;
 					length = hit.distance;
