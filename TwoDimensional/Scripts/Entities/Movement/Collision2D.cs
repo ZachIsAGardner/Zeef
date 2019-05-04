@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // This is heavily influenced by Sebastian Lague's platformer repo
-// Check out his stuff, he's a cool dude.
 // https://github.com/SebLague/2DPlatformer-Tutorial
 namespace Zeef.TwoDimensional {
 
@@ -73,40 +72,40 @@ namespace Zeef.TwoDimensional {
 		// ---
 		// Horizontal
 
-		private void HorizontalAdjustForSlopeBottom(RaycastHit2D hit, ref Vector2 vel) {
-			float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-			float dir = Mathf.Sign(vel.x);
+		// private void HorizontalAdjustForSlopeBottom(RaycastHit2D hit, ref Vector2 vel) {
+		// 	float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+		// 	float dir = Mathf.Sign(vel.x);
 
-			if (slopeAngle == 90)
-				return;
+		// 	if (slopeAngle == 90)
+		// 		return;
 
-			vel.y = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(vel.x);
-			vel.x = (Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(vel.x)) * dir;
+		// 	vel.y = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(vel.x);
+		// 	vel.x = (Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(vel.x)) * dir;
 
-			collisions.Down = true;
-		}
+		// 	collisions.Down = true;
+		// }
 
-		private void HorizontalAdjustForSlopeTop(RaycastHit2D hit, ref Vector2 vel) {
+		// private void HorizontalAdjustForSlopeTop(RaycastHit2D hit, ref Vector2 vel) {
 
-			float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-			float dir = Mathf.Sign(vel.x);
+		// 	float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+		// 	float dir = Mathf.Sign(vel.x);
 
-			if (slopeAngle == 90)
-				return;
+		// 	if (slopeAngle == 90)
+		// 		return;
 
-			if (vel.x > vel.y) {
-				vel.y = -(Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(vel.x));
-				vel.x = ((Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(vel.x)) * dir);
-			}
-			else 
-			{
-				float attemptX = (Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(vel.y));
-				vel.y = (Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(vel.y));
-				vel.x = attemptX;
-			}
+		// 	if (vel.x > vel.y) {
+		// 		vel.y = -(Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(vel.x));
+		// 		vel.x = ((Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(vel.x)) * dir);
+		// 	}
+		// 	else 
+		// 	{
+		// 		float attemptX = (Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(vel.y));
+		// 		vel.y = (Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(vel.y));
+		// 		vel.x = attemptX;
+		// 	}
 
-			collisions.Up = true;
-		}
+		// 	collisions.Up = true;
+		// }
 
 		void HorizontalCollisions(ref Vector2 vel) {
 			float dir = Mathf.Sign(vel.x);
@@ -193,8 +192,8 @@ namespace Zeef.TwoDimensional {
 
 					if (hit.collider.tag == "Through" && vel.y >= 0) continue;
 
-					if (i == 0) 
-						HorizontalAdjustForSlopeTop(hit, ref vel);
+					// if (i == 0) 
+						// HorizontalAdjustForSlopeTop(hit, ref vel);
 
 					vel.y = (hit.distance - skin) * dir;
 					length = hit.distance;

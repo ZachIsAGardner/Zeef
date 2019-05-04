@@ -1,10 +1,15 @@
 # Zeef.TwoDimensional # 
 
+Check out the examples [here!](https://github.com/ZachIsAGardner/Zeef/tree/master/_Examples/TwoDimensional) 
+
 ## Features ##
-* Moving objects
-* Living objects
+* Entities
+    * Living objects
+    * Moving objects
+    * Animated 2D sprites
 * Particle effects
-* Animated 2D sprites
+* Level 
+    * Camera2D
 
 ### References ###
 * Zeef.GameManagement

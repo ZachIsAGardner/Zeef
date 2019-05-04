@@ -1,5 +1,7 @@
 # Zeef.Perform #
 
+Check out the example [here!](https://github.com/ZachIsAGardner/Zeef/tree/master/_Examples/Perform) 
+
 ## Features ##
 * Basic dialogue and cutscene system.
 * Branches of dialogue that can lead to other Branches or even other Performances.
