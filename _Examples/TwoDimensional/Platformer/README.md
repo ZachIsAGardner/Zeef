@@ -1,6 +1,6 @@
-# Sample Guide #
+# Platformer Sample Guide #
 
-## Using MovingObject2D.cs to Create a Simple Platformer ##
+## Section One: Using MovingObject2D.cs to Create a Simple Platformer ##
 
 #### Inheriting from MovingObject2D.cs ####
 ###### (In code editor) ######
@@ -130,3 +130,6 @@ public class TestPlayer : MovingObject2D
 
 * And that's it!
 * Feel free to check out the rest of this directory for the final product of this guide.
+
+## Section Two: Creating Simple Animated Characters Using AnimatedSprite.cs ##
+* TODO! ;D
