@@ -176,13 +176,13 @@ namespace Zeef.GameManagement {
 		// ---
 		// GameState
 
-		public static bool IsPaused() => GameState == GameStatesEnum.Pause;
+		public static bool IsPaused { get => GameState == GameStatesEnum.Pause; }
 		
-		public static bool IsPlaying() => GameState == GameStatesEnum.Play;
+		public static bool IsPlaying { get => GameState == GameStatesEnum.Play; }
 		
-		public static bool IsInCutscene() => GameState == GameStatesEnum.Cutscene;
+		public static bool IsInCutscene { get => GameState == GameStatesEnum.Cutscene; }
 		
-		public static bool IsLoading() => GameState == GameStatesEnum.Loading;
+		public static bool IsLoading { get => GameState == GameStatesEnum.Loading; }
 
 		public static void PauseGame() {
 			GameState = GameStatesEnum.Pause;

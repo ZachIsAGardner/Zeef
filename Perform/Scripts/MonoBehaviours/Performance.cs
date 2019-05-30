@@ -9,6 +9,18 @@ using Zeef.GameManagement;
 using Zeef.Menu;
 
 namespace Zeef.Perform {
+
+	[Serializable]
+	public abstract class Performance<T> : Performance {
+		public T Model;
+
+		public async Task ExecuteAsync(T model) 
+		{
+			Model = model;
+			await ExecuteAsync();
+		}
+	}
+
 	[Serializable]
 	public abstract class Performance : MonoBehaviour {
 

@@ -11,7 +11,7 @@ namespace Zeef {
         }
 
         public static IEnumerator ShakeCoroutine(this Transform transform, float duration, float strength = 1) {
-            Vector3 originalPosition = transform.position;
+            Vector3 originalPosition = transform.localPosition;
 
             int interval = 2;
             int i = 0;
@@ -19,7 +19,7 @@ namespace Zeef {
 
             while (duration > 0) {
                 if (i >= interval) {
-                    transform.position = (left) 
+                    transform.localPosition = (left) 
                         ? originalPosition - (Vector3.right * strength * duration) 
                         : originalPosition + (Vector3.right * strength * duration);
 
@@ -32,7 +32,7 @@ namespace Zeef {
                 yield return null;
             }
 
-            transform.position = originalPosition;
+            transform.localPosition = originalPosition;
         }
     }
 }
