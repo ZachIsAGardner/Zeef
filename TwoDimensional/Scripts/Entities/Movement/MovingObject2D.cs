@@ -92,7 +92,7 @@ namespace Zeef.TwoDimensional {
 		}
 
 		protected virtual void Update () {
-			if (GameManager.IsPaused()) return;
+			if (GameManager.IsPaused) return;
 
 			CalculateVelocity(ref vel);
 			Collision.Move(vel * Time.deltaTime);

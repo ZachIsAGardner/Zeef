@@ -77,7 +77,7 @@ namespace Zeef.TwoDimensional {
             bool visible = true;
 
 			while(!exitBlink) {
-                while (!GameManager.IsPlaying()) {
+                while (!GameManager.IsPlaying) {
                     ResetColors();
                     await new WaitForUpdate();
                 }

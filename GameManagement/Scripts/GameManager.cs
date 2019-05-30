@@ -189,7 +189,7 @@ namespace Zeef.GameManagement {
 		}	
 
 		public static void UnpauseGame() {
-			if (IsPaused())
+			if (IsPaused)
 				GameState = GameStatesEnum.Play;
 		}
 
@@ -198,7 +198,7 @@ namespace Zeef.GameManagement {
 		}
 
 		public static void ExitCutscene() {
-			if (IsInCutscene())
+			if (IsInCutscene)
 				GameState = GameStatesEnum.Play;
 		}
 	}

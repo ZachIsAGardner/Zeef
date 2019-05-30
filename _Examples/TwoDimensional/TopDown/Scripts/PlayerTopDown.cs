@@ -55,7 +55,7 @@ namespace Zeef.TwoDimensional.Example {
 		}
 
 		protected override void Update() {
-			if (GameManager.IsLoading() || livingObject.IsFrozen) return;
+			if (GameManager.IsLoading || livingObject.IsFrozen) return;
 			base.Update();
 			
 			ChangeFacing();

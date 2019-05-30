@@ -81,7 +81,7 @@ namespace Zeef.TwoDimensional {
 		}
 
 		void Update() {
-			if (GameManager.IsPaused() || sprites.IsNullOrEmpty() || IsPaused) return;
+			if (GameManager.IsPaused || sprites.IsNullOrEmpty() || IsPaused) return;
 
 			AnimationState newState = GetAnimationState();
 			if (State == null || newState.Name != State.Name) {
