@@ -11,11 +11,18 @@ using System.Threading.Tasks;
 
 namespace Zeef.GameManagement {
 
-	public enum GameStatesEnum {
-		Play,
-		Pause,
-		Cutscene,
-		Loading,
+	public partial class GameState {
+
+		public string Name { get; set; }
+
+		private GameState(string name) {
+			Name = name;
+		}
+
+		public static GameState Play { get => new GameState("Play"); }
+		public static GameState Pause { get => new GameState("Pause"); }
+		public static GameState Cutscene { get => new GameState("Cutscene"); }
+		public static GameState Loading { get => new GameState("Loading"); }
 	}
 
 	public class GameManager : SingleInstance<GameManager> {
@@ -51,7 +58,7 @@ namespace Zeef.GameManagement {
 		///
 		/// Possible states are Play, Pause, Cutscene, and Loading
 		/// </summary>
-		public static GameStatesEnum GameState { get; private set; }
+		public static GameState GameState { get; private set; }
 
 		protected string lastLoadedScene;
 
@@ -62,7 +69,7 @@ namespace Zeef.GameManagement {
 
 		protected override void Awake() {
 			base.Awake();
-			GameState = GameStatesEnum.Play;
+			GameState = GameState.Play;
 			DontDestroyOnLoad(gameObject);
 
 			Application.targetFrameRate = 60;			
@@ -142,7 +149,7 @@ namespace Zeef.GameManagement {
 				GetInstance().lastLoadedScene = scene;
 				GetInstance().scenePackage = package;
 
-				GameState = GameStatesEnum.Loading;
+				GameState = GameState.Loading;
 				await new WaitForUpdate();
 
 				ScreenTransition screenTransition = ScreenTransition.Initialize(
@@ -159,7 +166,7 @@ namespace Zeef.GameManagement {
 
 				Destroy(screenTransition.gameObject);
 
-				GameState = GameStatesEnum.Play;
+				GameState = GameState.Play;
 			} else {
 				SceneManager.LoadScene(scene, loadMode);
 			}
@@ -176,30 +183,30 @@ namespace Zeef.GameManagement {
 		// ---
 		// GameState
 
-		public static bool IsPaused { get => GameState == GameStatesEnum.Pause; }
+		public static bool IsPaused { get => GameState == GameState.Pause; }
 		
-		public static bool IsPlaying { get => GameState == GameStatesEnum.Play; }
+		public static bool IsPlaying { get => GameState == GameState.Play; }
 		
-		public static bool IsInCutscene { get => GameState == GameStatesEnum.Cutscene; }
+		public static bool IsInCutscene { get => GameState == GameState.Cutscene; }
 		
-		public static bool IsLoading { get => GameState == GameStatesEnum.Loading; }
+		public static bool IsLoading { get => GameState == GameState.Loading; }
 
 		public static void PauseGame() {
-			GameState = GameStatesEnum.Pause;
+			GameState = GameState.Pause;
 		}	
 
 		public static void UnpauseGame() {
 			if (IsPaused)
-				GameState = GameStatesEnum.Play;
+				GameState = GameState.Play;
 		}
 
 		public static void EnterCutscene() {
-			GameState = GameStatesEnum.Cutscene;
+			GameState = GameState.Cutscene;
 		}
 
 		public static void ExitCutscene() {
 			if (IsInCutscene)
-				GameState = GameStatesEnum.Play;
+				GameState = GameState.Play;
 		}
 	}
 }
