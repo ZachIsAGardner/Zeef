@@ -30,13 +30,13 @@ namespace Zeef.GameManagement {
 		/// <summary>
 		/// Special actions are only available in dev mode.
 		/// </summary>
-		public static bool IsDev { get { return GetInstance().isDev; } }
+		public static bool IsDev { get => GetInstance().isDev; }
         [SerializeField] private bool isDev = true;
 
 		/// <summary>
 		/// The main canvas that persists between scenes.
 		/// </summary>
-		public static Canvas Canvas { get { return GetInstance().canvas; }}
+		public static Canvas Canvas { get => GetInstance().canvas; }
 		[Required]
 		[SerializeField] private Canvas canvas;
 
@@ -50,15 +50,16 @@ namespace Zeef.GameManagement {
 		/// <summary>
 		/// A "Package" is an object intended to serve as parameters or arguments for a scene.
 		/// </summary>
-		public static object ScenePackage { get { return GetInstance().scenePackage; } }
-		private object scenePackage { get; set; }
+		public static object ScenePackage { get => GetInstance().scenePackage; }
+		private object scenePackage;
 		
 		/// <summary>
 		/// The state of the game. Certain behaviours will act differenly depending on the state.
 		///
 		/// Possible states are Play, Pause, Cutscene, and Loading
 		/// </summary>
-		public static GameState GameState { get; private set; }
+		public static GameState GameState { get => GetInstance().gameState; }
+		private GameState gameState;
 
 		protected string lastLoadedScene;
 
@@ -69,7 +70,7 @@ namespace Zeef.GameManagement {
 
 		protected override void Awake() {
 			base.Awake();
-			GameState = GameState.Play;
+			gameState = GameState.Play;
 			DontDestroyOnLoad(gameObject);
 
 			Application.targetFrameRate = 60;			
@@ -149,7 +150,7 @@ namespace Zeef.GameManagement {
 				GetInstance().lastLoadedScene = scene;
 				GetInstance().scenePackage = package;
 
-				GameState = GameState.Loading;
+				GetInstance().gameState = GameState.Loading;
 				await new WaitForUpdate();
 
 				ScreenTransition screenTransition = ScreenTransition.Initialize(
@@ -166,7 +167,7 @@ namespace Zeef.GameManagement {
 
 				Destroy(screenTransition.gameObject);
 
-				GameState = GameState.Play;
+				GetInstance().gameState = GameState.Play;
 			} else {
 				SceneManager.LoadScene(scene, loadMode);
 			}
@@ -183,30 +184,30 @@ namespace Zeef.GameManagement {
 		// ---
 		// GameState
 
-		public static bool IsPaused { get => GameState == GameState.Pause; }
+		public static bool IsPaused { get => GetInstance().gameState.Name == GameState.Pause.Name; }
 		
-		public static bool IsPlaying { get => GameState == GameState.Play; }
+		public static bool IsPlaying { get => GetInstance().gameState.Name == GameState.Play.Name; }
 		
-		public static bool IsInCutscene { get => GameState == GameState.Cutscene; }
+		public static bool IsInCutscene { get => GetInstance().gameState.Name == GameState.Cutscene.Name; }
 		
-		public static bool IsLoading { get => GameState == GameState.Loading; }
+		public static bool IsLoading { get => GetInstance().gameState.Name == GameState.Loading.Name; }
 
 		public static void PauseGame() {
-			GameState = GameState.Pause;
+			GetInstance().gameState = GameState.Pause;
 		}	
 
 		public static void UnpauseGame() {
 			if (IsPaused)
-				GameState = GameState.Play;
+				GetInstance().gameState = GameState.Play;
 		}
 
 		public static void EnterCutscene() {
-			GameState = GameState.Cutscene;
+			GetInstance().gameState = GameState.Cutscene;
 		}
 
 		public static void ExitCutscene() {
 			if (IsInCutscene)
-				GameState = GameState.Play;
+				GetInstance().gameState = GameState.Play;
 		}
 	}
 }

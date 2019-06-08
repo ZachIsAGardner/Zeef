@@ -44,12 +44,14 @@ namespace Zeef.TwoDimensional {
 		// ---	
 
 		protected virtual void Start() {
-			foreach (HurtBox2D hurtBox in weakPoints) 
+			foreach (HurtBox2D hurtBox in weakPoints) {
 				hurtBox.ExternalTriggerStay2D += OnExternalTriggerStay2D;
+			}
 		}
 
 		public async void OnExternalTriggerStay2D(object source, ExternalTriggerStay2DEventArgs args) {
-			if (IsFrozen || IsInvincible || !GameManager.IsPlaying) 
+			// Can't take damage if frozen, invincible, or the game isn't playing
+			if (IsFrozen || IsInvincible || !GameManager.IsPlaying)
 				return;
 
 			HitBox2D hitBox = args.Other.GetComponent<HitBox2D>();
