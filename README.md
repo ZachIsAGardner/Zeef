@@ -2,7 +2,7 @@
 Zachary's Framework (Zeef) is a C# game framework built for Unity.
 
 #### Current Unity Version ####
-Unity 2018.3.1f1
+Unity 2019.1.4f1
 
 ## Setup ##
 This project requires minimal setup to get working.
