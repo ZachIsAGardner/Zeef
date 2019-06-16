@@ -20,8 +20,7 @@ namespace Zeef.TwoDimensional {
 		[SerializeField] int damage = 1;
 		public int Damage { get { return damage; } }
 
-		[SerializeField] GameObject owner;
-		public GameObject Owner { get { return owner; } private set { owner = value; } }
+		[SerializeField] public GameObject Owner;
 
 		// Parented hitboxes are attached to owner
 		// ex)

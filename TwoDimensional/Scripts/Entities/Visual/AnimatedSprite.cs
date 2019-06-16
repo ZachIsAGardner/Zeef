@@ -44,9 +44,12 @@ namespace Zeef.TwoDimensional {
 	public abstract class AnimatedSprite<T> : MonoBehaviour {
 
 		// References
+		[Header("Visual Renderers (Pick one)")]
 		[SerializeField] private SpriteRenderer spriteRenderer;
 		[SerializeField] private Image imageRenderer;
 		[SerializeField] private MeshRenderer meshRenderer;
+
+		[Header("Other")]
 		[Required]
 		[SerializeField] protected T advisor;
 
