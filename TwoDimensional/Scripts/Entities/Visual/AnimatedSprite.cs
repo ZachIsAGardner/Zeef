@@ -29,13 +29,15 @@ namespace Zeef.TwoDimensional {
 		public List<AnimationEvent> AnimationEvents { get; private set; }
 		public bool Loop { get; private set; }
 		public float Speed { get; private set; }
+		public IntegerRange LoopRange { get; private set; }
 
-		public AnimationState(string name, IntegerRange range, List<AnimationEvent> animationEvents = null, bool loop = true, float speed = 1) {
+		public AnimationState(string name, IntegerRange range, List<AnimationEvent> animationEvents = null, bool loop = true, float speed = 1, IntegerRange loopRange = null) {
 			Name = name;
 			Range = range;
 			AnimationEvents = animationEvents;
 			Loop = loop;
 			Speed = speed;
+			LoopRange = loopRange;
 		}
 	}
 
@@ -109,6 +111,11 @@ namespace Zeef.TwoDimensional {
 			this.sprites = sprites;
 		}
 
+		public void GoToIndex(int spriteIndex) {
+			this.spriteIndex = spriteIndex;
+			ExecuteAnimationState();
+		}
+
 		// ---
 
 		// Display sprite and execute events
@@ -136,12 +143,16 @@ namespace Zeef.TwoDimensional {
 				spriteIndex += 1;
 				tick = 0;
 
+				// Index is greater than loop range
+				if (State.LoopRange != null && spriteIndex > State.LoopRange.Max)
+					spriteIndex = State.LoopRange.Min;
+
 				// Index is greater than state range
 				if (spriteIndex > State.Range.Max) {
 					if (State.Loop) spriteIndex = State.Range.Min;
 					else spriteIndex = State.Range.Max;	
 				}
-				
+	
 				// Index is greater than entire sprite sheet length
 				if (spriteIndex > sprites.Length - 1) {
 					if (State.Loop) spriteIndex = 0;
@@ -149,7 +160,8 @@ namespace Zeef.TwoDimensional {
 				} 	
 
 				// If our sprite index is still the same we 
-				// don't really need to do anything
+				// don't really need to do anything, else we need to 
+				// execute animation state
 				if (oldSpriteIndex != spriteIndex) ExecuteAnimationState();
 			}
 		}
