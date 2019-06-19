@@ -39,6 +39,8 @@ namespace Zeef.TwoDimensional {
 
 		// Stats
 
+		[Header("Moving Object 2D Settings")]
+
 		/// <summary>
 		/// Velocity will be capped if exceding this vector.
 		/// </summary>
@@ -66,15 +68,12 @@ namespace Zeef.TwoDimensional {
 		/// </summary>
 		public bool Active { get { return active; } set { active = value; } }
 
-		// Components
+		// ---
 
-		protected BoxCollider2D BoxCollider2D { get; private set; }
 		/// <summary>
 		/// Contains info about any current collisions.
 		/// </summary>
 		public Collision2D Collision { get; private set; }
-
-		// -
 		
 		private Vector2 vel;
 		/// <summary>

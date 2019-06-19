@@ -10,12 +10,15 @@ namespace Zeef.TwoDimensional {
 
     public class ParticleCreator : MonoBehaviour {
         
+        [Header("Creator Settings")]
         [SerializeField] Particle particle;
 
         [SerializeField] bool playOnStart = true;
 
         [SerializeField] bool particlesBecomeChildren;
         [SerializeField] bool startPositionFromBoxCollider2DBounds = true;
+
+        [Header("Particle Settings")]
         [SerializeField] FloatRange lifeTime = new FloatRange(1, 2);
 
         [SerializeField] int amount = 5;
@@ -23,6 +26,12 @@ namespace Zeef.TwoDimensional {
         [SerializeField] Vector2 velMin;
         [SerializeField] Vector2 velMax;
         [SerializeField] float grav;
+
+        [SerializeField] Vector3 rotateVelMin;
+        [SerializeField] Vector3 rotateVelMax;        
+
+        [SerializeField] Vector3 rotateOffsetMin;
+        [SerializeField] Vector3 rotateOffsetMax;  
 
         [SerializeField] bool fadeOverTime = false;
         [SerializeField] bool fadeOnDestroy = false;
@@ -44,6 +53,7 @@ namespace Zeef.TwoDimensional {
                 StartCoroutine(CreateParticlesCoroutine());
                 while (transform.childCount > 0) yield return null;
             }
+
             Destroy(gameObject);
         }
 
@@ -63,8 +73,18 @@ namespace Zeef.TwoDimensional {
                     prefab: particle.gameObject, 
                     lifeTime: lifeTime.RandomValue(), 
                     vel: new Vector2(
-                        new Vector2(velMin.x, velMax.x).RandomValue() * transform.localScale.x,
-                        new Vector2(velMin.y, velMax.y).RandomValue() * transform.localScale.y
+                        new Vector2(velMin.x, velMax.x).RandomValue() * Math.Sign(transform.localScale.x),
+                        new Vector2(velMin.y, velMax.y).RandomValue() * Math.Sign(transform.localScale.y)
+                    ),
+                    rotationVel: new Vector3(
+                        new Vector2(rotateVelMin.x, rotateVelMax.x).RandomValue() * Math.Sign(transform.localScale.x),
+                        new Vector2(rotateVelMin.y, rotateVelMax.y).RandomValue() * Math.Sign(transform.localScale.y),
+                        new Vector2(rotateVelMin.z, rotateVelMax.z).RandomValue() * Math.Sign(transform.localScale.z)
+                    ),
+                    rotationOffset: new Vector3(
+                        new Vector2(rotateOffsetMin.x, rotateOffsetMax.x).RandomValue() * Math.Sign(transform.localScale.x),
+                        new Vector2(rotateOffsetMin.y, rotateOffsetMax.y).RandomValue() * Math.Sign(transform.localScale.y),
+                        new Vector2(rotateOffsetMin.z, rotateOffsetMax.z).RandomValue() * Math.Sign(transform.localScale.z)
                     ),
                     fadeOverTime: fadeOverTime, 
                     fadeOnDestroy: fadeOnDestroy, 

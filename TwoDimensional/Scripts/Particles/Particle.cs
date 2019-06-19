@@ -9,22 +9,28 @@ namespace Zeef.TwoDimensional {
 
 	public class Particle : MonoBehaviour  {
 
-		// Whether or not this gets created from a particle creator
-
-		private float lifeTime = 1;
-		private bool fadeOverTime;
-		private bool fadeOnDestroy;
-		private float grav;
-		private Vector2 vel;
-
-		private Color originalColor;
-
+		[Header("Visual Renderers (Pick One)")]
 		[SerializeField] private Image imageComponent;
 		[SerializeField] private SpriteRenderer spriteRenderer;
 		[SerializeField] private MeshRenderer meshRenderer;
 		[SerializeField] private Text textComponent;
 
-		public static Particle Initialize(GameObject prefab, float lifeTime, Vector2? vel = null, bool fadeOverTime = false, float grav = 0, Transform parent = null, Vector2 pos = new Vector2(), bool fadeOnDestroy = false) {
+		private float lifeTime = 1;
+		private bool fadeOverTime;
+		private bool fadeOnDestroy;
+		private Vector2 vel;
+		private float grav;
+		private Vector3 rotationVel;
+		private Vector3 rotationOffset;
+
+		private Color originalColor;
+		
+		public static Particle Initialize(GameObject prefab, float lifeTime, 
+			Vector2? vel = null, bool fadeOverTime = false, 
+			float grav = 0, Transform parent = null, 
+			Vector2 pos = new Vector2(), bool fadeOnDestroy = false, 
+			Vector3? rotationVel = null, Vector3? rotationOffset = null) {
+
 			Particle instance = Instantiate(prefab, pos, Quaternion.identity, parent).GetComponent<Particle>();
 
 			instance.GetComponents();
@@ -32,15 +38,14 @@ namespace Zeef.TwoDimensional {
 			instance.lifeTime = lifeTime;
 			instance.fadeOverTime = fadeOverTime;
 			instance.fadeOnDestroy = fadeOnDestroy;
-			instance.vel = (vel != null) ? (Vector2)vel : Vector2.zero;
+			instance.vel = (vel.HasValue) ? vel.Value : Vector2.zero;
+			instance.rotationVel = (rotationVel.HasValue) ? rotationVel.Value : Vector3.zero;
 			instance.grav = grav;
+			if (rotationOffset.HasValue) instance.transform.Rotate(rotationOffset.Value);
 
 			instance.StartCoroutine(instance.RunCoroutine());
 
 			return instance;
-		}
-		public static Particle Initialize(GameObject prefab, Vector2 lifeTime, Vector2 velocityMin, Vector2 velocityMax, bool fade = false, float grav = 0) {
-			throw new NotImplementedException();
 		}
 
 		private void GetComponents() {
@@ -94,6 +99,7 @@ namespace Zeef.TwoDimensional {
 				
 				vel.y -= grav * Time.deltaTime;
 				transform.position += (Vector3)vel * Time.deltaTime;
+				transform.Rotate(rotationVel, Space.Self);
 
 				lifeTime -= 1 * Time.deltaTime;
 				yield return null;
