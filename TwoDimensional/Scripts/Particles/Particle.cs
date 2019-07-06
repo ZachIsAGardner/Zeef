@@ -28,12 +28,29 @@ namespace Zeef.TwoDimensional {
 		public static Particle Initialize(GameObject prefab, float lifeTime, 
 			Vector2? vel = null, bool fadeOverTime = false, 
 			float grav = 0, Transform parent = null, 
-			Vector2 pos = new Vector2(), bool fadeOnDestroy = false, 
-			Vector3? rotationVel = null, Vector3? rotationOffset = null) {
+			Vector3 pos = new Vector3(), bool fadeOnDestroy = false, 
+			Vector3? rotationVel = null, Vector3? rotationOffset = null,
+			Color? color = null) {
+			
+			// Ensure parent
+			if (parent == null) {
+				GameObject particles = GameObject.FindGameObjectWithTag(TagConstants.ParticlesFolder);
+				if (particles == null) 
+				{
+					particles = new GameObject();
+					particles.name = "_Particles";
+					particles.tag = TagConstants.ParticlesFolder;
+
+					parent = particles.transform;
+				}
+				parent = particles.transform;
+			} 
 
 			Particle instance = Instantiate(prefab, pos, Quaternion.identity, parent).GetComponent<Particle>();
 
 			instance.GetComponents();
+
+			if (color.HasValue) instance.ChangeColor(color.Value);
 
 			instance.lifeTime = lifeTime;
 			instance.fadeOverTime = fadeOverTime;

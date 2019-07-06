@@ -22,11 +22,24 @@ namespace Zeef.TwoDimensional {
         public event EventHandler<ExternalTriggerStay2DEventArgs> ExternalTriggerStay2D;
 
 		[SerializeField] int defense = 0;
+        // Built in Editor
+        [HideInInspector] public string Weakness;
 
 		// ---
 
         private void OnTriggerStay2D(Collider2D other) {
-			OnExternalTriggerStay2D(other);
+            HitBox2D hitBox = other.GetComponent<HitBox2D>();
+            if (hitBox != null 
+            && (
+                String.IsNullOrEmpty(hitBox.InteractionType)
+                || hitBox.InteractionType == InteractionTypeConstants.Any 
+                || Weakness == InteractionTypeConstants.Any
+                || hitBox.InteractionType == Weakness
+            )) 
+            {
+                print("call event");
+			    OnExternalTriggerStay2D(other);
+            }
 		}
 
         private void OnExternalTriggerStay2D(Collider2D other) {

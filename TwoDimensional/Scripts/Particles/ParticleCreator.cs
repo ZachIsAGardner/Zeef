@@ -11,43 +11,47 @@ namespace Zeef.TwoDimensional {
     public class ParticleCreator : MonoBehaviour {
         
         [Header("Creator Settings")]
-        [SerializeField] Particle particle;
+        public Particle Particle;
 
-        [SerializeField] bool playOnStart = true;
+        public bool PlayOnStart = true;
 
-        [SerializeField] bool particlesBecomeChildren;
-        [SerializeField] bool startPositionFromBoxCollider2DBounds = true;
+        public bool ParticlesBecomeChildren;
+        public bool StartPositionFromBoxCollider2DBounds = true;
 
         [Header("Particle Settings")]
-        [SerializeField] FloatRange lifeTime = new FloatRange(1, 2);
+        public FloatRange lifeTime = new FloatRange(1, 2);
 
-        [SerializeField] int amount = 5;
+        public bool FadeOverTime = false;
+        public bool FadeOnDestroy = false;
 
-        [SerializeField] Vector2 velMin;
-        [SerializeField] Vector2 velMax;
-        [SerializeField] float grav;
-
-        [SerializeField] Vector3 rotateVelMin;
-        [SerializeField] Vector3 rotateVelMax;        
-
-        [SerializeField] Vector3 rotateOffsetMin;
-        [SerializeField] Vector3 rotateOffsetMax;  
-
-        [SerializeField] bool fadeOverTime = false;
-        [SerializeField] bool fadeOnDestroy = false;
+        public IntegerRange Amount = new IntegerRange(1, 1);
 
         // time between bursts
-        [SerializeField] float loopLength = -1;
+        public float LoopLength = -1;
         // time between individual particle generations
-        [SerializeField] float offsetLength = -1;
+        public float OffsetLength = -1;
+
+        public Color Color = Color.white;
+        
+        public FloatRange VelX;
+        public FloatRange VelY;
+        public float Grav;
+
+        public FloatRange RotateVelX;
+        public FloatRange RotateVelY;
+        public FloatRange RotateVelZ;
+
+        public FloatRange RotateOffsetX;
+        public FloatRange RotateOffsetY;
+        public FloatRange RotateOffsetZ;
 
         void Start() {
-            if (playOnStart) 
+            if (PlayOnStart) 
                 StartCoroutine(RunCoroutine());
         }
 
         private IEnumerator RunCoroutine() {
-            if (loopLength > 0) {
+            if (LoopLength > 0) {
                 while (true) yield return StartCoroutine(CreateParticlesCoroutine());
             } else {
                 StartCoroutine(CreateParticlesCoroutine());
@@ -60,45 +64,46 @@ namespace Zeef.TwoDimensional {
         public IEnumerator CreateParticlesCoroutine() {
             int i = 0;
 
-            while (i < amount) {
-                Vector2 pos = Vector2.zero;
+            while (i < Amount.RandomValue()) {
+                Vector3 pos = new Vector3(0,0, transform.position.z);
                 BoxCollider2D col = GetComponent<BoxCollider2D>();
-                if (col != null && startPositionFromBoxCollider2DBounds) {
+                if (col != null && StartPositionFromBoxCollider2DBounds) {
                     FloatRange x = new FloatRange(col.bounds.min.x, col.bounds.max.x);
                     FloatRange y = new FloatRange(col.bounds.min.y, col.bounds.max.y);
-                    pos = new Vector2(x.RandomValue(), y.RandomValue());
+                    pos = new Vector3(x.RandomValue(), y.RandomValue(), transform.position.z);
                 }
-                
+
                 Particle.Initialize(
-                    prefab: particle.gameObject, 
+                    prefab: Particle.gameObject, 
                     lifeTime: lifeTime.RandomValue(), 
                     vel: new Vector2(
-                        new Vector2(velMin.x, velMax.x).RandomValue() * Math.Sign(transform.localScale.x),
-                        new Vector2(velMin.y, velMax.y).RandomValue() * Math.Sign(transform.localScale.y)
+                        VelX.RandomValue() * Math.Sign(transform.localScale.x),
+                        VelY.RandomValue() * Math.Sign(transform.localScale.y)
                     ),
                     rotationVel: new Vector3(
-                        new Vector2(rotateVelMin.x, rotateVelMax.x).RandomValue() * Math.Sign(transform.localScale.x),
-                        new Vector2(rotateVelMin.y, rotateVelMax.y).RandomValue() * Math.Sign(transform.localScale.y),
-                        new Vector2(rotateVelMin.z, rotateVelMax.z).RandomValue() * Math.Sign(transform.localScale.z)
+                        RotateVelX.RandomValue() * Math.Sign(transform.localScale.x),
+                        RotateVelY.RandomValue() * Math.Sign(transform.localScale.y),
+                        RotateVelZ.RandomValue() * Math.Sign(transform.localScale.z)
                     ),
                     rotationOffset: new Vector3(
-                        new Vector2(rotateOffsetMin.x, rotateOffsetMax.x).RandomValue() * Math.Sign(transform.localScale.x),
-                        new Vector2(rotateOffsetMin.y, rotateOffsetMax.y).RandomValue() * Math.Sign(transform.localScale.y),
-                        new Vector2(rotateOffsetMin.z, rotateOffsetMax.z).RandomValue() * Math.Sign(transform.localScale.z)
+                        RotateOffsetX.RandomValue() * Math.Sign(transform.localScale.x),
+                        RotateOffsetY.RandomValue() * Math.Sign(transform.localScale.y),
+                        RotateOffsetZ.RandomValue() * Math.Sign(transform.localScale.z)
                     ),
-                    fadeOverTime: fadeOverTime, 
-                    fadeOnDestroy: fadeOnDestroy, 
-                    grav: grav,
-                    parent: (particlesBecomeChildren) ? transform : null,
-                    pos: pos
+                    fadeOverTime: FadeOverTime, 
+                    fadeOnDestroy: FadeOnDestroy, 
+                    grav: Grav,
+                    parent: (ParticlesBecomeChildren) ? transform : null,
+                    pos: pos,
+                    color: Color
                 );
 
-                if (offsetLength > 0) yield return new WaitForSeconds(offsetLength);
+                if (OffsetLength > 0) yield return new WaitForSeconds(OffsetLength);
                 
                 i++;
             }
 
-            if (loopLength > 0) yield return new WaitForSeconds(loopLength); 
+            if (LoopLength > 0) yield return new WaitForSeconds(LoopLength); 
         }
     }
 }
