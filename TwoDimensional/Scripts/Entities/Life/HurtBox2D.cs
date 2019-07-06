@@ -31,13 +31,11 @@ namespace Zeef.TwoDimensional {
             HitBox2D hitBox = other.GetComponent<HitBox2D>();
             if (hitBox != null 
             && (
-                String.IsNullOrEmpty(hitBox.InteractionType)
-                || hitBox.InteractionType == InteractionTypeConstants.Any 
-                || Weakness == InteractionTypeConstants.Any
-                || hitBox.InteractionType == Weakness
+                String.IsNullOrWhiteSpace(Weakness) 
+                || Weakness == InteractionTypeConstants.Any 
+                || Weakness == hitBox.InteractionType
             )) 
             {
-                print("call event");
 			    OnExternalTriggerStay2D(other);
             }
 		}
