@@ -22,7 +22,7 @@ namespace Zeef.Menu {
             return instance;
         }
 
-        public void UpdateDisplay(float percentage) {
+        public virtual void UpdateDisplay(float percentage) {
             barTop.rectTransform.sizeDelta = barLoss.rectTransform.sizeDelta = new Vector2(
                 GetComponent<RectTransform>().sizeDelta.x * percentage, 
                 barTop.rectTransform.sizeDelta.y
@@ -31,7 +31,7 @@ namespace Zeef.Menu {
 
         // Duration: how long the freeze is after bar top is set and 
         // how long it takes for loss to catch up
-        public async Task UpdateDisplayAsync(float percentage, float duration = 0.25f) {
+        public virtual async Task UpdateDisplayAsync(float percentage, float duration = 0.25f) {
 
             // If we're already where we need to be, dont bother
             if (barTop.rectTransform.sizeDelta.x == GetComponent<RectTransform>().sizeDelta.x * percentage) return;

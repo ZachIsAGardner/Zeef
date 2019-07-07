@@ -44,6 +44,9 @@ namespace Zeef.TwoDimensional {
 		// ---	
 
 		protected virtual void Start() {
+			if (weakPoints == null)
+				return;
+				
 			foreach (HurtBox2D hurtBox in weakPoints) {
 				hurtBox.ExternalTriggerStay2D += OnExternalTriggerStay2D;
 			}
