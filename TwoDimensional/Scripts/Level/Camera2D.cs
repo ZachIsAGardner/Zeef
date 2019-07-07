@@ -10,13 +10,13 @@ namespace Zeef.TwoDimensional {
 
 	public class Camera2D : MonoBehaviour {
 
-		[SerializeField] private Vector3 offset;
+		[SerializeField] protected Vector3 offset;
 		[SerializeField] private Transform target;
 
 		// 0: Never move
 		// 1: Insta snap
 		[Range (0, 1)]
-		[SerializeField] private float acc = .5f;
+		[SerializeField] protected float acc = .5f;
 
 		private float normalZoom;
 		public float NormalZoom { get { return normalZoom; }}
@@ -68,7 +68,7 @@ namespace Zeef.TwoDimensional {
 			if (GameManager.IsPaused) return;
 
 			if (target) Move();
-			else GetTarget(); // bad
+			else GetTarget();
 			
 			shakeTime -= 1 * Time.deltaTime;
 			if (shakeTime > 0) Shaking();
@@ -130,7 +130,7 @@ namespace Zeef.TwoDimensional {
 
 		// ---
 
-		public void Move() {
+		public virtual void Move() {
 			Vector2 moveTo = Vector2.zero;
 			if (acc < 1) {	
 				moveTo.x = Mathf.Lerp(transform.position.x, target.position.x + offset.x, acc); 

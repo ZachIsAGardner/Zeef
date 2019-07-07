@@ -1,14 +1,14 @@
-namespace Zeef {
-
-    public static partial class TagConstants {
+namespace Zeef 
+{
+    public static partial class TagConstants 
+    {    
+        public const string Player = "Player";
         
-        public static string Player = "Player";
-        
-        public static string SceneCanvas = "SceneCanvas";
-        public static string CameraBounds = "CameraBounds";
+        public const string SceneCanvas = "SceneCanvas";
+        public const string CameraBounds = "CameraBounds";
 
-        public static string DynamicFolder = "DynamicFolder";
-        public static string DynamicCanvasFolder = "DynamicCanvasFolder"; 
-        public static string ParticlesFolder = "ParticlesFolder";
+        public const string DynamicFolder = "DynamicFolder";
+        public const string DynamicCanvasFolder = "DynamicCanvasFolder"; 
+        public const string ParticlesFolder = "ParticlesFolder";
     }
 }
