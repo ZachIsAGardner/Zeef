@@ -43,11 +43,11 @@ namespace Zeef.Perform {
 		// Start performance
 		public async Task ExecuteAsync() {
 			if (Performing) return;
+			Performing = true;
 
 			OnBeforePerformanceStart();
 
 			AdditionalSetup();	
-			Performing = true;
 
 			border = Instantiate(PerformanceContent.Border, FindObjectOfType<Canvas>().transform);
 			await DigestBranchAsync(BranchStart());
