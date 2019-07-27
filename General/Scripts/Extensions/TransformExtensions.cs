@@ -1,16 +1,19 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Zeef {
+namespace Zeef 
+{
+    public static class TransformExtensions 
+    {
 
-    public static class TransformExtensions {
-
-        public static void DestroyChildren (this Transform transform) {
+        public static void DestroyChildren (this Transform transform) 
+        {
             foreach (Transform child in transform)            
                 GameObject.Destroy(child.gameObject); 
         }
 
-        public static IEnumerator ShakeCoroutine(this Transform transform, float duration, float strength = 1) {
+        public static IEnumerator ShakeCoroutine(this Transform transform, float duration, float strength = 1) 
+        {
             Vector3 originalPosition = transform.localPosition;
 
             int interval = 2;

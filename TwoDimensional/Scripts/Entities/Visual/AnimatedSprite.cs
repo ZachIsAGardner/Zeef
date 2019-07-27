@@ -47,9 +47,9 @@ namespace Zeef.TwoDimensional {
 
 		// References
 		[Header("Visual Renderers (Pick one)")]
-		[SerializeField] private SpriteRenderer spriteRenderer;
-		[SerializeField] private Image imageRenderer;
-		[SerializeField] private MeshRenderer meshRenderer;
+		[SerializeField] protected SpriteRenderer spriteRenderer;
+		[SerializeField] protected Image imageRenderer;
+		[SerializeField] protected MeshRenderer meshRenderer;
 
 		[Header("Other")]
 		[Required]

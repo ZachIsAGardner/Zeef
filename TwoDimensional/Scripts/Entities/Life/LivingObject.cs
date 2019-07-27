@@ -27,7 +27,7 @@ namespace Zeef.TwoDimensional {
 		[SerializeField] float freezeDuration = 0.25f;
 
 		[Required]	
-		[SerializeField] List<HurtBox2D> weakPoints;
+		[SerializeField] private List<HurtBox2D> weakPoints;
 
 		public float HealthPercentage { get { return (float)Health / (float)MaxHealth; } }
 		public bool IsInvincible { get; private set; }

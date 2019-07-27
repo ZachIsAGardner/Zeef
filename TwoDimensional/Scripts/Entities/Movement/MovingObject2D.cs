@@ -4,18 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zeef.GameManagement;
 
-namespace Zeef.TwoDimensional {
-	
-	/// <summary>
-	/// Direction an entity is facing.
-	/// </summary>
-	public enum FacingsEnum {
-        Up,
-        Down,
-        Left,
-        Right
-    }
-
+namespace Zeef.TwoDimensional 
+{	
 	/// <summary>
 	/// Sets up basic movement and collision.
 	/// </summary>
@@ -23,14 +13,9 @@ namespace Zeef.TwoDimensional {
 	[RequireComponent(typeof(Rigidbody2D))]
 	[RequireComponent(typeof(BoxCollider2D))]
 	[RequireComponent(typeof(Collision2D))]
-	public abstract class MovingObject2D : MonoBehaviour {
-
+	public abstract class MovingObject2D : MonoBehaviour 
+	{
 		// State
-
-		/// <summary>
-		/// Direction this moving object is facing.
-		/// </summary>
-		public FacingsEnum Facing { get; protected set; }
 
 		/// <summary>
 		/// The position this moving object was at on it's Start()
@@ -62,12 +47,6 @@ namespace Zeef.TwoDimensional {
 		/// </summary>
 		public float MoveSpeed { get { return moveSpeed; }}
 
-		[SerializeField] private bool active = true;
-		/// <summary>
-		/// Arbitrary boolean stating whether or not this moving object is active.
-		/// </summary>
-		public bool Active { get { return active; } set { active = value; } }
-
 		// ---
 
 		/// <summary>
@@ -84,14 +63,17 @@ namespace Zeef.TwoDimensional {
 		// ---
 		// Lifecycle
 
-		protected virtual void Start () {
+		protected virtual void Start () 
+		{
 			StartPosition = transform.position;
 
 			Collision = this.GetComponentWithError<Collision2D>();
 		}
 
-		protected virtual void Update () {
-			if (GameManager.IsPaused) return;
+		protected virtual void Update () 
+		{
+			if (GameManager.IsPaused) 
+				return;
 
 			CalculateVelocity(ref vel);
 			Collision.Move(vel * Time.deltaTime);
@@ -102,7 +84,8 @@ namespace Zeef.TwoDimensional {
 		
 		protected abstract void CalculateVelocity(ref Vector2 vel);
 
-		private void LimitVelocity() {
+		private void LimitVelocity() 
+		{
 			if (Mathf.Abs(vel.x) > Mathf.Abs(velMax.x)) 
 				vel.x = velMax.x * -Mathf.Sign(velMax.x);
 			
@@ -113,19 +96,15 @@ namespace Zeef.TwoDimensional {
 		// ---
 		// Status
 
-		public bool IsFacingUp() => Facing == FacingsEnum.Up;	
-		
-		public bool IsFacingDown() => Facing == FacingsEnum.Down;	
-		
-		public bool IsFacingLeft() => Facing == FacingsEnum.Left;	
-
-		public bool IsFacingRight() => Facing == FacingsEnum.Right;	
-
-		public bool AnyCollisions() {
+		public bool AnyCollisions() 
+		{
 			if (Collision.Collisions.Up || Collision.Collisions.Down 
-			|| Collision.Collisions.Left || Collision.Collisions.Right) {
+			|| Collision.Collisions.Left || Collision.Collisions.Right) 
+			{
 				return true;
-			} else {
+			} 
+			else 
+			{
 				return false;
 			}
 		}
