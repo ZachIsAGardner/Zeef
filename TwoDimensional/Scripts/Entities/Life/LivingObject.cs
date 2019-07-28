@@ -5,19 +5,31 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Zeef.GameManagement;
 
-namespace Zeef.TwoDimensional {
+namespace Zeef.TwoDimensional 
+{
+	public class AfterGainHealthEventArgs 
+	{
+		public int Amount { get; private set; }
 
-	public class DamageEventArgs {
+		public AfterGainHealthEventArgs(int amount) 
+		{
+			Amount = amount;
+		}
+	}
+
+	public class DamageEventArgs 
+	{
 		public HitBox2D HitBox2D { get; private set; }
 
-		public DamageEventArgs(HitBox2D hitBox) {
+		public DamageEventArgs(HitBox2D hitBox) 
+		{
 			HitBox2D = hitBox;
 		}
 	}
 
 	// Makes it so objects can live and die
-	public class LivingObject : MonoBehaviour {
-
+	public class LivingObject : MonoBehaviour 
+	{
 		[SerializeField] int maxHealth = 1;
 		public int MaxHealth { get { return maxHealth; } }
 
@@ -33,6 +45,7 @@ namespace Zeef.TwoDimensional {
 		public bool IsInvincible { get; private set; }
 		public bool IsFrozen { get; private set ; }
 
+		public event EventHandler<AfterGainHealthEventArgs> AfterGainHealth;
 		public event EventHandler BeforeFreeze;
 		public event EventHandler AfterFreeze;
 		public event EventHandler BeforeInvincibility;
@@ -43,7 +56,8 @@ namespace Zeef.TwoDimensional {
 
 		// ---	
 
-		protected virtual void Start() {
+		protected virtual void Start()
+		{
 			if (weakPoints == null)
 				return;
 				
@@ -52,7 +66,8 @@ namespace Zeef.TwoDimensional {
 			}
 		}
 
-		public async void OnExternalTriggerStay2D(object source, ExternalTriggerStay2DEventArgs args) {
+		public async void OnExternalTriggerStay2D(object source, ExternalTriggerStay2DEventArgs args) 
+		{
 			// Can't take damage if frozen, invincible, or the game isn't playing
 			if (IsFrozen || IsInvincible || !GameManager.IsPlaying)
 				return;
@@ -60,7 +75,8 @@ namespace Zeef.TwoDimensional {
 			HitBox2D hitBox = args.Other.GetComponent<HitBox2D>();
 
 			// if hitbox exists and it is not mine then i need to take damage
-			if (hitBox != null && hitBox.Owner != gameObject) {
+			if (hitBox != null && hitBox.Owner != gameObject) 
+			{
 				LivingObject livingObject = null;
 				if (hitBox != null && hitBox.Owner != null) 
 					livingObject = hitBox.Owner.GetComponentInChildren<LivingObject>();
@@ -72,27 +88,42 @@ namespace Zeef.TwoDimensional {
 
 		// ---
 		
-		public virtual async Task DieAsync() {
+		public virtual async Task DieAsync() 
+		{
 			OnBeforeDie();
 			Destroy(gameObject);
 		}
 
-		public async virtual Task TakeDamageAsync(int damage) {
+		public async virtual Task GainHealthAsync(int amount) 
+		{
+			Health += amount;
+			if (Health > maxHealth)
+				Health = maxHealth;
+
+			OnAfterGainHealth(amount);
+		}
+
+		public async virtual Task TakeDamageAsync(int damage) 
+		{
 			await TakeDamageAsync(damage, null);
 		}
 
-		public async virtual Task TakeDamageAsync(int damage, HitBox2D hitBox) {
+		public async virtual Task TakeDamageAsync(int damage, HitBox2D hitBox) 
+		{
 			OnBeforeTakeDamage(hitBox);
 
 			if (hitBox != null) hitBox.OnAfterLandedHit(gameObject);
 
 			Health -= damage;
 				
-			if (Health <= 0) { 
+			if (Health <= 0) 
+			{ 
 				// await FreezeAsync();
 				IsInvincible = true;
 				await DieAsync();
-			} else {
+			} 
+			else 
+			{
 				OnAfterSurviveTakeDamage(hitBox);
 				await FreezeAsync();
 				await InvincibilityAsync();
@@ -101,14 +132,16 @@ namespace Zeef.TwoDimensional {
 
 		// ---
 
-		private async Task FreezeAsync() {
+		private async Task FreezeAsync() 
+		{
 			IsFrozen = true;
 			IsInvincible = true;
 
 			OnBeforeFreeze();
 
 			float timeElapsed = 0;
-			while (timeElapsed < freezeDuration) {
+			while (timeElapsed < freezeDuration) 
+			{
 				if (GameManager.IsPlaying) timeElapsed += Time.deltaTime;
 				await new WaitForUpdate();
 			}
@@ -118,13 +151,15 @@ namespace Zeef.TwoDimensional {
 			IsFrozen = false;
 		}
 
-		private async Task InvincibilityAsync() {
+		private async Task InvincibilityAsync() 
+		{
 			IsInvincible = true;
 
 			OnBeforeInvincibility();
 
 			float timeElapsed = 0;
-			while (timeElapsed < invincibilityDuration) {
+			while (timeElapsed < invincibilityDuration) 
+			{
 				if (GameManager.IsPlaying) timeElapsed += Time.deltaTime;
 				await new WaitForUpdate();	
 			}
@@ -136,6 +171,12 @@ namespace Zeef.TwoDimensional {
 
 		// ---
 		// Events
+
+		protected virtual void OnAfterGainHealth(int amount)
+		{
+			if (AfterGainHealth != null)
+				AfterGainHealth(this, new AfterGainHealthEventArgs(amount));
+		}
 
 		protected virtual void OnBeforeTakeDamage(HitBox2D hitBox) {
 			if (BeforeTakeDamage != null) 

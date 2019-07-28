@@ -20,7 +20,7 @@ namespace Zeef.TwoDimensional {
 		public int Damage { get { return damage; } }
 
 		[SerializeField] public GameObject Owner;
-		[HideInInspector] public string InteractionType;
+		public string InteractionType;
 
 		// Parented hitboxes are attached to owner
 		// ex)
@@ -36,7 +36,7 @@ namespace Zeef.TwoDimensional {
 		public static HitBox2D Initialize(HitBox2D prefab, 
 			GameObject owner, Vector2 position, 
 			Vector2 size, bool isParented, 
-			bool isSqure = true, string interactionType = InteractionTypeConstants.Any) 
+			bool isSquare = true, string interactionType = InteractionTypeConstants.Any) 
 		{
 			HitBox2D instance = GameManager.SpawnActor(prefab.gameObject, position).GetComponent<HitBox2D>();
 
@@ -50,9 +50,10 @@ namespace Zeef.TwoDimensional {
 		}
 
 		public static HitBox2D Initialize(GameObject owner, int damage, 
-		Vector2 position, Vector2 size, 
-		bool isParented, bool isSquare = true, 
-		string interactionType = InteractionTypeConstants.Any) {
+			Vector2 position, Vector2 size, 
+			bool isParented, bool isSquare = true, 
+			string interactionType = InteractionTypeConstants.Any) 
+		{
 			HitBox2D instance = GameManager.SpawnActor(position)
 				.AddComponent<DrawBoxCollider2D>().gameObject
 				.AddComponent<HitBox2D>();
@@ -66,7 +67,9 @@ namespace Zeef.TwoDimensional {
 			
 			instance.GetComponentWithError<Collider2D>().isTrigger = true;
 
-			if (isParented) instance.transform.parent = owner.transform;
+			if (isParented) 
+				instance.transform.parent = owner.transform;
+
 			instance.transform.position = position;
 			instance.transform.localScale = size;
 			instance.Owner = owner;

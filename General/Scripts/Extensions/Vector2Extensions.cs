@@ -53,25 +53,25 @@ namespace Zeef
         }
 
         /// <summary>
-        /// Returns the whether or not this Vector2 is to the left of the provided target.
+        /// Returns whether or not this Vector2 is to the left of the provided target.
         /// </summary>
         public static bool IsLeftOf(this Vector2 vector2, Vector2 target)
             => vector2.x < target.x;
 
         /// <summary>
-        /// Returns the whether or not this Vector2 is to the right of the provided target.
+        /// Returns whether or not this Vector2 is to the right of the provided target.
         /// </summary>
         public static bool IsRightOf(this Vector2 vector2, Vector2 target)
             => vector2.x > target.x;
 
         /// <summary>
-        /// Returns the whether or not this Vector2 is above of the provided target.
+        /// Returns whether or not this Vector2 is above of the provided target.
         /// </summary>
         public static bool IsAbove(this Vector2 vector2, Vector2 target)
             => vector2.y > target.y;
 
         /// <summary>
-        /// Returns the whether or not this Vector2 is below of the provided target.
+        /// Returns whether or not this Vector2 is below of the provided target.
         /// </summary>
         public static bool IsBelow(this Vector2 vector2, Vector2 target)
             => vector2.y < target.y;
