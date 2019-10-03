@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Zeef.Sound {
-	
+namespace Zeef.Sound
+{	
 	[RequireComponent (typeof(AudioSource))]
-	public class AudioManager : SingleInstance<AudioManager> {
-
+	public class AudioManager : SingleInstance<AudioManager>
+    {
 		[Range (0, 1)]
 		[SerializeField] private float musicVolume = 0.5f;
 		public static float MusicVolume { get { return GetInstance().musicVolume; } }
@@ -20,7 +20,8 @@ namespace Zeef.Sound {
 		private AudioSource audioSource;
 		private SongScriptable currentSong;
 
-		protected override void Awake() {
+		protected override void Awake()
+        {
 			base.Awake();
 
 			audioSource = this.GetComponentWithError<AudioSource>();
@@ -30,11 +31,13 @@ namespace Zeef.Sound {
 		// ---
 		// Music
 
-		public static void ChangeSong(string songName) {
+		public static void ChangeSong(string songName)
+        {
 			ChangeSong(AudioContent.GetSong(songName));
 		}
 
-		public static void ChangeSong(SongScriptable song) {
+		public static void ChangeSong(SongScriptable song)
+        {
 			// Stop if were already playing that song
 			if (song == GetInstance().currentSong) return;
 
@@ -56,10 +59,13 @@ namespace Zeef.Sound {
 			GetInstance().StartCoroutine(LoopSongCoroutine(song));
 		}
 
-		private static IEnumerator LoopSongCoroutine(SongScriptable song) {
-			while (true) {
+		private static IEnumerator LoopSongCoroutine(SongScriptable song)
+        {
+			while (true)
+            {
 				if ((song.LoopTime.End > 0 && GetInstance().audioSource.time > song.LoopTime.End) 
-				|| (GetInstance().audioSource.time > GetInstance().audioSource.clip.length - 0.025f)) {
+				    || (GetInstance().audioSource.time > GetInstance().audioSource.clip.length - 0.025f))
+                {
 					GetInstance().audioSource.time = song.LoopTime.Start;
 				}
 				
@@ -67,14 +73,17 @@ namespace Zeef.Sound {
 			}
 		}
 
-		public static void SlidePitch(float pitch, float time) {
+		public static void SlidePitch(float pitch, float time)
+        {
 			GetInstance().StartCoroutine(SlidePitchCoroutine(pitch, time));
 		}
 
-		private static IEnumerator SlidePitchCoroutine(float pitch, float time) {
+		private static IEnumerator SlidePitchCoroutine(float pitch, float time)
+        {
 			if (time <= 0) yield break;
 
-			while(true) {
+			while(true)
+            {
 				GetInstance().audioSource.pitch =  Mathf.Lerp(GetInstance().audioSource.pitch, pitch, time);
 				if (Mathf.Abs(GetInstance().audioSource.pitch - pitch) < -0.1f)
 					break;
@@ -86,16 +95,42 @@ namespace Zeef.Sound {
 		// ---
 		// SFX
 
-		public static void PlaySoundEffect(AudioSource source, SoundEffectScriptable sfx) {
+		public static void PlaySoundEffect(AudioSource source, SoundEffectScriptable sfx)
+        {
 			if (sfx == null) return;
 			source.PlayOneShot(sfx.Clip, SoundEffectVolume * sfx.Volume);
 		}
 
-		public static void PlaySoundEffect(AudioSource source, string sfxName) {
+		public static void PlaySoundEffect(AudioSource source, string sfxName)
+        {
 			PlaySoundEffect(source, AudioContent.GetSoundEffect(sfxName));
 		}
 
-		public static async Task PlaySoundEffectAsync(SoundEffectScriptable sfx) {
+        /// <summary>
+        /// Creates a GameObject and attaches an AudioSource to it to play the provided sound effect.
+        /// </summary>
+        /// <param name="sfx"></param>
+        /// <returns></returns>
+		public static async Task PlaySoundEffectAsync(string sfxName)
+        {
+            SoundEffectScriptable sfx = AudioContent.GetSoundEffect(sfxName);
+
+            AudioSource source = new GameObject().AddComponent<AudioSource>();
+            source.transform.SetParent(GetInstance().transform);
+
+            PlaySoundEffect(source, sfx);
+
+            await new WaitForSeconds(sfx.Clip.length);
+            Destroy(source.gameObject);
+        }
+
+        /// <summary>
+        /// Creates a GameObject and attaches an AudioSource to it to play the provided sound effect.
+        /// </summary>
+        /// <param name="sfx"></param>
+        /// <returns></returns>
+		public static async Task PlaySoundEffectAsync(SoundEffectScriptable sfx)
+        {
 			AudioSource source = new GameObject().AddComponent<AudioSource>();
 			source.transform.SetParent(GetInstance().transform);
 

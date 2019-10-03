@@ -76,7 +76,7 @@ namespace Zeef.TwoDimensional
 				return;
 
 			CalculateVelocity(ref vel);
-			Collision.Move(vel * Time.deltaTime);
+			Collision.Move(vel * Time.deltaTime);            
 		}
 
 		// ---
