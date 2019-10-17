@@ -15,7 +15,8 @@ namespace Zeef.GameManagement {
 
 		public string Name { get; set; }
 
-		private GameState(string name) {
+		private GameState(string name)
+        {
 			Name = name;
 		}
 
@@ -68,7 +69,8 @@ namespace Zeef.GameManagement {
 		// ---
 		// Setup
 
-		protected override void Awake() {
+		protected override void Awake()
+        {
 			base.Awake();
 			gameState = GameState.Play;
 			DontDestroyOnLoad(gameObject);
@@ -76,7 +78,8 @@ namespace Zeef.GameManagement {
 			Application.targetFrameRate = 60;			
 		}
 
-		void Start() {
+		void Start()
+        {
 			lastLoadedScene = SceneManager.GetActiveScene().name;
 		}
 
@@ -93,7 +96,8 @@ namespace Zeef.GameManagement {
 		/// <summary>
 		/// Spawns an empty GameObject inside the DynamicFolder GameObject.
 		/// </summary>
-		public static GameObject SpawnActor(Vector3 position) {
+		public static GameObject SpawnActor(Vector3 position)
+        {
 			GameObject actor =  new GameObject();
 
 			actor.gameObject.transform.parent = Utility.FindGameObjectWithTagWithError(TagConstants.DynamicFolder).transform;
@@ -105,10 +109,12 @@ namespace Zeef.GameManagement {
 		/// <summary>
 		/// Spawns a copy of the provided prefab inside the DynamicFolder GameObject.
 		/// </summary>
-		public static GameObject SpawnActor(GameObject prefab, Vector3 position) {
+		public static GameObject SpawnActor(GameObject prefab, Vector3 position)
+        {
 			GameObject folder = GameObject.FindGameObjectWithTag(TagConstants.DynamicFolder);
 			
-			if (folder == null) {
+			if (folder == null)
+            {
 				folder = new GameObject("_DyanamicFolder");
 				folder.tag = TagConstants.DynamicFolder;
 			}
@@ -121,13 +127,35 @@ namespace Zeef.GameManagement {
 			);
 		}
 
-		/// <summary>
+        /// <summary>
 		/// Spawns a copy of the provided prefab inside the DynamicCanvasFolder GameObject.
 		/// </summary>
-		public static GameObject SpawnCanvasElement(GameObject prefab, Vector2 position) {
+		public static GameObject SpawnCanvasElement(GameObject prefab)
+        {
+            GameObject folder = GameObject.FindGameObjectWithTag(TagConstants.DynamicCanvasFolder);
+
+            if (folder == null)
+            {
+                folder = new GameObject("_DyanamicCanvasFolder");
+                folder.transform.parent = Utility.FindGameObjectWithTagWithError(TagConstants.SceneCanvas).transform;
+                folder.tag = TagConstants.DynamicCanvasFolder;
+            }
+
+            return Instantiate(
+                original: prefab,
+                parent: Utility.FindGameObjectWithTagWithError(TagConstants.DynamicCanvasFolder).transform
+            );
+        }
+
+        /// <summary>
+        /// Spawns a copy of the provided prefab inside the DynamicCanvasFolder GameObject.
+        /// </summary>
+        public static GameObject SpawnCanvasElement(GameObject prefab, Vector2 position)
+        {
 			GameObject folder = GameObject.FindGameObjectWithTag(TagConstants.DynamicCanvasFolder);
 			
-			if (folder == null) {
+			if (folder == null)
+            {
 				folder = new GameObject("_DyanamicCanvasFolder");
 				folder.transform.parent = Utility.FindGameObjectWithTagWithError(TagConstants.SceneCanvas).transform;
 				folder.tag = TagConstants.DynamicCanvasFolder;
@@ -144,9 +172,11 @@ namespace Zeef.GameManagement {
 		/// <summary>
 		/// Loads the first scene found with a name matching the provided <paramref name="scene"/> parameter.
 		/// </summary>
-		public static async Task LoadSceneAsync(string scene, LoadSceneMode loadMode = LoadSceneMode.Single, object package = null, bool transition = true) {
+		public static async Task LoadSceneAsync(string scene, LoadSceneMode loadMode = LoadSceneMode.Single, object package = null, bool transition = true)
+        {
 
-			if (transition) {
+			if (transition)
+            {
 				GetInstance().lastLoadedScene = scene;
 				GetInstance().scenePackage = package;
 
@@ -176,7 +206,8 @@ namespace Zeef.GameManagement {
 		// ---
 		// Events
 
-		protected virtual void OnBeforeLeaveScene() {
+		protected virtual void OnBeforeLeaveScene()
+        {
 			if (BeforeLeaveScene != null) 
 				BeforeLeaveScene(this, EventArgs.Empty);
 		}
@@ -192,20 +223,24 @@ namespace Zeef.GameManagement {
 		
 		public static bool IsLoading { get => GetInstance().gameState.Name == GameState.Loading.Name; }
 
-		public static void PauseGame() {
+		public static void PauseGame()
+        {
 			GetInstance().gameState = GameState.Pause;
 		}	
 
-		public static void UnpauseGame() {
+		public static void UnpauseGame()
+        {
 			if (IsPaused)
 				GetInstance().gameState = GameState.Play;
 		}
 
-		public static void EnterCutscene() {
+		public static void EnterCutscene()
+        {
 			GetInstance().gameState = GameState.Cutscene;
 		}
 
-		public static void ExitCutscene() {
+		public static void ExitCutscene()
+        {
 			if (IsInCutscene)
 				GetInstance().gameState = GameState.Play;
 		}
