@@ -25,6 +25,19 @@ namespace Zeef {
         [SerializeField] private List<string> right = new List<string>() { "right" };
         public static List<string> Right { get { return GetInstance().right; } }
 
+        // Axises
+        [SerializeField] private string horizontal = "Horizontal";
+        public static string Horizontal { get { return GetInstance().horizontal; } }
+
+        [SerializeField] private string vertical = "Vertical";
+        public static string Vertical { get { return GetInstance().vertical; } }
+
+        [SerializeField] private string horizontal2 = "Horizontal2";
+        public static string Horizontal2 { get { return GetInstance().horizontal2; } }
+
+        [SerializeField] private string vertical2 = "Vertical2";
+        public static string Vertical2 { get { return GetInstance().vertical2; } }
+
         // Face Buttons
         [SerializeField] private List<string> accept = new List<string>() { "z" };
         public static List<string> Accept { get { return GetInstance().accept; } }
@@ -56,7 +69,8 @@ namespace Zeef {
 
         // ---
 
-        protected override void Awake() {
+        protected override void Awake()
+        {
             base.Awake();
             DontDestroyOnLoad(gameObject);
         }
@@ -65,13 +79,16 @@ namespace Zeef {
         // Get Input
 
         // Down / Press
-        public static bool GetInputDown(List<string> inputs) {
-            foreach (string input in inputs) {
+        public static bool GetInputDown(List<string> inputs)
+        {
+            foreach (string input in inputs)
+            {
                 if (GetInputDown(input)) return true;
             }
             return false;
         }
-        public static bool GetInputDown(string input) {
+        public static bool GetInputDown(string input)
+        {
             try { if (Input.GetKeyDown(input)) return true; } 
             catch(ArgumentException e) { };
 
@@ -82,13 +99,15 @@ namespace Zeef {
         }
 
         // Held
-        public static bool GetInputHeld(List<string> inputs) {
+        public static bool GetInputHeld(List<string> inputs)
+        {
             foreach (string input in inputs) 
                 if (GetInputHeld(input)) return true;
             
             return false;
         }
-        public static bool GetInputHeld(string input) {
+        public static bool GetInputHeld(string input)
+        {
             try { if (Input.GetKey(input)) return true; } 
             catch(ArgumentException e) { };
 
@@ -98,15 +117,19 @@ namespace Zeef {
             return false;
         }
 
-
         // Up/ Release
-        public static bool GetInputUp(List<string> inputs) {
-            foreach (string input in inputs) {
-                if (GetInputUp(input)) return true;
+        public static bool GetInputUp(List<string> inputs)
+        {
+            foreach (string input in inputs)
+            {
+                if (GetInputUp(input))
+                    return true;
             }
+
             return false;
         }
-        public static bool GetInputUp(string input) {
+        public static bool GetInputUp(string input)
+        {
             try { if (Input.GetKeyUp(input)) return true; }
             catch(ArgumentException e) { };
 
@@ -119,47 +142,80 @@ namespace Zeef {
         // ---
         // Axis
 
-        public static bool GetAxisDown(string input) {
-            if (Mathf.Abs(Input.GetAxisRaw(input)) > 0.5f) {
-                if (!usedAxises.Contains(input)) {
+        public static bool GetAxisDown(List<string> inputs)
+        {
+            foreach (var input in inputs)
+            {
+                if (GetAxisDown(input))
+                    return true;
+            }
+
+            return false;
+        }
+        public static bool GetAxisDown(string input)
+        {
+            if (Mathf.Abs(Input.GetAxisRaw(input)) > 0.5f)
+            {
+                if (!usedAxises.Contains(input))
+                {
                     usedAxises.Add(input);
                     return true;
                 }
-            } else {
+            }
+            else
+            {
                 usedAxises = new List<string>();
             }
 
             return false;
         }
 
-        public static bool GetAxisHeld(string input) {
+        public static bool GetAxisHeld(List<string> inputs)
+        {
+            foreach (var input in inputs)
+            {
+                if (GetAxisHeld(input))
+                    return true;
+            }
+
+            return false;
+        }
+        public static bool GetAxisHeld(string input)
+        {
             usedAxises.Contains(input);
             return false;
         }
 
-        public static void CleanAxises() {
+        public static void CleanAxises()
+        {
             usedAxises = new List<string>();
         }
 
         // ---
         // Async
  
-        public static async Task WaitForAnyInputAsync() {
-            while (true) {
+        public static async Task WaitForAnyInputAsync()
+        {
+            while (true)
+            {
                 if (Input.anyKeyDown) break;
                 await new WaitForUpdate();
             } 
         }
-        public static async Task WaitForInputDownAsync(string input) {
+        public static async Task WaitForInputDownAsync(string input)
+        {
             await new WaitForUpdate();
-            while (true) {
+            while (true)
+            {
                 if (GetInputDown(input)) return;
                 await new WaitForUpdate();
             } 
         }
-        public static async Task WaitForInputDownAsync(List<string> inputs) {
+        public static async Task WaitForInputDownAsync(List<string> inputs)
+        {
             await new WaitForUpdate();
-            while (true) {
+            while (true)
+            {
                 foreach (string input in inputs) if (GetInputDown(input)) return;
                 await new WaitForUpdate();
             } 
@@ -167,10 +223,12 @@ namespace Zeef {
 
         // Menu Selection
 
-        public static async Task<int?> HorizontalSelectAsync(int max) {
+        public static async Task<int?> HorizontalSelectAsync(int max)
+        {
             int? result = 0;
 
-            while (true) {
+            while (true)
+            {
                 if (GetInputDown(Left)) result--;
                 if (GetInputDown(Right)) result++;
 
@@ -181,10 +239,12 @@ namespace Zeef {
             }
         }
 
-        public static async Task<int?> VerticalSelectAsync(int max) {
+        public static async Task<int?> VerticalSelectAsync(int max)
+        {
             int? result = 0;
 
-            while (true) {
+            while (true)
+            {
                 if (GetInputDown(Up)) result--;
                 if (GetInputDown(Down)) result++;
 
@@ -195,10 +255,12 @@ namespace Zeef {
             }
         }
 
-        public static async Task<Coordinates> MatrixSelectAsync(int columnMax, int rowMax, Action<Coordinates> changeAction) {
+        public static async Task<Coordinates> MatrixSelectAsync(int columnMax, int rowMax, Action<Coordinates> changeAction)
+        {
             Coordinates result = new Coordinates();
 
-            while (true) {
+            while (true)
+            {
                 var old = new Coordinates(result.Col, result.Row);
 
                 if (GetInputDown(Up)) result.Row--;
