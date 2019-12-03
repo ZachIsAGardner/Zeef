@@ -18,7 +18,7 @@ namespace Zeef.Menu {
         }
 
         public async Task WaitForDismissalAsync() {
-            await ControlManager.WaitForInputDownAsync(ControlManager.Accept);
+            await ControlManager.WaitForInputPressedAsync(ControlManager.Accept);
             Destroy(gameObject);
         }
     }

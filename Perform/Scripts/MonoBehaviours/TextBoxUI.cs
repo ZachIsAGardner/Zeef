@@ -31,7 +31,7 @@ namespace Zeef.Perform {
 		private SoundEffectScriptable tone; // The noise made when the text is crawling
 		
 		void Update() {
-			if (ControlManager.GetInputDown(ControlManager.Accept)) skipToEnd = true;	
+			if (ControlManager.GetInputPressed(ControlManager.Accept)) skipToEnd = true;	
 		}
 
 		public static TextBoxUI Initialize(TextBoxUI prefab, Transform parent, Vector2 position, TextBoxUIFullModel model) {
@@ -97,7 +97,7 @@ namespace Zeef.Perform {
 			textComponent.text = text;
 
 			if (auto) await new WaitForSeconds(1);
-			else await ControlManager.WaitForInputDownAsync(ControlManager.Accept);
+			else await ControlManager.WaitForInputPressedAsync(ControlManager.Accept);
 		}
 
 		// Wait an amount of time based on character

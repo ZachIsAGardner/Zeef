@@ -31,7 +31,7 @@ namespace Zeef.Test
 
             vel.y -= gravity * Time.deltaTime;
 
-            if (Collision.Collisions.Down && ControlManager.GetInputDown(ControlManager.Accept))
+            if (Collision.Collisions.Down && ControlManager.GetInputPressed(ControlManager.Accept))
                 vel.y = jumpVelocity;
 
         }

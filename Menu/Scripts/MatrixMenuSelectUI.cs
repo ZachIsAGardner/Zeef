@@ -61,10 +61,10 @@ namespace Zeef.Menu {
             while (true) {
                 Coordinates oldFocus = new Coordinates(focus);
 
-                if (ControlManager.GetInputDown(ControlManager.Left)) focus.Col--;
-                if (ControlManager.GetInputDown(ControlManager.Right)) focus.Col++;
-                if (ControlManager.GetInputDown(ControlManager.Up)) focus.Row--;
-                if (ControlManager.GetInputDown(ControlManager.Down)) focus.Row++;
+                if (ControlManager.GetInputPressed(ControlManager.Left)) focus.Col--;
+                if (ControlManager.GetInputPressed(ControlManager.Right)) focus.Col++;
+                if (ControlManager.GetInputPressed(ControlManager.Up)) focus.Row--;
+                if (ControlManager.GetInputPressed(ControlManager.Down)) focus.Row++;
 
                 if (focus.Row < 0) focus.Row = 0;
                 if (focus.Row >= menuItems.Count) focus.Row = menuItems.Count - 1; 
@@ -79,11 +79,11 @@ namespace Zeef.Menu {
                     menuItems[focus.Row][focus.Col].Highlight();
                 }
                 
-                if (ControlManager.GetInputDown(ControlManager.Accept)) { 
+                if (ControlManager.GetInputPressed(ControlManager.Accept)) { 
                     Close();
                     return menuItems[focus.Row][focus.Col].Data;
                 }
-                if (ControlManager.GetInputDown(ControlManager.Deny) && cancelable) { 
+                if (ControlManager.GetInputPressed(ControlManager.Deny) && cancelable) { 
                     Close();
                     return null;
                 }

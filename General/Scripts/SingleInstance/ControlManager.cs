@@ -1,17 +1,37 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Zeef {
+namespace Zeef
+{
+    public class AxisInfo
+    {
+        public string Name { get; set; }
+
+        public bool IsPressedNegative { get; set; }
+        public bool IsHeldNegative { get; set; }
+        public bool IsReleasedNegative { get; set; }
+
+        public bool IsPressedPositive { get; set; }
+        public bool IsHeldPositive { get; set; }
+        public bool IsReleasedPositive { get; set; }
+
+        public AxisInfo() { }
+        public AxisInfo(string name)
+        {
+            Name = name;
+        }
+    }
 
     /// <summary>
     /// Provides strongly typed references to input from the player.
     /// </summary>
-    public class ControlManager : SingleInstance<ControlManager> {
-
+    public class ControlManager : SingleInstance<ControlManager>
+    {
         // Directions
         [SerializeField] private List<string> up = new List<string>() { "up" };
         public static List<string> Up { get { return GetInstance().up; } }
@@ -26,17 +46,17 @@ namespace Zeef {
         public static List<string> Right { get { return GetInstance().right; } }
 
         // Axises
-        [SerializeField] private string horizontal = "Horizontal";
-        public static string Horizontal { get { return GetInstance().horizontal; } }
+        [SerializeField] private List<string> horizontal = new List<string>() { "Horizontal" };
+        public static List<string> Horizontal { get { return GetInstance().horizontal; } }
 
-        [SerializeField] private string vertical = "Vertical";
-        public static string Vertical { get { return GetInstance().vertical; } }
+        [SerializeField] private List<string> vertical = new List<string>() { "Vertical" };
+        public static List<string> Vertical { get { return GetInstance().vertical; } }
 
-        [SerializeField] private string horizontal2 = "Horizontal2";
-        public static string Horizontal2 { get { return GetInstance().horizontal2; } }
+        [SerializeField] private List<string> horizontal2 = new List<string>() { "Horizontal2" };
+        public static List<string> Horizontal2 { get { return GetInstance().horizontal2; } }
 
-        [SerializeField] private string vertical2 = "Vertical2";
-        public static string Vertical2 { get { return GetInstance().vertical2; } }
+        [SerializeField] private List<string> vertical2 = new List<string>() { "Vertical2" };
+        public static List<string> Vertical2 { get { return GetInstance().vertical2; } }
 
         // Face Buttons
         [SerializeField] private List<string> accept = new List<string>() { "z" };
@@ -63,31 +83,111 @@ namespace Zeef {
         [Range(0, 1)]
         [SerializeField] private static float axisSensitivity = 0.5f;
 
-        // Axises that are input by the user get added to 
-        // this list to further interpret what type of input is happening
-        private static List<string> usedAxises = new List<string>();
+        /// <summary>
+        /// List of relevant axes to listen to.
+        /// </summary>
+        private static List<AxisInfo> axisInfos = new List<AxisInfo>();
 
         // ---
 
         protected override void Awake()
         {
+            // Call base.
             base.Awake();
+
+            // Don't destroy on load.
             DontDestroyOnLoad(gameObject);
+
+            // Register axes.
+
+            axisInfos = new List<AxisInfo>();
+
+            foreach (var axis in horizontal)
+                axisInfos.Add(new AxisInfo(axis));
+            foreach (var axis in horizontal2)
+                axisInfos.Add(new AxisInfo(axis));
+            foreach (var axis in vertical)
+                axisInfos.Add(new AxisInfo(axis));
+            foreach (var axis in vertical2)
+                axisInfos.Add(new AxisInfo(axis));
+        }
+
+        private void Update()
+        {
+            ListenForAxes();
+        }
+
+        private void ListenForAxes()
+        {
+            float threshold = 0.35f;
+
+            foreach (var axis in axisInfos)
+            {
+                // Positive Press/ Hold
+                if (Input.GetAxisRaw(axis.Name) > threshold)
+                {
+                    if (!axis.IsPressedPositive && !axis.IsHeldPositive)
+                    {
+                        axis.IsPressedPositive = true;
+                    }
+                    else if (axis.IsPressedPositive)
+                    {
+                        axis.IsPressedPositive = false;
+                        axis.IsHeldPositive = true;
+                    }
+                }
+                // Positive Release
+                else
+                {
+                    if (axis.IsPressedPositive || axis.IsHeldPositive)
+                        axis.IsReleasedPositive = true;
+                    else if (axis.IsReleasedPositive)
+                        axis.IsReleasedPositive = false;
+
+                    axis.IsPressedPositive = false;
+                    axis.IsHeldPositive = false;
+                }
+
+                // Negative Press/ Hold
+                if (Input.GetAxisRaw(axis.Name) < -threshold)
+                {
+                    if (!axis.IsPressedNegative && !axis.IsHeldNegative)
+                    {
+                        axis.IsPressedNegative = true;
+                    }
+                    else if (axis.IsPressedNegative)
+                    {
+                        axis.IsPressedNegative = false;
+                        axis.IsHeldNegative = true;
+                    }
+                }
+                // Negative Release
+                else
+                {
+                    if (axis.IsPressedNegative || axis.IsHeldNegative)
+                        axis.IsReleasedNegative = true;
+                    else if (axis.IsReleasedNegative)
+                        axis.IsReleasedNegative = false;
+
+                    axis.IsPressedNegative = false;
+                    axis.IsHeldNegative = false;
+                }
+            }
         }
 
         // ---
         // Get Input
 
         // Down / Press
-        public static bool GetInputDown(List<string> inputs)
+        public static bool GetInputPressed(List<string> inputs)
         {
             foreach (string input in inputs)
             {
-                if (GetInputDown(input)) return true;
+                if (GetInputPressed(input)) return true;
             }
             return false;
         }
-        public static bool GetInputDown(string input)
+        public static bool GetInputPressed(string input)
         {
             try { if (Input.GetKeyDown(input)) return true; } 
             catch(ArgumentException e) { };
@@ -118,17 +218,17 @@ namespace Zeef {
         }
 
         // Up/ Release
-        public static bool GetInputUp(List<string> inputs)
+        public static bool GetInputReleased(List<string> inputs)
         {
             foreach (string input in inputs)
             {
-                if (GetInputUp(input))
+                if (GetInputReleased(input))
                     return true;
             }
 
             return false;
         }
-        public static bool GetInputUp(string input)
+        public static bool GetInputReleased(string input)
         {
             try { if (Input.GetKeyUp(input)) return true; }
             catch(ArgumentException e) { };
@@ -142,58 +242,141 @@ namespace Zeef {
         // ---
         // Axis
 
-        public static bool GetAxisDown(List<string> inputs)
+        /// <summary>
+        /// Whether or not the user has pressed an axis. "Pressed" meaning that the duration of input was relatively short.
+        /// </summary>
+        /// <param name="inputs">Axes to check.</param>
+        /// <param name="positive">Check negative or positive direction of axis?</param>
+        public static bool GetAxisPressed(List<string> inputs, bool positive)
         {
             foreach (var input in inputs)
             {
-                if (GetAxisDown(input))
+                if (GetAxisPressed(input, positive))
                     return true;
             }
 
             return false;
         }
-        public static bool GetAxisDown(string input)
+
+        /// <summary>
+        /// Whether or not the user has pressed an axis. "Pressed" meaning that the duration of input was relatively short.
+        /// </summary>
+        /// <param name="input">Axis to check.</param>
+        /// <param name="positive">Check negative or positive direction of axis?</param>
+        public static bool GetAxisPressed(string input, bool positive)
         {
-            if (Mathf.Abs(Input.GetAxisRaw(input)) > 0.5f)
+            AxisInfo axisInfo = axisInfos.FirstOrDefault(a => a.Name == input);
+
+            if (axisInfo == null)
+                return false;
+
+            if (positive)
             {
-                if (!usedAxises.Contains(input))
-                {
-                    usedAxises.Add(input);
-                    return true;
-                }
+                return axisInfo.IsPressedPositive;
             }
             else
             {
-                usedAxises = new List<string>();
+                return axisInfo.IsPressedNegative;
             }
-
-            return false;
         }
-
-        public static bool GetAxisHeld(List<string> inputs)
+        
+        /// <summary>
+        /// Whether or not the user has been holding any given axis.
+        /// </summary>
+        public static bool GetAxisHeld(List<string> inputs, bool positive)
         {
             foreach (var input in inputs)
             {
-                if (GetAxisHeld(input))
+                if (GetAxisHeld(input, positive))
                     return true;
             }
 
             return false;
         }
-        public static bool GetAxisHeld(string input)
+
+        /// <summary>
+        /// Whether or not the user has been holding any given axis.
+        /// </summary>
+        public static bool GetAxisHeld(string input, bool positive)
         {
-            usedAxises.Contains(input);
+            AxisInfo axisInfo = axisInfos.FirstOrDefault(a => a.Name == input);
+
+            if (axisInfo == null)
+                return false;
+
+            if (positive)
+            {
+                return axisInfo.IsHeldPositive;
+            }
+            else
+            {
+                return axisInfo.IsHeldNegative;
+            }
+        }
+
+        /// <summary>
+        /// Whether or not the user has been holding any given axis.
+        /// </summary>
+        public static bool GetAxisReleased(List<string> inputs, bool positive)
+        {
+            foreach (var input in inputs)
+            {
+                if (GetAxisReleased(input, positive))
+                    return true;
+            }
+
             return false;
         }
 
-        public static void CleanAxises()
+        /// <summary>
+        /// Whether or not the user has been holding any given axis.
+        /// </summary>
+        public static bool GetAxisReleased(string input, bool positive)
         {
-            usedAxises = new List<string>();
+            AxisInfo axisInfo = axisInfos.FirstOrDefault(a => a.Name == input);
+
+            if (axisInfo == null)
+                return false;
+
+            if (positive)
+            {
+                return axisInfo.IsReleasedPositive;
+            }
+            else
+            {
+                return axisInfo.IsReleasedNegative;
+            }
+        }
+
+        /// <summary>
+        /// Returns the sum of the provided axes. Returned value will be capped between -1 and 1.
+        /// </summary>
+        /// <param name="axes">The axis in the Input Manager to get input from.</param>
+        public static float GetSumOfAxes(List<string> axes)
+        {
+            float dir = 0;
+
+            foreach (var axis in axes)
+            {
+                try { dir += Input.GetAxisRaw(axis); }
+                catch { }
+            }
+
+            if (dir < -1)
+                dir = -1;
+
+            if (dir > 1)
+                dir = 1;
+
+            return dir;
         }
 
         // ---
         // Async
  
+        /// <summary>
+        /// Wait for any input.
+        /// </summary>
         public static async Task WaitForAnyInputAsync()
         {
             while (true)
@@ -202,21 +385,21 @@ namespace Zeef {
                 await new WaitForUpdate();
             } 
         }
-        public static async Task WaitForInputDownAsync(string input)
+        public static async Task WaitForInputPressedAsync(string input)
         {
             await new WaitForUpdate();
             while (true)
             {
-                if (GetInputDown(input)) return;
+                if (GetInputPressed(input)) return;
                 await new WaitForUpdate();
             } 
         }
-        public static async Task WaitForInputDownAsync(List<string> inputs)
+        public static async Task WaitForInputPressedAsync(List<string> inputs)
         {
             await new WaitForUpdate();
             while (true)
             {
-                foreach (string input in inputs) if (GetInputDown(input)) return;
+                foreach (string input in inputs) if (GetInputPressed(input)) return;
                 await new WaitForUpdate();
             } 
         }
@@ -229,11 +412,11 @@ namespace Zeef {
 
             while (true)
             {
-                if (GetInputDown(Left)) result--;
-                if (GetInputDown(Right)) result++;
+                if (GetInputPressed(Left)) result--;
+                if (GetInputPressed(Right)) result++;
 
-                if (GetInputDown(Accept)) return result;
-                if (GetInputDown(Deny)) return null;
+                if (GetInputPressed(Accept)) return result;
+                if (GetInputPressed(Deny)) return null;
 
                 await new WaitForUpdate();
             }
@@ -245,11 +428,11 @@ namespace Zeef {
 
             while (true)
             {
-                if (GetInputDown(Up)) result--;
-                if (GetInputDown(Down)) result++;
+                if (GetInputPressed(Up)) result--;
+                if (GetInputPressed(Down)) result++;
 
-                if (GetInputDown(Accept)) return result;
-                if (GetInputDown(Deny)) return null;
+                if (GetInputPressed(Accept)) return result;
+                if (GetInputPressed(Deny)) return null;
 
                 await new WaitForUpdate();
             }
@@ -263,10 +446,10 @@ namespace Zeef {
             {
                 var old = new Coordinates(result.Col, result.Row);
 
-                if (GetInputDown(Up)) result.Row--;
-                if (GetInputDown(Down)) result.Row++;
-                if (GetInputDown(Left)) result.Col--;
-                if (GetInputDown(Right)) result.Col++;
+                if (GetInputPressed(Up)) result.Row--;
+                if (GetInputPressed(Down)) result.Row++;
+                if (GetInputPressed(Left)) result.Col--;
+                if (GetInputPressed(Right)) result.Col++;
 
                 if (result.Col < 0) result.Col = 0;
                 if (result.Col > columnMax - 1) result.Col = columnMax - 1;
@@ -275,8 +458,8 @@ namespace Zeef {
 
                 if (!old.SameAs(result)) changeAction(result);
 
-                if (GetInputDown(Accept)) return result;
-                if (GetInputDown(Deny)) return null;
+                if (GetInputPressed(Accept)) return result;
+                if (GetInputPressed(Deny)) return null;
 
                 await new WaitForUpdate();
             }
