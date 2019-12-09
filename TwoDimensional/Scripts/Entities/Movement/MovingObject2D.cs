@@ -9,19 +9,11 @@ namespace Zeef.TwoDimensional
 	/// <summary>
 	/// Sets up basic movement and collision.
 	/// </summary>
-	[RequireComponent(typeof(AudioSource))]
 	[RequireComponent(typeof(Rigidbody2D))]
 	[RequireComponent(typeof(BoxCollider2D))]
 	[RequireComponent(typeof(Collision2D))]
 	public abstract class MovingObject2D : MonoBehaviour 
 	{
-		// State
-
-		/// <summary>
-		/// The position this moving object was at on it's Start()
-		/// </summary>
-		public Vector3 StartPosition { get; protected set; }
-
 		// Stats
 
 		[Header("Moving Object 2D Settings")]
@@ -53,20 +45,17 @@ namespace Zeef.TwoDimensional
 		/// Contains info about any current collisions.
 		/// </summary>
 		public Collision2D Collision { get; private set; }
-		
-		private Vector2 vel;
-		/// <summary>
-		/// Current velocity for this moving object.
-		/// </summary>
-		public Vector2 Vel { get { return vel; } }
+
+        /// <summary>
+        /// Current velocity for this moving object.
+        /// </summary>
+        [HideInInspector] public Vector2 Velocity;
 
 		// ---
 		// Lifecycle
 
 		protected virtual void Start () 
 		{
-			StartPosition = transform.position;
-
 			Collision = this.GetComponentWithError<Collision2D>();
 		}
 
@@ -75,22 +64,19 @@ namespace Zeef.TwoDimensional
 			if (GameManager.IsPaused) 
 				return;
 
-			CalculateVelocity(ref vel);
-			Collision.Move(vel * Time.deltaTime);            
+			Collision.Move(Velocity * Time.deltaTime);            
 		}
 
 		// ---
 		// Collision and Velocity
-		
-		protected abstract void CalculateVelocity(ref Vector2 vel);
 
 		private void LimitVelocity() 
 		{
-			if (Mathf.Abs(vel.x) > Mathf.Abs(velMax.x)) 
-				vel.x = velMax.x * -Mathf.Sign(velMax.x);
+			if (Mathf.Abs(Velocity.x) > Mathf.Abs(velMax.x)) 
+				Velocity.x = velMax.x * -Mathf.Sign(velMax.x);
 			
-			if (Mathf.Abs(vel.y) > Mathf.Abs(velMax.y)) 
-				vel.y = velMax.y * Mathf.Sign(vel.y);	
+			if (Mathf.Abs(Velocity.y) > Mathf.Abs(velMax.y)) 
+				Velocity.y = velMax.y * Mathf.Sign(Velocity.y);	
 		}
 
 		// ---
@@ -108,9 +94,5 @@ namespace Zeef.TwoDimensional
 				return false;
 			}
 		}
-
-		public bool IsMoving() => (Mathf.Abs(vel.x) > 0.5f || Mathf.Abs(vel.y) > 0.5f);
-		
-		public bool IsMovingDown() => vel.y < 0;
 	}
 }

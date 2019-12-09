@@ -8,14 +8,17 @@ using System.Threading.Tasks;
 
 namespace Zeef.GameManagement {
 
-    public class ScreenTransition : MonoBehaviour{
-
+    public class ScreenTransition : MonoBehaviour
+    {
         private Image imageComponent;
         
-        public static ScreenTransition Initialize(GameObject parent) {
+        public static ScreenTransition Initialize(GameObject parent)
+        {
             return Initialize(parent, Color.black);
         }
-        public static ScreenTransition Initialize(GameObject parent, Color color) {
+
+        public static ScreenTransition Initialize(GameObject parent, Color color)
+        {
             ScreenTransition instance = new GameObject("LoadingScreen").AddComponent<ScreenTransition>();
 
             instance.transform.SetParent(parent.transform);
@@ -31,18 +34,22 @@ namespace Zeef.GameManagement {
         }
 
         // Darken Screen
-        public async Task FadeOutAsync (float duration = 1) {
+        public async Task FadeOutAsync (float duration = 1)
+        {
             
-            while (imageComponent.color.a < 1) {
+            while (imageComponent.color.a < 1)
+            {
                 imageComponent.color += new Color(0,0,0,(1 / duration) * Time.deltaTime);
                 await new WaitForUpdate();
             }
         }
 
         // Undarken screen
-        public async Task FadeInAsync (float duration = 1, Action callback = null) {
+        public async Task FadeInAsync (float duration = 1, Action callback = null)
+        {
 
-            while (imageComponent.color.a > 0) {
+            while (imageComponent.color.a > 0)
+            {
                 imageComponent.color -= new Color(0,0,0,(1 / duration) * Time.deltaTime);
                 await new WaitForUpdate();
             }

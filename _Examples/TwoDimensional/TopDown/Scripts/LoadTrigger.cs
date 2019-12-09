@@ -16,7 +16,7 @@ namespace Zeef.TwoDimensional.Example {
         [SerializeField] private int spawnID;
 
         private async void OnTriggerEnter2D(Collider2D col) {
-            if (col.tag == TagConstants.Player)
+            if (col.tag == TagConstant.Player)
                 await GameManager.LoadSceneAsync(
                     scene: scene,
                     package: new SceneSetupPackage(spawnID)

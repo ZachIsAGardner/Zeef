@@ -9,25 +9,10 @@ using System.Linq;
 using Zeef.Sound;
 using System.Threading.Tasks;
 
-namespace Zeef.GameManagement {
-
-	public partial class GameState {
-
-		public string Name { get; set; }
-
-		private GameState(string name)
-        {
-			Name = name;
-		}
-
-		public static GameState Play { get => new GameState("Play"); }
-		public static GameState Pause { get => new GameState("Pause"); }
-		public static GameState Cutscene { get => new GameState("Cutscene"); }
-		public static GameState Loading { get => new GameState("Loading"); }
-	}
-
-	public class GameManager : SingleInstance<GameManager> {
-	
+namespace Zeef.GameManagement
+{
+	public partial class GameManager : SingleInstance<GameManager>
+    {	
 		/// <summary>
 		/// Special actions are only available in dev mode.
 		/// </summary>
@@ -59,8 +44,12 @@ namespace Zeef.GameManagement {
 		///
 		/// Possible states are Play, Pause, Cutscene, and Loading
 		/// </summary>
-		public static GameState GameState { get => GetInstance().gameState; }
-		private GameState gameState;
+		public static GameStateConstant GameState
+        {
+            get => GetInstance().gameState;
+            set => GetInstance().gameState = value;
+        }
+		private GameStateConstant gameState;
 
 		protected string lastLoadedScene;
 
@@ -72,7 +61,7 @@ namespace Zeef.GameManagement {
 		protected override void Awake()
         {
 			base.Awake();
-			gameState = GameState.Play;
+			gameState = GameStateConstant.Play;
 			DontDestroyOnLoad(gameObject);
 
 			Application.targetFrameRate = 60;			
@@ -100,7 +89,7 @@ namespace Zeef.GameManagement {
         {
 			GameObject actor =  new GameObject();
 
-			actor.gameObject.transform.parent = Utility.FindGameObjectWithTagWithError(TagConstants.DynamicFolder).transform;
+			actor.gameObject.transform.parent = Utility.FindGameObjectWithTagWithError(TagConstant.DynamicFolder).transform;
 			actor.gameObject.transform.position = position;
 
 			return actor;
@@ -111,19 +100,19 @@ namespace Zeef.GameManagement {
 		/// </summary>
 		public static GameObject SpawnActor(GameObject prefab, Vector3 position)
         {
-			GameObject folder = GameObject.FindGameObjectWithTag(TagConstants.DynamicFolder);
+			GameObject folder = GameObject.FindGameObjectWithTag(TagConstant.DynamicFolder);
 			
 			if (folder == null)
             {
 				folder = new GameObject("_DyanamicFolder");
-				folder.tag = TagConstants.DynamicFolder;
+				folder.tag = TagConstant.DynamicFolder;
 			}
 
 			return Instantiate(
 				original: prefab, 
 				position: position, 
 				rotation: Quaternion.identity, 
-				parent: Utility.FindGameObjectWithTagWithError(TagConstants.DynamicFolder).transform
+				parent: Utility.FindGameObjectWithTagWithError(TagConstant.DynamicFolder).transform
 			);
 		}
 
@@ -132,18 +121,18 @@ namespace Zeef.GameManagement {
 		/// </summary>
 		public static GameObject SpawnCanvasElement(GameObject prefab)
         {
-            GameObject folder = GameObject.FindGameObjectWithTag(TagConstants.DynamicCanvasFolder);
+            GameObject folder = GameObject.FindGameObjectWithTag(TagConstant.DynamicCanvasFolder);
 
             if (folder == null)
             {
                 folder = new GameObject("_DyanamicCanvasFolder");
-                folder.transform.parent = Utility.FindGameObjectWithTagWithError(TagConstants.SceneCanvas).transform;
-                folder.tag = TagConstants.DynamicCanvasFolder;
+                folder.transform.parent = Utility.FindGameObjectWithTagWithError(TagConstant.SceneCanvas).transform;
+                folder.tag = TagConstant.DynamicCanvasFolder;
             }
 
             return Instantiate(
                 original: prefab,
-                parent: Utility.FindGameObjectWithTagWithError(TagConstants.DynamicCanvasFolder).transform
+                parent: Utility.FindGameObjectWithTagWithError(TagConstant.DynamicCanvasFolder).transform
             );
         }
 
@@ -152,20 +141,20 @@ namespace Zeef.GameManagement {
         /// </summary>
         public static GameObject SpawnCanvasElement(GameObject prefab, Vector2 position)
         {
-			GameObject folder = GameObject.FindGameObjectWithTag(TagConstants.DynamicCanvasFolder);
+			GameObject folder = GameObject.FindGameObjectWithTag(TagConstant.DynamicCanvasFolder);
 			
 			if (folder == null)
             {
 				folder = new GameObject("_DyanamicCanvasFolder");
-				folder.transform.parent = Utility.FindGameObjectWithTagWithError(TagConstants.SceneCanvas).transform;
-				folder.tag = TagConstants.DynamicCanvasFolder;
+				folder.transform.parent = Utility.FindGameObjectWithTagWithError(TagConstant.SceneCanvas).transform;
+				folder.tag = TagConstant.DynamicCanvasFolder;
 			}
 
 			return Instantiate(
 				original: prefab, 
 				position: position, 
 				rotation: Quaternion.identity, 
-				parent: Utility.FindGameObjectWithTagWithError(TagConstants.DynamicCanvasFolder).transform
+				parent: Utility.FindGameObjectWithTagWithError(TagConstant.DynamicCanvasFolder).transform
 			);
 		}
 		
@@ -180,7 +169,7 @@ namespace Zeef.GameManagement {
 				GetInstance().lastLoadedScene = scene;
 				GetInstance().scenePackage = package;
 
-				GetInstance().gameState = GameState.Loading;
+				GetInstance().gameState = GameStateConstant.Loading;
 				await new WaitForUpdate();
 
 				ScreenTransition screenTransition = ScreenTransition.Initialize(
@@ -197,7 +186,7 @@ namespace Zeef.GameManagement {
 
 				Destroy(screenTransition.gameObject);
 
-				GetInstance().gameState = GameState.Play;
+				GetInstance().gameState = GameStateConstant.Play;
 			} else {
 				SceneManager.LoadScene(scene, loadMode);
 			}
@@ -215,34 +204,12 @@ namespace Zeef.GameManagement {
 		// ---
 		// GameState
 
-		public static bool IsPaused { get => GetInstance().gameState.Name == GameState.Pause.Name; }
+		public static bool IsPaused { get => GetInstance().gameState.Name == GameStateConstant.Pause.Name; }
 		
-		public static bool IsPlaying { get => GetInstance().gameState.Name == GameState.Play.Name; }
+		public static bool IsPlaying { get => GetInstance().gameState.Name == GameStateConstant.Play.Name; }
 		
-		public static bool IsInCutscene { get => GetInstance().gameState.Name == GameState.Cutscene.Name; }
+		public static bool IsInCutscene { get => GetInstance().gameState.Name == GameStateConstant.Cutscene.Name; }
 		
-		public static bool IsLoading { get => GetInstance().gameState.Name == GameState.Loading.Name; }
-
-		public static void PauseGame()
-        {
-			GetInstance().gameState = GameState.Pause;
-		}	
-
-		public static void UnpauseGame()
-        {
-			if (IsPaused)
-				GetInstance().gameState = GameState.Play;
-		}
-
-		public static void EnterCutscene()
-        {
-			GetInstance().gameState = GameState.Cutscene;
-		}
-
-		public static void ExitCutscene()
-        {
-			if (IsInCutscene)
-				GetInstance().gameState = GameState.Play;
-		}
+		public static bool IsLoading { get => GetInstance().gameState.Name == GameStateConstant.Loading.Name; }
 	}
 }

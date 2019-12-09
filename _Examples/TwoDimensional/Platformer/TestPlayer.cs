@@ -10,8 +10,10 @@ namespace Zeef.Test
         [SerializeField] private float gravity = 2;
         [SerializeField] private float jumpVelocity = 5;
 
-        protected override void CalculateVelocity(ref Vector2 vel)
+        protected override void Update()
         {
+            base.Update();
+
             bool left = ControlManager.GetInputHeld(ControlManager.Left);
             bool right = ControlManager.GetInputHeld(ControlManager.Right);
 
@@ -24,16 +26,15 @@ namespace Zeef.Test
             else if (right)
                 inputX = 1;
             
-            vel.x = vel.x.MoveOverTime(moveSpeed * inputX, acc);
+            Velocity.x = Velocity.x.MoveOverTime(moveSpeed * inputX, acc);
 
             if (Collision.Collisions.Down) 
-                vel.y = 0;
+                Velocity.y = 0;
 
-            vel.y -= gravity * Time.deltaTime;
+            Velocity.y -= gravity * Time.deltaTime;
 
             if (Collision.Collisions.Down && ControlManager.GetInputPressed(ControlManager.Accept))
-                vel.y = jumpVelocity;
-
+                Velocity.y = jumpVelocity;
         }
     }
 }

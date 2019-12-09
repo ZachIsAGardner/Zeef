@@ -17,7 +17,8 @@ namespace Zeef.TwoDimensional.Example {
 
 		private LivingObject livingObject;
 
-		protected override void Start() {
+		protected override void Start()
+        {
 			base.Start();
 
 			GameManager.BeforeLeaveScene += OnBeforeLeaveScene;
@@ -33,15 +34,18 @@ namespace Zeef.TwoDimensional.Example {
 			barUI.UpdateDisplayAsync(livingObject.HealthPercentage, 0);
 		}
 
-		public async void OnBeforeLeaveScene(object source, EventArgs args) {
+		public async void OnBeforeLeaveScene(object source, EventArgs args)
+        {
 			ExampleSession.UpdateData(livingObject.Health);
 		}
 
-		public async void OnAfterSurviveTakeDamage(object source, DamageEventArgs args) {
+		public async void OnAfterSurviveTakeDamage(object source, DamageEventArgs args)
+        {
 			await barUI.UpdateDisplayAsync(livingObject.HealthPercentage);
 		}
 
-		public async void OnBeforeDie(object source, EventArgs args) {
+		public async void OnBeforeDie(object source, EventArgs args)
+        {
 			barUI.UpdateDisplay(0);
 			// await GameManager.LoadSceneAsync(
 			// 	scene: "_GameOver", 
@@ -50,20 +54,27 @@ namespace Zeef.TwoDimensional.Example {
 			// );
 		}
 
-		protected void OnDestroy() {
+		protected void OnDestroy()
+        {
 			GameManager.BeforeLeaveScene -= OnBeforeLeaveScene;
 		}
 
-		protected override void Update() {
-			if (GameManager.IsLoading || livingObject.IsFrozen) return;
+		protected override void Update()
+        {
+			if (GameManager.IsLoading || livingObject.IsFrozen)
+                return;
+
 			base.Update();
+
+            Move();
 			
 			ChangeFacing();
 		}
 
 		// ---
 		        
-        protected override void CalculateVelocity(ref Vector2 vel) {
+        private void Move()
+        {
 			int inputX = 0;
 			if (ControlManager.GetInputHeld(ControlManager.Left)) inputX = -1;
 			if (ControlManager.GetInputHeld(ControlManager.Right)) inputX = 1;
@@ -72,13 +83,14 @@ namespace Zeef.TwoDimensional.Example {
 			if (ControlManager.GetInputHeld(ControlManager.Down)) inputY = -1;
 			if (ControlManager.GetInputHeld(ControlManager.Up)) inputY = 1;
 
-            vel.x = Mathf.Lerp(vel.x, inputX * moveSpeed, 1 - Mathf.Pow(acc, Time.deltaTime));
-            vel.y = Mathf.Lerp(vel.y, inputY * moveSpeed, 1 - Mathf.Pow(acc, Time.deltaTime));
+            Velocity.x = Mathf.Lerp(Velocity.x, inputX * moveSpeed, 1 - Mathf.Pow(acc, Time.deltaTime));
+            Velocity.y = Mathf.Lerp(Velocity.y, inputY * moveSpeed, 1 - Mathf.Pow(acc, Time.deltaTime));
         }
 
-        protected void ChangeFacing() {
-			if (Vel.x < -0.1f) spriteRenderer.flipX = true;
-			else if (Vel.x > 0.1f) spriteRenderer.flipX = false;
+        protected void ChangeFacing()
+        {
+			if (Velocity.x < -0.1f) spriteRenderer.flipX = true;
+			else if (Velocity.x > 0.1f) spriteRenderer.flipX = false;
         }
     }
 }

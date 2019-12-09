@@ -179,7 +179,7 @@ namespace Zeef
         // Get Input
 
         // Down / Press
-        public static bool GetInputPressed(List<string> inputs)
+        public static bool GetInputPressed(IEnumerable<string> inputs)
         {
             foreach (string input in inputs)
             {
@@ -199,7 +199,7 @@ namespace Zeef
         }
 
         // Held
-        public static bool GetInputHeld(List<string> inputs)
+        public static bool GetInputHeld(IEnumerable<string> inputs)
         {
             foreach (string input in inputs) 
                 if (GetInputHeld(input)) return true;
@@ -218,7 +218,7 @@ namespace Zeef
         }
 
         // Up/ Release
-        public static bool GetInputReleased(List<string> inputs)
+        public static bool GetInputReleased(IEnumerable<string> inputs)
         {
             foreach (string input in inputs)
             {
@@ -247,7 +247,7 @@ namespace Zeef
         /// </summary>
         /// <param name="inputs">Axes to check.</param>
         /// <param name="positive">Check negative or positive direction of axis?</param>
-        public static bool GetAxisPressed(List<string> inputs, bool positive)
+        public static bool GetAxisPressed(IEnumerable<string> inputs, bool positive)
         {
             foreach (var input in inputs)
             {
@@ -283,7 +283,7 @@ namespace Zeef
         /// <summary>
         /// Whether or not the user has been holding any given axis.
         /// </summary>
-        public static bool GetAxisHeld(List<string> inputs, bool positive)
+        public static bool GetAxisHeld(IEnumerable<string> inputs, bool positive)
         {
             foreach (var input in inputs)
             {
@@ -317,7 +317,7 @@ namespace Zeef
         /// <summary>
         /// Whether or not the user has been holding any given axis.
         /// </summary>
-        public static bool GetAxisReleased(List<string> inputs, bool positive)
+        public static bool GetAxisReleased(IEnumerable<string> inputs, bool positive)
         {
             foreach (var input in inputs)
             {
@@ -352,7 +352,7 @@ namespace Zeef
         /// Returns the sum of the provided axes. Returned value will be capped between -1 and 1.
         /// </summary>
         /// <param name="axes">The axis in the Input Manager to get input from.</param>
-        public static float GetSumOfAxes(List<string> axes)
+        public static float GetSumOfAxes(IEnumerable<string> axes)
         {
             float dir = 0;
 
@@ -385,6 +385,10 @@ namespace Zeef
                 await new WaitForUpdate();
             } 
         }
+
+        /// <summary>
+        /// Wait for input from provided input. Method will return on pressed.
+        /// </summary>
         public static async Task WaitForInputPressedAsync(string input)
         {
             await new WaitForUpdate();
@@ -394,7 +398,11 @@ namespace Zeef
                 await new WaitForUpdate();
             } 
         }
-        public static async Task WaitForInputPressedAsync(List<string> inputs)
+
+        /// <summary>
+        /// Wait for input from provided inputs. Method will return on pressed.
+        /// </summary>
+        public static async Task WaitForInputPressedAsync(IEnumerable<string> inputs)
         {
             await new WaitForUpdate();
             while (true)

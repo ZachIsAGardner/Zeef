@@ -51,12 +51,12 @@ namespace Zeef.TwoDimensional {
 		}
 
 		void GetTarget() {
-			GameObject player = GameObject.FindGameObjectWithTag(TagConstants.Player);
+			GameObject player = GameObject.FindGameObjectWithTag(TagConstant.Player);
 			target = (player) ? player.transform : null;
 		}
 
 		void GetBoundaries() {
-			GameObject boundsObject = GameObject.FindGameObjectWithTag(TagConstants.CameraBounds);
+			GameObject boundsObject = GameObject.FindGameObjectWithTag(TagConstant.CameraBounds);
 
 			if (boundsObject) bounds = boundsObject.GetComponent<BoxCollider2D>().bounds;
 			else bounds = null;	

@@ -22,18 +22,18 @@ namespace Zeef.TwoDimensional
             
             DrawDefaultInspector();
             
-            int selected = (InteractionTypeConstants.All.Any(i => i == interactionType.stringValue)) 
-                ? InteractionTypeConstants.All.IndexOf(interactionType.stringValue)
+            int selected = (InteractionTypeConstant.All.Any(i => i == interactionType.stringValue)) 
+                ? InteractionTypeConstant.All.IndexOf(interactionType.stringValue)
                 : 0;
 
             GUILayout.BeginHorizontal();
 
             GUILayout.Label(nameof(HitBox2D.InteractionType));
-            selected = EditorGUILayout.Popup(selected, InteractionTypeConstants.All.ToArray());
+            selected = EditorGUILayout.Popup(selected, InteractionTypeConstant.All.ToArray());
 
             GUILayout.EndHorizontal();
 
-            interactionType.stringValue = InteractionTypeConstants.All[selected];
+            interactionType.stringValue = InteractionTypeConstant.All[selected];
 
             serializedObject.ApplyModifiedProperties();
         }

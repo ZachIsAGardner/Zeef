@@ -1,13 +1,14 @@
 using UnityEngine;
 
-namespace Zeef.GameManagement {
-
+namespace Zeef.GameManagement
+{
     [ExecuteInEditMode]
-	public class Spawn : MonoBehaviour {
-
+	public class Spawn : MonoBehaviour
+    {
         public int ID;
 
-        void Update() {
+        void Update()
+        {
             gameObject.name = $"Spawn {ID}";
         }
 	}

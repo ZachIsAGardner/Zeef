@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Zeef.TwoDimensional
 {
-    public static partial class InteractionTypeConstants 
+    public static partial class InteractionTypeConstant 
     {  
         public const string Any = "Any";
         public const string Contact = "Contact"; 

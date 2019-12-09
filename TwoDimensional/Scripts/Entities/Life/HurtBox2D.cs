@@ -32,7 +32,7 @@ namespace Zeef.TwoDimensional {
             if (hitBox != null 
             && (
                 String.IsNullOrWhiteSpace(Weakness) 
-                || Weakness == InteractionTypeConstants.Any 
+                || Weakness == InteractionTypeConstant.Any 
                 || Weakness == hitBox.InteractionType
             )) 
             {

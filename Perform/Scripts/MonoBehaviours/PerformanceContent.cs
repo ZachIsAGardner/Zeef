@@ -6,10 +6,10 @@ using UnityEngine;
 using Zeef.GameManagement;
 using Zeef.Menu;
 
-namespace Zeef.Perform {
-
-	public class PerformanceContent : SingleInstance<PerformanceContent> {
-
+namespace Zeef.Perform
+{
+	public class PerformanceContent : SingleInstance<PerformanceContent>
+    {
 		[SerializeField] private TextBoxUI textBoxPrefab;
 		public static TextBoxUI TextBoxPrefab { get { return GetInstance().textBoxPrefab; }}
 
@@ -18,6 +18,5 @@ namespace Zeef.Perform {
 
 		[SerializeField] private GameObject border;
 		public static GameObject Border { get { return GetInstance().border; }}
-
 	}
 }

@@ -22,18 +22,18 @@ namespace Zeef.TwoDimensional
             
             DrawDefaultInspector();
             
-            int selected = (InteractionTypeConstants.All.Any(i => i == weakness.stringValue)) 
-                ? InteractionTypeConstants.All.IndexOf(weakness.stringValue)
+            int selected = (InteractionTypeConstant.All.Any(i => i == weakness.stringValue)) 
+                ? InteractionTypeConstant.All.IndexOf(weakness.stringValue)
                 : 0;
 
             GUILayout.BeginHorizontal();
 
             GUILayout.Label(nameof(HurtBox2D.Weakness));
-            selected = EditorGUILayout.Popup(selected, InteractionTypeConstants.All.ToArray());
+            selected = EditorGUILayout.Popup(selected, InteractionTypeConstant.All.ToArray());
 
             GUILayout.EndHorizontal();
 
-            weakness.stringValue = InteractionTypeConstants.All[selected];
+            weakness.stringValue = InteractionTypeConstant.All[selected];
 
             serializedObject.ApplyModifiedProperties();
         }

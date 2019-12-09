@@ -5,13 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 // ---
-using Zeef.GameManagement;
 using Zeef.Menu;
 
-namespace Zeef.Perform {
-
+namespace Zeef.Perform
+{
 	[Serializable]
-	public abstract class Performance<T> : Performance {
+	public abstract class Performance<T> : Performance
+    {
 		public T Model;
 
 		public async Task ExecuteAsync(T model) 
@@ -22,8 +22,8 @@ namespace Zeef.Perform {
 	}
 
 	[Serializable]
-	public abstract class Performance : MonoBehaviour {
-
+	public abstract class Performance : MonoBehaviour
+    {
 		// is currently performing
 		public bool Performing { get; private set; }
 
@@ -37,11 +37,11 @@ namespace Zeef.Perform {
 		protected virtual void AdditionalSetup() { }
 		protected virtual void AdditionalEnd() { }
 
-
 		// ---
 
 		// Start performance
-		public async Task ExecuteAsync() {
+		public async Task ExecuteAsync()
+        {
 			if (Performing) return;
 			Performing = true;
 
@@ -53,7 +53,8 @@ namespace Zeef.Perform {
 			await DigestBranchAsync(BranchStart());
 		}
 		
- 		void EndPerformance() {
+ 		void EndPerformance()
+        {
 			OnBeforePerformanceEnd();
 
 			if (textBoxUIInstance != null) textBoxUIInstance.Close();
@@ -69,7 +70,8 @@ namespace Zeef.Perform {
 		// Handle Content
 
 		// Play all sections and respond if there are paths
-		private async Task DigestBranchAsync(Branch branch) {
+		private async Task DigestBranchAsync(Branch branch)
+        {
 			List<Section> sections = branch.Sections;
 
 			// Play sections
@@ -78,7 +80,8 @@ namespace Zeef.Perform {
 			// If we've gone through all the sections and there are paths then 
 			// the player needs to respond to a question.
 			// Else we're done so end the performance.
-			if (branch.Paths != null) {
+			if (branch.Paths != null)
+            {
 				Path path = await GetPathAsync(branch);
 				if (path.SideEffect != null) path.SideEffect();
 				await DigestBranchAsync(path.Branch);
@@ -87,7 +90,8 @@ namespace Zeef.Perform {
 			}
 		}
 
-		private async Task PlaySectionAsync(Section section, Branch branch) {
+		private async Task PlaySectionAsync(Section section, Branch branch)
+        {
 			// Execute action if there is one
 			if (section.Action != null) section.Action();
 
@@ -101,8 +105,10 @@ namespace Zeef.Perform {
 			);
 
 			// Create and execute text box
-			if (section.TextBoxUIModel != null) {
-				if (textBoxUIInstance == null) {
+			if (section.TextBoxUIModel != null)
+            {
+				if (textBoxUIInstance == null)
+                {
 					textBoxUIInstance = TextBoxUI.Initialize(
 						PerformanceContent.TextBoxPrefab,
 						Utility.FindObjectOfTypeWithError<Canvas>().transform,
@@ -117,12 +123,14 @@ namespace Zeef.Perform {
 			}
 		}
 
-		private async Task<Path> GetPathAsync(Branch branch) {	
+		private async Task<Path> GetPathAsync(Branch branch)
+        {	
 			await new WaitForSeconds(0.25f);
 
 			int attempt = 0;
 			Path selection = null;
-			while (selection == null) {
+			while (selection == null)
+            {
 
 				selection = (Path)await VerticalMenuSelectUI
 					.Initialize(
@@ -142,12 +150,14 @@ namespace Zeef.Perform {
 		// ---
 		// Events
 
-		protected virtual void OnBeforePerformanceStart() {
+		protected virtual void OnBeforePerformanceStart()
+        {
 			if (BeforePerformanceStart != null) 
 				BeforePerformanceStart(this, EventArgs.Empty);
 		}
 
-		protected virtual void OnBeforePerformanceEnd() {
+		protected virtual void OnBeforePerformanceEnd()
+        {
 			if (BeforePerformanceEnd != null) 
 				BeforePerformanceEnd(this, EventArgs.Empty);
 		}

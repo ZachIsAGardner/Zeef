@@ -4,11 +4,11 @@ using UnityEngine;
 
 // This is heavily influenced by Sebastian Lague's platformer repo
 // https://github.com/SebLague/2DPlatformer-Tutorial
-namespace Zeef.TwoDimensional {
-
+namespace Zeef.TwoDimensional
+{
 	[RequireComponent(typeof(BoxCollider2D))]
-	public class Collision2D : MonoBehaviour {
-
+	public class Collision2D : MonoBehaviour
+    {
 		[SerializeField] private LayerMask layerMask;	
 		[SerializeField] private float skin = 0.1f;
 		[SerializeField] private int rayCount = 4;
@@ -22,7 +22,8 @@ namespace Zeef.TwoDimensional {
 
 		// ---
 
-		protected void GetRayOrigins() {
+		protected void GetRayOrigins()
+        {
 			BoxCollider2D boxCollider2D = GetComponent<BoxCollider2D>();
 			Bounds bounds = boxCollider2D.bounds;
 			bounds.Expand (skin * -2);
@@ -39,7 +40,8 @@ namespace Zeef.TwoDimensional {
 		/// Moves the entity. Provided the velocity to attempt to move the entity with. 
 		/// Velocity will change based on collision.
 		/// </summary>
-		public void Move(Vector2 vel) {
+		public void Move(Vector2 vel)
+        {
 			// Reset
 			collisions.Reset();
 			horizontalSlopeInfo.Reset();
@@ -58,7 +60,8 @@ namespace Zeef.TwoDimensional {
 		/// <summary>
 		/// Moves the entity while on a moving platform.
 		/// </summary>
-		public void Move(Vector2 vel, bool forceGrounded) {
+		public void Move(Vector2 vel, bool forceGrounded)
+        {
 			collisions.Reset();
 			collisions.Down = forceGrounded;
 			GetRayOrigins();
@@ -107,32 +110,37 @@ namespace Zeef.TwoDimensional {
 		// 	collisions.Up = true;
 		// }
 
-		void HorizontalCollisions(ref Vector2 vel) {
+		void HorizontalCollisions(ref Vector2 vel)
+        {
 			float dir = Mathf.Sign(vel.x);
 			float length = Mathf.Abs (vel.x) + skin;
 			float spacing = GetComponent<BoxCollider2D>().bounds.size.y / (rayCount - 1);
 
-			if (Mathf.Abs(vel.x) < skin) length = 2 * skin;
+			if (Mathf.Abs(vel.x) < skin)
+                length = 2 * skin;
 			
-			for (int i = 0; i < rayCount; i ++) {
-
+			for (int i = 0; i < rayCount; i ++)
+            {
 				Vector2 rayOrigin = (dir == -1) ? origins.BottomLeft : origins.BottomRight;
 				rayOrigin += Vector2.up * (spacing * i);
 				RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * dir, length, layerMask);
 
 				Debug.DrawRay(rayOrigin, Vector2.right * dir, Color.red);
 
-				if (hit) {
-
-					if (hit.distance == 0 || hit.collider.tag == "Through") continue;
+				if (hit)
+                {
+					if (hit.distance == 0 || hit.collider.tag == "Through")
+                        continue;
 					
 					// Make sure not setting vel to 0 on left or right collision if using slope
 					// check bottom raycast only
-					if (i == 0) {
+					if (i == 0)
+                    {
 						// HorizontalAdjustForSlopeBottom(hit, ref vel);
 					}
 					// check top raycast only
-					else if (i == rayCount - 1){
+					else if (i == rayCount - 1)
+                    {
 						// HorizontalAdjustForSlopeTop(hit, ref vel);
 					}
 
@@ -175,22 +183,24 @@ namespace Zeef.TwoDimensional {
 		// 	}
 		// }
 
-		void VerticalCollisions(ref Vector2 vel) {
+		void VerticalCollisions(ref Vector2 vel)
+        {
 			float dir = Mathf.Sign(vel.y);
 			float length = Mathf.Abs (vel.y) + skin;
 			float spacing = GetComponent<BoxCollider2D>().bounds.size.x / (rayCount - 1);
 
-			for (int i = 0; i < rayCount; i ++) {
-
+			for (int i = 0; i < rayCount; i ++)
+            {
 				Vector2 rayOrigin = (dir == -1) ? origins.BottomLeft : origins.TopLeft;
 				rayOrigin += Vector2.right * (spacing * i + vel.x);
 				RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * dir, length, layerMask);
 
 				Debug.DrawRay(rayOrigin, Vector2.up * dir, Color.red);
 
-				if (hit) {
-
-					if (hit.collider.tag == "Through" && vel.y >= 0) continue;
+				if (hit)
+                {
+					if (hit.collider.tag == "Through" && vel.y >= 0)
+                        continue;
 
 					// if (i == 0) 
 						// HorizontalAdjustForSlopeTop(hit, ref vel);
@@ -208,11 +218,13 @@ namespace Zeef.TwoDimensional {
 		// ---
 		// Structs
 
-		public struct OriginInfo {
+		public struct OriginInfo
+        {
 			public Vector2 BottomLeft, BottomRight, TopLeft, TopRight;
 		}
 
-		public struct CollisionInfo {
+		public struct CollisionInfo
+        {
 			public bool Up, Down, Left, Right;
 			public Collider2D col;
 
@@ -224,7 +236,8 @@ namespace Zeef.TwoDimensional {
 			}
 		}
 
-		private struct HorizontalSlopeInfo {
+		private struct HorizontalSlopeInfo
+        {
 			public float SlopeAngle, SlopeAngleOld;
 			public bool ClimbingSlope;
 
@@ -236,7 +249,8 @@ namespace Zeef.TwoDimensional {
 			}
 		}
 
-		private struct VerticalSlopeInfo {
+		private struct VerticalSlopeInfo
+        {
 			public float SlopeAngle, SlopeAngleOld;
 			public bool ClimbingSlope;
 

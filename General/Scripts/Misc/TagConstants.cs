@@ -1,6 +1,6 @@
 namespace Zeef 
 {
-    public static partial class TagConstants 
+    public static partial class TagConstant 
     {    
         public const string Player = "Player";
         
