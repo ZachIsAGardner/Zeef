@@ -8,11 +8,11 @@ using UnityEngine.UI;
 // ---
 using Zeef.Sound;
 
-namespace Zeef.Perform {
-
+namespace Zeef.Perform
+{
 	[RequireComponent (typeof (AudioSource))]
-	public class TextBoxUI : MonoBehaviour {
-
+	public class TextBoxUI : MonoBehaviour
+    {
 		[SerializeField] private Text textComponent;
 		[SerializeField] private Text speakerComponent;
 		// TODO: Figure out how to get line length from 
@@ -30,11 +30,19 @@ namespace Zeef.Perform {
 		private float crawlTime; // Wait time between letters
 		private SoundEffectScriptable tone; // The noise made when the text is crawling
 		
-		void Update() {
-			if (ControlManager.GetInputPressed(ControlManager.Accept)) skipToEnd = true;	
+		void Update()
+        {
+			if (ControlManager.GetInputPressed(ControlManager.Accept))
+                skipToEnd = true;	
 		}
 
-		public static TextBoxUI Initialize(TextBoxUI prefab, Transform parent, Vector2 position, TextBoxUIFullModel model) {
+		public static TextBoxUI Initialize(
+            TextBoxUI prefab,
+            Transform parent,
+            Vector2 position,
+            TextBoxUIFullModel model
+        )
+        {
 			TextBoxUI instance = Instantiate(prefab, parent).GetComponentWithError<TextBoxUI>();
 
 			instance.text = model.Text;
@@ -47,8 +55,8 @@ namespace Zeef.Perform {
 			return instance;
 		}
 
-		public async Task ExecuteAsync(TextBoxUIFullModel model) {
-
+		public async Task ExecuteAsync(TextBoxUIFullModel model)
+        {
 			text = model.Text;
 			speaker = model.Speaker;
 
@@ -59,7 +67,8 @@ namespace Zeef.Perform {
 			await ExecuteAsync();
 		}
 
-		public async Task ExecuteAsync() {
+		public async Task ExecuteAsync()
+        {
 			skipToEnd = false;
 
 			maxLineLength = (forceLineLength > 0) ? forceLineLength : 500;
@@ -70,19 +79,23 @@ namespace Zeef.Perform {
 			else textComponent.text = text;	
 		}
 
-		public void Close() {
+		public void Close()
+        {
 			Destroy(gameObject);
 		}
 
 		// ---
 
-		private async Task DisplayTextAsync(List<string> lines) {
+		private async Task DisplayTextAsync(List<string> lines)
+        {
 			textComponent.text = "";
 		
-			foreach (string line in lines) {
+			foreach (string line in lines)
+            {
 				if (skipToEnd) break;
 
-				foreach (char letter in line.ToCharArray()) {
+				foreach (char letter in line.ToCharArray())
+                {
 					if (skipToEnd) break;
 					
 					textComponent.text += letter;
@@ -101,8 +114,10 @@ namespace Zeef.Perform {
 		}
 
 		// Wait an amount of time based on character
-		private IEnumerator WaitAsync(char letter) {
-			switch (letter) {
+		private IEnumerator WaitAsync(char letter)
+        {
+			switch (letter)
+            {
 				case '.':
 				case '?':
 				case '!':
@@ -124,12 +139,13 @@ namespace Zeef.Perform {
 		// ---
 
 		// takes a single line of text and splits it apporiately
-		private List<string> SplitTextToLines(string text, int lineLength) {
-
+		private List<string> SplitTextToLines(string text, int lineLength)
+        {
 			List<string> words = text.Split(' ').ToList();
 			List<string> lines = new List<string>(){""};
 
-			foreach (string word in words) {
+			foreach (string word in words)
+            {
 				
 				// Line length if we were to add the current word
 				int affectedLineLength = (lines.Last() == "") 

@@ -24,7 +24,7 @@ namespace Zeef.TwoDimensional.Example {
 				? FindObjectsOfType<Spawn>().First(s => s.ID == package.SpawnID).transform
 				: FindObjectsOfType<Spawn>().First().transform;
 
-			GameManager.SpawnActor(ExampleContent.PlayerPrefab, spawn.position);
+			GameManager.Spawn(ExampleContent.PlayerPrefab, spawn.position);
 		}
 	}
 }

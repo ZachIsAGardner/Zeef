@@ -1,13 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Zeef.Menu {
-
-    public class PagedVerticalMenuSelectUI : MonoBehaviour { 
-
+namespace Zeef.Menu
+{
+    public class PagedVerticalMenuSelectUI : MonoBehaviour, IMenuSelect
+    { 
         [SerializeField] MenuItemUI menuItemPrefab;
         [SerializeField] GameObject containerComponent;
         [SerializeField] Text pageCountComponent;
@@ -15,7 +16,9 @@ namespace Zeef.Menu {
         private List<PageUI> pages;
         private bool cancelable;
 
-        public static PagedVerticalMenuSelectUI Initialize(PagedVerticalMenuSelectUI prefab, RectTransform parent, List<MenuItemUIModel> models, int pageLength, bool cancelable = false) {
+        public static PagedVerticalMenuSelectUI Initialize
+            (PagedVerticalMenuSelectUI prefab, RectTransform parent, List<MenuItemUIModel> models, int pageLength, bool cancelable = false)
+        {
             PagedVerticalMenuSelectUI instance = Instantiate(prefab, parent).GetComponentWithError<PagedVerticalMenuSelectUI>();
 
             instance.pages = new List<PageUI>();
@@ -26,7 +29,8 @@ namespace Zeef.Menu {
             
             int idx = 0;
             int pageIdx = 0;
-            while (idx < models.Count) {
+            while (idx < models.Count)
+            {
                 PageUI page = PageUI.Initialize(
                     instance.containerComponent,
                     models.TryGetRange(idx, pageLength),
@@ -44,7 +48,8 @@ namespace Zeef.Menu {
             return instance;
         }
 
-        public async Task<object> GetSelectionAsync() {
+        public async Task<object> GetSelectionAsync(Func<bool> isCancelled = null)
+        {
 
             int focus = 0; // Which item is highligted on the page
             int pageFocus = 0; // which page is highlighted
@@ -52,14 +57,15 @@ namespace Zeef.Menu {
             pages[pageFocus].gameObject.SetActive(true);
             pageCountComponent.text = $"{pageFocus + 1}/{pages.Count}";
 
-            while (true) {
+            while (true)
+            {
                 int oldFocus = focus;
                 int oldPageFocus = pageFocus;
 
-                if (ControlManager.GetInputPressed(ControlManager.Up)) focus--;
-                if (ControlManager.GetInputPressed(ControlManager.Down)) focus++;
-                if (ControlManager.GetInputPressed(ControlManager.Left)) pageFocus--;
-                if (ControlManager.GetInputPressed(ControlManager.Right)) pageFocus++;
+                if (ControlManager.GetInputPressed(ControlManager.Up) || ControlManager.GetAxisPressed(ControlManager.Vertical, true)) focus--;
+                if (ControlManager.GetInputPressed(ControlManager.Down) || ControlManager.GetAxisPressed(ControlManager.Vertical, false)) focus++;
+                if (ControlManager.GetInputPressed(ControlManager.Left) || ControlManager.GetAxisPressed(ControlManager.Horizontal, false)) pageFocus--;
+                if (ControlManager.GetInputPressed(ControlManager.Right) || ControlManager.GetAxisPressed(ControlManager.Horizontal, true)) pageFocus++;
 
                 if (pageFocus < 0) 
                     pageFocus = 0;
@@ -70,7 +76,8 @@ namespace Zeef.Menu {
                 if (focus > pages[pageFocus].MenuItems.Count - 1) 
                     focus = pages[pageFocus].MenuItems.Count - 1; 
 
-                if (pageFocus != oldPageFocus) {
+                if (pageFocus != oldPageFocus)
+                {
                     pageCountComponent.text = $"{pageFocus + 1}/{pages.Count}";
                     foreach (PageUI page in pages) page.gameObject.SetActive(false);
                     pages[pageFocus].gameObject.SetActive(true);
@@ -79,20 +86,26 @@ namespace Zeef.Menu {
                 if (focus != oldFocus)
                     pages[pageFocus].HighlightItem(focus);
                 
-                if (ControlManager.GetInputPressed(ControlManager.Accept)) { 
+                if (ControlManager.GetInputPressed(ControlManager.Accept))
+                { 
                     Close();
                     return pages[pageFocus].MenuItems[focus].Data;
                 }
-                if (ControlManager.GetInputPressed(ControlManager.Deny) && cancelable) { 
+                if (ControlManager.GetInputPressed(ControlManager.Deny) && cancelable)
+                { 
                     Close();
                     return null;
                 }
+
+                if (isCancelled != null && isCancelled())
+                    return null;
 
                 await new WaitForUpdate();
             }
         }
 
-        public void Close() {
+        public void Close()
+        {
             Destroy(gameObject);
         }
     }

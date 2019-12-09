@@ -3,10 +3,10 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Zeef.Menu {
-
-    public class SelectableUIElement : MonoBehaviour {
-
+namespace Zeef.Menu
+{
+    public class SelectableUIElement : MonoBehaviour
+    {
         [SerializeField] private Image imageComponent;
         public Image ImageComponent { get { return imageComponent; } }
 
@@ -16,16 +16,19 @@ namespace Zeef.Menu {
 
         // ---
         
-        protected virtual void Awake() {
+        protected virtual void Awake()
+        {
             imageComponent = imageComponent ?? GetComponentInChildren<Image>();
             initialColor = ImageComponent.color;
         }
 
-        public virtual void Highlight() {
+        public virtual void Highlight()
+        {
             imageComponent.color = Color.black;
         }
 
-        public virtual void UnHighlight() {
+        public virtual void UnHighlight()
+        {
             imageComponent.color = initialColor;
         }  
     }

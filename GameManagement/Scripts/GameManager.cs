@@ -85,20 +85,28 @@ namespace Zeef.GameManagement
 		/// <summary>
 		/// Spawns an empty GameObject inside the DynamicFolder GameObject.
 		/// </summary>
-		public static GameObject SpawnActor(Vector3 position)
+		public static GameObject Spawn(Vector3 position)
         {
 			GameObject actor =  new GameObject();
 
-			actor.gameObject.transform.parent = Utility.FindGameObjectWithTagWithError(TagConstant.DynamicFolder).transform;
+            GameObject folder = GameObject.FindGameObjectWithTag(TagConstant.DynamicFolder);
+
+            if (folder == null)
+            {
+                folder = new GameObject("_DyanamicFolder");
+                folder.tag = TagConstant.DynamicFolder;
+            }
+
+			actor.gameObject.transform.parent = folder.transform;
 			actor.gameObject.transform.position = position;
 
 			return actor;
-		}
+        }
 
 		/// <summary>
 		/// Spawns a copy of the provided prefab inside the DynamicFolder GameObject.
 		/// </summary>
-		public static GameObject SpawnActor(GameObject prefab, Vector3 position)
+		public static GameObject Spawn(GameObject prefab, Vector3 position)
         {
 			GameObject folder = GameObject.FindGameObjectWithTag(TagConstant.DynamicFolder);
 			
@@ -112,9 +120,35 @@ namespace Zeef.GameManagement
 				original: prefab, 
 				position: position, 
 				rotation: Quaternion.identity, 
-				parent: Utility.FindGameObjectWithTagWithError(TagConstant.DynamicFolder).transform
+				parent: folder.transform
 			);
 		}
+
+        /// <summary>
+        /// Spawns a copy of the provided prefab inside the provided parent.
+        /// </summary>
+        public static GameObject SpawnCanvas(GameObject prefab, Vector2 position, GameObject parent)
+        {
+            return Instantiate(
+                original: prefab,
+                position: position,
+                rotation: Quaternion.identity,
+                parent: parent.transform
+            );
+        }
+
+        /// <summary>
+        /// Spawns a copy of the provided prefab inside the provided parent.
+        /// </summary>
+        public static GameObject Spawn(GameObject prefab, GameObject parent)
+        {
+            return Instantiate(
+                original: prefab,
+                position: Vector2.zero,
+                rotation: Quaternion.identity,
+                parent: parent.transform
+            );
+        }
 
         /// <summary>
 		/// Spawns a copy of the provided prefab inside the DynamicCanvasFolder GameObject.
@@ -132,7 +166,7 @@ namespace Zeef.GameManagement
 
             return Instantiate(
                 original: prefab,
-                parent: Utility.FindGameObjectWithTagWithError(TagConstant.DynamicCanvasFolder).transform
+                parent: folder.transform
             );
         }
 
@@ -154,16 +188,15 @@ namespace Zeef.GameManagement
 				original: prefab, 
 				position: position, 
 				rotation: Quaternion.identity, 
-				parent: Utility.FindGameObjectWithTagWithError(TagConstant.DynamicCanvasFolder).transform
+				parent: folder.transform
 			);
 		}
-		
-		/// <summary>
-		/// Loads the first scene found with a name matching the provided <paramref name="scene"/> parameter.
-		/// </summary>
-		public static async Task LoadSceneAsync(string scene, LoadSceneMode loadMode = LoadSceneMode.Single, object package = null, bool transition = true)
-        {
 
+        /// <summary>
+        /// Loads the first scene found with a name matching the provided <paramref name="scene"/> parameter.
+        /// </summary>
+        public static async Task LoadSceneAsync(string scene, LoadSceneMode loadMode = LoadSceneMode.Single, object package = null, bool transition = true)
+        {
 			if (transition)
             {
 				GetInstance().lastLoadedScene = scene;

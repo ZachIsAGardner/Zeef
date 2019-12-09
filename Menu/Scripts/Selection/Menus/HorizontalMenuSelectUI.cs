@@ -1,20 +1,21 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Zeef.Menu {
-
-    public class HorizontalMenuSelectUI : MonoBehaviour { 
-
-        [SerializeField] MenuItemUI menuItemPrefab;
-        [SerializeField] RectTransform container;
-
-        private List<MenuItemUI> menuItems;
-        private bool cancelable;
-
-        public static HorizontalMenuSelectUI Initialize(HorizontalMenuSelectUI prefab, RectTransform parent, List<MenuItemUIModel> models, bool cancelable = false) {
+namespace Zeef.Menu
+{
+    public class HorizontalMenuSelectUI : LinearMenuSelect
+    {
+        public static HorizontalMenuSelectUI Initialize(
+            HorizontalMenuSelectUI prefab,
+            RectTransform parent,
+            List<MenuItemUIModel> models,
+            bool cancelable = false
+        )
+        {
             HorizontalMenuSelectUI instance = Instantiate(prefab, parent).GetComponentWithError<HorizontalMenuSelectUI>();
 
             instance.menuItems = new List<MenuItemUI>();
@@ -24,7 +25,8 @@ namespace Zeef.Menu {
             instance.container.DestroyChildren();
 
             int i = 0;
-            foreach (MenuItemUIModel model in models) {
+            foreach (MenuItemUIModel model in models)
+            {
                 MenuItemUI menuItem = MenuItemUI.Initialize(instance.menuItemPrefab, instance.container, model);
 
                 menuItem.RectTransform.anchoredPosition = new Vector2(i * menuItem.RectTransform.sizeDelta.x, 0);
@@ -39,38 +41,49 @@ namespace Zeef.Menu {
             return instance;
         }
 
-        public async Task<object> GetSelectionAsync() {
-
+        public override async Task<object> GetSelectionAsync(Func<bool> isCancelled = null)
+        {
             int focus = 0;
 
-            while (true) {
+            while (true)
+            {
                 int oldFocus = focus;
 
-                if (ControlManager.GetInputPressed(ControlManager.Left)) focus--;
-                if (ControlManager.GetInputPressed(ControlManager.Right)) focus++;
+                if (ControlManager.GetInputPressed(ControlManager.Left) || ControlManager.GetAxisPressed(ControlManager.Horizontal, false))
+                    focus--;
+
+                if (ControlManager.GetInputPressed(ControlManager.Right) || ControlManager.GetAxisPressed(ControlManager.Horizontal, true))
+                    focus++;
 
                 if (focus < 0) focus = 0;
                 if (focus >= menuItems.Count) focus = menuItems.Count - 1; 
 
-                if (focus != oldFocus) {
+                if (focus != oldFocus)
+                {
                     foreach (MenuItemUI item in menuItems) item.UnHighlight();
                     menuItems[focus].Highlight();
                 }
                 
-                if (ControlManager.GetInputPressed(ControlManager.Accept)) { 
+                if (ControlManager.GetInputPressed(ControlManager.Accept))
+                { 
                     Close();
                     return menuItems[focus].Data;
                 }
-                if (ControlManager.GetInputPressed(ControlManager.Deny) && cancelable) { 
+                if (ControlManager.GetInputPressed(ControlManager.Deny) && cancelable)
+                { 
                     Close();
                     return null;
                 }
+
+                if (isCancelled != null && isCancelled())
+                    return null;
 
                 await new WaitForUpdate();
             }
         }
 
-        public void Close() {
+        public override void Close()
+        {
             Destroy(gameObject);
         }
     }

@@ -75,7 +75,8 @@ namespace Zeef.Perform
 			List<Section> sections = branch.Sections;
 
 			// Play sections
-			foreach (var section in sections) await PlaySectionAsync(section, branch);	
+			foreach (var section in sections)
+                await PlaySectionAsync(section, branch);	
 
 			// If we've gone through all the sections and there are paths then 
 			// the player needs to respond to a question.
@@ -83,9 +84,12 @@ namespace Zeef.Perform
 			if (branch.Paths != null)
             {
 				Path path = await GetPathAsync(branch);
-				if (path.SideEffect != null) path.SideEffect();
+				if (path.SideEffect != null)
+                    path.SideEffect();
 				await DigestBranchAsync(path.Branch);
-			} else {
+			}
+            else
+            {
 				EndPerformance();
 			}
 		}
@@ -97,11 +101,13 @@ namespace Zeef.Perform
 
 			// Combine branch and section models with priority to section
 			TextBoxUIFullModel model = new TextBoxUIFullModel(
-				section.TextBoxUIModel.Text,
-				(!string.IsNullOrEmpty(section.TextBoxUIModel.Speaker)) ? section.TextBoxUIModel.Speaker : branch.TextBoxUIPartialModel?.Speaker,
-				(section.TextBoxUIModel.Auto.HasValue) ? section.TextBoxUIModel.Auto : branch.TextBoxUIPartialModel?.Auto,
-				(section.TextBoxUIModel.Tone != null) ? section.TextBoxUIModel.Tone : branch.TextBoxUIPartialModel?.Tone,
-				(section.TextBoxUIModel.CrawlTime != null) ? section.TextBoxUIModel.CrawlTime : branch.TextBoxUIPartialModel?.CrawlTime
+				text: section.TextBoxUIModel.Text,
+                speaker: (!string.IsNullOrEmpty(section.TextBoxUIModel.Speaker)) 
+                    ? section.TextBoxUIModel.Speaker 
+                    : branch.TextBoxUIPartialModel?.Speaker,
+				auto: section.TextBoxUIModel.Auto ?? branch.TextBoxUIPartialModel?.Auto,
+				tone: section.TextBoxUIModel.Tone ?? branch.TextBoxUIPartialModel?.Tone,
+				crawlTime: section.TextBoxUIModel.CrawlTime ?? branch.TextBoxUIPartialModel?.CrawlTime
 			);
 
 			// Create and execute text box
@@ -110,10 +116,10 @@ namespace Zeef.Perform
 				if (textBoxUIInstance == null)
                 {
 					textBoxUIInstance = TextBoxUI.Initialize(
-						PerformanceContent.TextBoxPrefab,
-						Utility.FindObjectOfTypeWithError<Canvas>().transform,
-						Vector2.zero,
-						model
+						prefab: branch?.PerformanceModel?.TextBoxPrefab ?? PerformanceContent.TextBoxPrefab,
+						parent: Utility.FindObjectOfTypeWithError<Canvas>().transform,
+						position: Vector2.zero,
+						model: model
 					);
 
 					await textBoxUIInstance.ExecuteAsync();
@@ -131,15 +137,18 @@ namespace Zeef.Perform
 			Path selection = null;
 			while (selection == null)
             {
+                LinearMenuSelect menuSelectInstance = LinearMenuSelect.Initialize(
+                    prefab: branch?.PerformanceModel?.ResponseBoxPrefab ?? PerformanceContent.ResponseBoxPrefab,
+                    parent: FindObjectOfType<Canvas>().GetComponent<RectTransform>(),
+                    models: branch.Paths
+                        .Select(p => new MenuItemUIModel(p, p.Text))
+                        .ToList()
+                );
 
-				selection = (Path)await VerticalMenuSelectUI
-					.Initialize(
-						PerformanceContent.ResponseBoxPrefab, 
-						FindObjectOfType<Canvas>().GetComponent<RectTransform>(),
-						branch.Paths.Select(p => new MenuItemUIModel(p, p.Text)).ToList())
-					.GetSelectionAsync();
+                selection = (Path)(await menuSelectInstance.GetSelectionAsync());
 
 				await new WaitForUpdate();
+
 				attempt += 1;
 				if (attempt > 10) break;
 			}
