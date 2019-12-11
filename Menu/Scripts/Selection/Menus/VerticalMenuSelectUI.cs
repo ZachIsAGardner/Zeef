@@ -81,7 +81,7 @@ namespace Zeef.Menu
                     return null;
                 }
 
-                if (isCancelled())
+                if (isCancelled != null && isCancelled())
                     return null;
 
                 await new WaitForUpdate();

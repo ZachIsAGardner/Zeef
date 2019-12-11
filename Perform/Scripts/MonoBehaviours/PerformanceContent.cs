@@ -18,5 +18,8 @@ namespace Zeef.Perform
 
 		[SerializeField] private GameObject border;
 		public static GameObject Border { get { return GetInstance().border; }}
-	}
+
+        [SerializeField] private float defaultCrawlTime = 0.05f;
+        public static float DefaultCrawlTime { get { return GetInstance().defaultCrawlTime; } }
+    }
 }

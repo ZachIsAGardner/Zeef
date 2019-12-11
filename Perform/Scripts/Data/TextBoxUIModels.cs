@@ -12,6 +12,7 @@ namespace Zeef.Perform
 		public string Speaker { get; private set; }
 
 		public bool? Auto { get; private set; }
+
 		public SoundEffectScriptable Tone { get; private set; }
 		public float? CrawlTime { get; private set; }
 
@@ -19,13 +20,13 @@ namespace Zeef.Perform
             string speaker = "",
             bool? auto = false,
             SoundEffectScriptable tone = null,
-            float? crawlTime = 0.05f,
+            float? crawlTime = null,
             Vector3? position = null
         ) {
             Speaker = speaker;
 			Auto = auto;
 			Tone = tone;
-			CrawlTime = crawlTime;
+			CrawlTime = crawlTime ?? PerformanceContent.DefaultCrawlTime;
 		}
 	}
 
@@ -38,7 +39,7 @@ namespace Zeef.Perform
             string speaker = "", 
             bool? auto = false, 
             SoundEffectScriptable tone = null, 
-            float? crawlTime = 0.05f, 
+            float? crawlTime = null, 
             Vector3? position = null
         ) 
             : base(speaker, auto, tone, crawlTime, position)
