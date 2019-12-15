@@ -100,7 +100,7 @@ namespace Zeef.Perform
 					
 					textComponent.text += letter;
 
-					if (tone != null) AudioManager.PlaySoundEffect(GetComponent<AudioSource>(), tone);
+					if (tone != null) AudioManager.PlaySoundEffect(tone);
 					await WaitAsync(letter);
 				}
 

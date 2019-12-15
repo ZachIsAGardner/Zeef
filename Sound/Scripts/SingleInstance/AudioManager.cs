@@ -11,11 +11,23 @@ namespace Zeef.Sound
     {
 		[Range (0, 1)]
 		[SerializeField] private float musicVolume = 0.5f;
-		public static float MusicVolume { get { return GetInstance().musicVolume; } }
+		public static float MusicVolume 
+		{ 
+			get => GetInstance().musicVolume; 
+			set 
+			{
+				GetInstance().audioSource.volume = value;
+				GetInstance().musicVolume = value; 
+			} 
+		}
 
 		[Range (0, 1)]
 		[SerializeField] private float soundEffectVolume = 1;
-		public static float SoundEffectVolume { get { return GetInstance().soundEffectVolume; } }
+		public static float SoundEffectVolume 
+		{ 
+			get => GetInstance().soundEffectVolume; 
+			set => GetInstance().soundEffectVolume = value; 
+		}
 
 		private AudioSource audioSource;
 		private SongScriptable currentSong;
@@ -73,12 +85,18 @@ namespace Zeef.Sound
 			}
 		}
 
-		public static void SlidePitch(float pitch, float time)
+		/// <summary>
+		/// Changes the music audio source's pitch. Providing a time will slide from the current pitch to the provided pitch (0 being never, 1 being instant).
+		/// </summary>
+		public static void ChangeMusicPitch(float pitch, float time)
         {
-			GetInstance().StartCoroutine(SlidePitchCoroutine(pitch, time));
+			if (time == 0)
+				GetInstance().audioSource.pitch = pitch;
+			else
+				GetInstance().StartCoroutine(SlideMusicPitchCoroutine(pitch, time));
 		}
 
-		private static IEnumerator SlidePitchCoroutine(float pitch, float time)
+		private static IEnumerator SlideMusicPitchCoroutine(float pitch, float time)
         {
 			if (time <= 0) yield break;
 
@@ -86,7 +104,44 @@ namespace Zeef.Sound
             {
 				GetInstance().audioSource.pitch =  Mathf.Lerp(GetInstance().audioSource.pitch, pitch, time);
 				if (Mathf.Abs(GetInstance().audioSource.pitch - pitch) < -0.1f)
+				{
+					GetInstance().audioSource.pitch = pitch;
 					break;
+				}
+				
+				yield return new WaitForUpdate();
+			}
+		}
+
+		/// <summary>
+		/// Changes the music audio source's volume. Providing a time will slide from the current volume to the provided volume (0 being never, 1 being instant).
+		/// </summary>
+		public static void ChangeMusicVolume(float volume, float time = 0)
+		{
+			if (time == 0)
+				MusicVolume = 0;
+			else
+				GetInstance().StartCoroutine(SlideMusicVolumeCoroutine(volume, time));
+		}
+
+		private static IEnumerator SlideMusicVolumeCoroutine(float volume, float time)
+        {
+			if (time <= 0) 
+				yield break;
+
+			while(true)
+            {
+				GetInstance().audioSource.volume = Mathf.Lerp(
+					a: GetInstance().audioSource.volume, 
+					b: volume, 
+					t: time
+				);
+
+				if (Mathf.Abs(MusicVolume - volume) < -0.1f)
+				{
+					MusicVolume = volume;
+					break;
+				}
 				
 				yield return new WaitForUpdate();
 			}
@@ -95,49 +150,64 @@ namespace Zeef.Sound
 		// ---
 		// SFX
 
-		public static void PlaySoundEffect(AudioSource source, SoundEffectScriptable sfx)
-        {
-			if (sfx == null) return;
-			source.PlayOneShot(sfx.Clip, SoundEffectVolume * sfx.Volume);
+		/// <summary>
+		/// Play SoundEffectScriptable found in AudioContent with provided name.
+		/// Will create a short lived GameObject with an AudioSource if no AudioSource is provided.
+		/// </summary>
+		public static void PlaySoundEffect(string sfxName, AudioSource audioSource = null)
+		{
+			PlaySoundEffect(AudioContent.GetSoundEffect(sfxName));
 		}
 
-		public static void PlaySoundEffect(AudioSource source, string sfxName)
-        {
-			PlaySoundEffect(source, AudioContent.GetSoundEffect(sfxName));
+		/// <summary>
+		/// Play clip from SoundEffectScriptable. 
+		/// Will create a short lived GameObject with an AudioSource if no AudioSource is provided.
+		/// </summary>
+		public static void PlaySoundEffect(SoundEffectScriptable sfx, AudioSource audioSource = null)
+		{
+			GetInstance().StartCoroutine(PlaySoundEffectCoroutine(sfx, audioSource));
 		}
 
-        /// <summary>
-        /// Creates a GameObject and attaches an AudioSource to it to play the provided sound effect.
-        /// </summary>
-        /// <param name="sfx"></param>
-        /// <returns></returns>
-		public static async Task PlaySoundEffectAsync(string sfxName)
+		/// <summary>
+		/// Play SoundEffectScriptable found in AudioContent with provided name. 
+		/// Will create a short lived GameObject with an AudioSource if no AudioSource is provided.
+		/// Task returns once the clip has finished playing.
+		/// </summary>
+		public static async Task PlaySoundEffectAsync(string sfxName, AudioSource audioSource = null)
         {
-            SoundEffectScriptable sfx = AudioContent.GetSoundEffect(sfxName);
-
-            AudioSource source = new GameObject().AddComponent<AudioSource>();
-            source.transform.SetParent(GetInstance().transform);
-
-            PlaySoundEffect(source, sfx);
-
-            await new WaitForSeconds(sfx.Clip.length);
-            Destroy(source.gameObject);
+            await PlaySoundEffectAsync(AudioContent.GetSoundEffect(sfxName));
         }
 
-        /// <summary>
-        /// Creates a GameObject and attaches an AudioSource to it to play the provided sound effect.
-        /// </summary>
-        /// <param name="sfx"></param>
-        /// <returns></returns>
-		public static async Task PlaySoundEffectAsync(SoundEffectScriptable sfx)
+		/// <summary>
+		/// Play clip from SoundEffectScriptable. 
+		/// Will create a short lived GameObject with an AudioSource if no AudioSource is provided.
+		/// Task returns once the clip has finished playing.
+		/// </summary>
+		public static async Task PlaySoundEffectAsync(SoundEffectScriptable sfx, AudioSource audioSource = null)
         {
-			AudioSource source = new GameObject().AddComponent<AudioSource>();
-			source.transform.SetParent(GetInstance().transform);
+			await PlaySoundEffectCoroutine(sfx, audioSource);
+		}
 
-			PlaySoundEffect(source, sfx);
-			
-			await new WaitForSeconds(sfx.Clip.length);
-			Destroy(source.gameObject);
+		private static IEnumerator PlaySoundEffectCoroutine(SoundEffectScriptable sfx, AudioSource audioSource = null) 
+		{
+			bool wasAudioSourceProvided = audioSource != null;
+
+			// AudioSource wasn't provided, let's create one.
+			if (!wasAudioSourceProvided)
+			{
+				audioSource = new GameObject().AddComponent<AudioSource>();
+				audioSource.transform.SetParent(GetInstance().transform);
+			}
+
+			// Play clip.
+			audioSource.PlayOneShot(sfx.Clip, sfx.Volume * SoundEffectVolume);
+
+			// Wait for length of clip.
+			yield return new WaitForSeconds(sfx.Clip.length);
+
+			// If we had to create a GameObject, we need to destroy it.
+			if (!wasAudioSourceProvided)
+				Destroy(audioSource.gameObject);
 		}
 	}
 }
