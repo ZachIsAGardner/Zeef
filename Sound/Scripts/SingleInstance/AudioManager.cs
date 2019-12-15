@@ -16,8 +16,8 @@ namespace Zeef.Sound
 			get => GetInstance().musicVolume; 
 			set 
 			{
-				GetInstance().audioSource.volume = value;
 				GetInstance().musicVolume = value; 
+				GetInstance().audioSource.volume = value * GetInstance().currentSong.Volume;
 			} 
 		}
 
@@ -31,6 +31,8 @@ namespace Zeef.Sound
 
 		private AudioSource audioSource;
 		private SongScriptable currentSong;
+
+		private Coroutine volumeSlideCoroutineInstance;
 
 		protected override void Awake()
         {
@@ -88,9 +90,9 @@ namespace Zeef.Sound
 		/// <summary>
 		/// Changes the music audio source's pitch. Providing a time will slide from the current pitch to the provided pitch (0 being never, 1 being instant).
 		/// </summary>
-		public static void ChangeMusicPitch(float pitch, float time)
+		public static void ChangeMusicPitch(float pitch, float time = 1)
         {
-			if (time == 0)
+			if (time == 0 || time == 1)
 				GetInstance().audioSource.pitch = pitch;
 			else
 				GetInstance().StartCoroutine(SlideMusicPitchCoroutine(pitch, time));
@@ -103,7 +105,7 @@ namespace Zeef.Sound
 			while(true)
             {
 				GetInstance().audioSource.pitch =  Mathf.Lerp(GetInstance().audioSource.pitch, pitch, time);
-				if (Mathf.Abs(GetInstance().audioSource.pitch - pitch) < -0.1f)
+				if (Mathf.Abs(GetInstance().audioSource.pitch - pitch) < 0.1f)
 				{
 					GetInstance().audioSource.pitch = pitch;
 					break;
@@ -118,10 +120,19 @@ namespace Zeef.Sound
 		/// </summary>
 		public static void ChangeMusicVolume(float volume, float time = 0)
 		{
-			if (time == 0)
-				MusicVolume = 0;
+			// Stop current coroutine if exists.
+			if (GetInstance().volumeSlideCoroutineInstance != null)
+				GetInstance().StopCoroutine(GetInstance().volumeSlideCoroutineInstance);
+
+			if (time == 0 || time == 1)
+			{
+				MusicVolume = volume;
+			}
 			else
-				GetInstance().StartCoroutine(SlideMusicVolumeCoroutine(volume, time));
+			{
+				GetInstance().volumeSlideCoroutineInstance = 
+					GetInstance().StartCoroutine(SlideMusicVolumeCoroutine(volume, time));
+			}
 		}
 
 		private static IEnumerator SlideMusicVolumeCoroutine(float volume, float time)
@@ -131,13 +142,15 @@ namespace Zeef.Sound
 
 			while(true)
             {
-				GetInstance().audioSource.volume = Mathf.Lerp(
-					a: GetInstance().audioSource.volume, 
+				MusicVolume = Mathf.Lerp(
+					a: MusicVolume, 
 					b: volume, 
 					t: time
 				);
 
-				if (Mathf.Abs(MusicVolume - volume) < -0.1f)
+				GetInstance().audioSource.volume = MusicVolume * GetInstance().currentSong.Volume;
+
+				if (Mathf.Abs(MusicVolume - volume) < 0.05f)
 				{
 					MusicVolume = volume;
 					break;
