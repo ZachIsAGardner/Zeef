@@ -148,8 +148,6 @@ namespace Zeef.Sound
 					t: time
 				);
 
-				GetInstance().audioSource.volume = MusicVolume * GetInstance().currentSong.Volume;
-
 				if (Mathf.Abs(MusicVolume - volume) < 0.05f)
 				{
 					MusicVolume = volume;
