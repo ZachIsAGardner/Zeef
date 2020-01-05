@@ -9,7 +9,7 @@ This project requires minimal setup to get working.
 
 ###### Step 1: Clone Repo
 * Clone this repo into any existing Unity project. I'd recommend setting up your directory to look this:
-<i>"/Assets/Plugins/Zeef"<i>
+<i>"/Assets/Plugins/Zeef"</i>
 
 ###### Step 2: Scripting Runtime Version
 * This project requires a higher version of C# that Unity regularly uses. To enable the higher version of C# you must change the <strong>Scripting Runtime Version</strong> setting from <strong>.Net 3.5 Equivalent</strong> to <strong>.Net 4.x Equivalent</strong>
