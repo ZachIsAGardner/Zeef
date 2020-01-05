@@ -117,7 +117,6 @@ namespace Zeef.Perform
                 {
 					textBoxUIInstance = TextBoxUI.Initialize(
 						prefab: branch?.PerformanceModel?.TextBoxPrefab ?? PerformanceContent.TextBoxPrefab,
-						parent: Utility.FindObjectOfTypeWithError<Canvas>().transform,
 						position: Vector2.zero,
 						model: model
 					);
@@ -139,7 +138,6 @@ namespace Zeef.Perform
             {
                 LinearMenuSelect menuSelectInstance = LinearMenuSelect.Initialize(
                     prefab: branch?.PerformanceModel?.ResponseBoxPrefab ?? PerformanceContent.ResponseBoxPrefab,
-                    parent: FindObjectOfType<Canvas>().GetComponent<RectTransform>(),
                     models: branch.Paths
                         .Select(p => new MenuItemUIModel(p, p.Text))
                         .ToList()

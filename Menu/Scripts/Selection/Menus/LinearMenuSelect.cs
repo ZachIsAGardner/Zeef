@@ -18,14 +18,12 @@ namespace Zeef.Menu
 
         public static LinearMenuSelect Initialize(
             LinearMenuSelect prefab,
-            RectTransform parent,
             List<MenuItemUIModel> models,
             bool cancelable = false
         )
         {
-            LinearMenuSelect instance = GameManager
-                .Spawn(prefab.gameObject, parent.gameObject)
-                .GetComponentWithError<LinearMenuSelect>();
+            LinearMenuSelect instance = GameManager.SpawnCanvasElement(prefab.gameObject).GetComponentWithError<LinearMenuSelect>();
+            instance.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
             instance.menuItems = new List<MenuItemUI>();
             instance.cancelable = cancelable;

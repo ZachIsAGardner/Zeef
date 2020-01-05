@@ -31,6 +31,8 @@ namespace Zeef.GameManagement
 
 		[SerializeField] private Color transitionColor = Color.black;
 
+        [SerializeField] private RectTransform emptyCanvasElement;
+
 		// -
 
 		/// <summary>
@@ -38,6 +40,11 @@ namespace Zeef.GameManagement
 		/// </summary>
 		public static object ScenePackage { get => GetInstance().scenePackage; }
 		private object scenePackage;
+
+        /// <summary>
+        /// Returns the Scene specific Canvas, if it exists.
+        /// </summary>
+        public static Canvas SceneCanvas => GameObject.FindGameObjectWithTag(TagConstant.SceneCanvas).GetComponent<Canvas>();
 		
 		/// <summary>
 		/// The state of the game. Certain behaviours will act differenly depending on the state.
@@ -127,7 +134,7 @@ namespace Zeef.GameManagement
         /// <summary>
         /// Spawns a copy of the provided prefab inside the provided parent.
         /// </summary>
-        public static GameObject SpawnCanvas(GameObject prefab, Vector2 position, GameObject parent)
+        public static GameObject Spawn(GameObject prefab, Vector2 position, GameObject parent)
         {
             return Instantiate(
                 original: prefab,
@@ -151,45 +158,37 @@ namespace Zeef.GameManagement
         }
 
         /// <summary>
-		/// Spawns a copy of the provided prefab inside the DynamicCanvasFolder GameObject.
-		/// </summary>
-		public static GameObject SpawnCanvasElement(GameObject prefab)
-        {
-            GameObject folder = GameObject.FindGameObjectWithTag(TagConstant.DynamicCanvasFolder);
-
-            if (folder == null)
-            {
-                folder = new GameObject("_DyanamicCanvasFolder");
-                folder.transform.parent = Utility.FindGameObjectWithTagWithError(TagConstant.SceneCanvas).transform;
-                folder.tag = TagConstant.DynamicCanvasFolder;
-            }
-
-            return Instantiate(
-                original: prefab,
-                parent: folder.transform
-            );
-        }
-
-        /// <summary>
         /// Spawns a copy of the provided prefab inside the DynamicCanvasFolder GameObject.
         /// </summary>
-        public static GameObject SpawnCanvasElement(GameObject prefab, Vector2 position)
+        public static GameObject SpawnCanvasElement(GameObject prefab)
         {
 			GameObject folder = GameObject.FindGameObjectWithTag(TagConstant.DynamicCanvasFolder);
 			
 			if (folder == null)
             {
-				folder = new GameObject("_DyanamicCanvasFolder");
-				folder.transform.parent = Utility.FindGameObjectWithTagWithError(TagConstant.SceneCanvas).transform;
-				folder.tag = TagConstant.DynamicCanvasFolder;
+                //folder = Instantiate(GetInstance().emptyCanvasElement.gameObject, SceneCanvas.GetComponent<RectTransform>());
+
+                // Create new folder
+                folder = new GameObject("_DynamicCanvasFolder");
+
+                folder.AddComponent<RectTransform>();
+                folder.GetComponent<RectTransform>().SetParent(SceneCanvas.GetComponent<RectTransform>());
+
+                folder.GetComponent<RectTransform>().offsetMin = new Vector2(0, 0);
+                folder.GetComponent<RectTransform>().offsetMax = new Vector2(0, 0);
+                folder.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
+                folder.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
+
+                folder.GetComponent<RectTransform>().localScale = Vector3.one;
+
+                // Update folder fields
+                folder.tag = TagConstant.DynamicCanvasFolder;
 			}
 
-			return Instantiate(
-				original: prefab, 
-				position: position, 
-				rotation: Quaternion.identity, 
-				parent: folder.transform
-			);
+            return Instantiate(
+                original: prefab,
+                parent: folder.GetComponent<RectTransform>()
+            );
 		}
 
         /// <summary>

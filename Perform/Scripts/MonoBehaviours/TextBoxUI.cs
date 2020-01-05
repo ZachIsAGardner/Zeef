@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using Zeef.GameManagement;
 // ---
 using Zeef.Sound;
 
@@ -38,12 +39,11 @@ namespace Zeef.Perform
 
 		public static TextBoxUI Initialize(
             TextBoxUI prefab,
-            Transform parent,
             Vector2 position,
             TextBoxUIFullModel model
         )
         {
-			TextBoxUI instance = Instantiate(prefab, parent).GetComponentWithError<TextBoxUI>();
+			TextBoxUI instance = GameManager.SpawnCanvasElement(prefab.gameObject).GetComponentWithError<TextBoxUI>();
 
 			instance.text = model.Text;
 			instance.speaker = model.Speaker;
