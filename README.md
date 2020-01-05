@@ -2,18 +2,22 @@
 Zachary's Framework (Zeef) is a C# game framework built for Unity.
 
 #### Current Unity Version ####
-Unity 2019.1.4f1
+Unity 2019.2.5f1
 
 ## Setup ##
 This project requires minimal setup to get working.
 
-###### Step 1: Scripting Runtime Version
+###### Step 1: Clone Repo
+* Clone this repo into any existing Unity project. I'd recommend setting up your directory to look this:
+<i>"/Assets/Plugins/Zeef"<i>
+
+###### Step 2: Scripting Runtime Version
 * This project requires a higher version of C# that Unity regularly uses. To enable the higher version of C# you must change the <strong>Scripting Runtime Version</strong> setting from <strong>.Net 3.5 Equivalent</strong> to <strong>.Net 4.x Equivalent</strong>
   * This setting is found at Edit => Project Settings => Player => Other Settings => Configuration => Scripting Runtime Version
 
   ![ScriptingRuntimeVersion](https://github.com/ZachIsAGardner/Zeef/blob/master/_Documents/Zeef/Runtime.png)
 
-###### Step 2: AsyncAwaitUtil Extension
+###### Step 3: AsyncAwaitUtil Extension
 * This project also relies on the <strong>AsyncAwaitUtil</strong> extension which can found here: https://github.com/svermeulen/Unity3dAsyncAwaitUtil/releases
   * Make sure this is in the Plugins folder within the Assets folder along with Zeef
 
