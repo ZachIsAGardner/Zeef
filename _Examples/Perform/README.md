@@ -1,4 +1,4 @@
-# Perform
+# Perform Example
 
 Here you'll see an example of a what is referred to as a "Peformance." 
 A Performance is a MonoBehaviour that drives any sort of string of text boxes with any arbitray code you'd like to execute.
