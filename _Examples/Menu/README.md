@@ -1,4 +1,4 @@
-# Menu
+# Menu Example
 
 This scene showcases how you can use a menu to prompt the player for an option and how to respond to that option.
 
