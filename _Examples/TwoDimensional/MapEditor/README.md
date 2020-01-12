@@ -1,5 +1,7 @@
 # Platformer Example
 
+Here's an example of a few features from the TwoDimensional namespace.
+
 ## Platformer Controls
 * Left Arrow Key => Move left
 * Right Arrow Key => Move right
