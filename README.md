@@ -1,33 +1,23 @@
-# Zeef #
+# Zeef
 Zachary's Framework (Zeef) is a C# game framework built for Unity.
 
-#### Current Unity Version ####
-Unity 2019.2.5f1
+#### Current Unity Version
+Unity 2019.2.17f1
 
-## Setup ##
+## Setup
 This project requires minimal setup to get working.
 
-###### Step 1: Clone Repo
-* Clone this repo into any existing Unity project. I'd recommend setting up your directory to look this:
-<i>"/Assets/Plugins/Zeef"</i>
+#### Importing Unity Package
+* Once you have an existing Unity project you can import the latest release of Zeef through a Unity package.
+* Navigate to the most recent release and download the "ZeefAndFriends.unitypackage" file.
+  * https://github.com/ZachIsAGardner/Zeef/releases
+* In your Unity project import the package you just downloaded.
 
-###### Step 2: Scripting Runtime Version
-* This project requires a higher version of C# that Unity regularly uses. To enable the higher version of C# you must change the <strong>Scripting Runtime Version</strong> setting from <strong>.Net 3.5 Equivalent</strong> to <strong>.Net 4.x Equivalent</strong>
-  * This setting is found at Edit => Project Settings => Player => Other Settings => Configuration => Scripting Runtime Version
-
-  ![ScriptingRuntimeVersion](https://github.com/ZachIsAGardner/Zeef/blob/master/_Documents/Zeef/Runtime.png)
-
-###### Step 3: AsyncAwaitUtil Extension
-* This project also relies on the <strong>AsyncAwaitUtil</strong> extension which can found here: https://github.com/svermeulen/Unity3dAsyncAwaitUtil/releases
-  * Make sure this is in the Plugins folder within the Assets folder along with Zeef
-
-  ![Plugins](https://github.com/ZachIsAGardner/Zeef/blob/master/_Documents/Zeef/Async.png)
-
-## Thats it! ##
+#### Thats it!
 With basic setup now completed, you can use all of Zeef's functionality. Feel free to check out the examples if you'd like.
 
 
-## Examples ##
+##### Examples
 * [Platformer](https://github.com/ZachIsAGardner/Zeef/tree/master/_Examples/TwoDimensional/Platformer)
 * [GameManagement](https://github.com/ZachIsAGardner/Zeef/tree/master/_Examples/GameManagement)
 * [Menu](https://github.com/ZachIsAGardner/Zeef/tree/master/_Examples/Menu)
@@ -35,7 +25,7 @@ With basic setup now completed, you can use all of Zeef's functionality. Feel fr
 * [Persistence](https://github.com/ZachIsAGardner/Zeef/tree/master/_Examples/Persistence)
 * [Sound](https://github.com/ZachIsAGardner/Zeef/tree/master/_Examples/Sound)
 
-## Namespace Navigation ##
+## Namespace Navigation
 
 * [General](https://github.com/ZachIsAGardner/Zeef/tree/master/General)
 * [GameManagement](https://github.com/ZachIsAGardner/Zeef/tree/master/GameManagement)
