@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Zeef.TwoDimensional {
-
-    public class FolderListItem {
-
+namespace Zeef.TwoDimensional
+{
+    public class FolderListItem
+    {
 		public string Name { get; set; }
 		public int SelectionIdx { get; set; }
 		public bool Visible { get; set; }
 		public List<GameObject> Tiles { get; set; }
 
-		public FolderListItem(TileFolderScriptable folder) {
+		public FolderListItem(TileFolderScriptable folder)
+        {
 			Name = folder.name;
 			SelectionIdx = -1;
 			Visible = false;
@@ -19,7 +20,8 @@ namespace Zeef.TwoDimensional {
 		}
 	}
 
-    public class Map : SingleInstance<Map> {
+    public class Map : SingleInstance<Map>
+    {
         
         [Required]
         public string PlaceKey = "E";
@@ -43,12 +45,13 @@ namespace Zeef.TwoDimensional {
         [HideInInspector] public List<FolderListItem> FolderListItems;
         [HideInInspector] public GameObject Garbage;
 
-
-        void Start () {
+        void Start ()
+        {
             Destroy(this.gameObject);
         }
 
-        void OnDrawGizmos() {
+        void OnDrawGizmos()
+        {
             if (Editing) {
                 Gizmos.color = CursorColor;
                 Gizmos.DrawCube(CursorPosition, new Vector3(GridSize, GridSize, 1));

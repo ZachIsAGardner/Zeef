@@ -1,4 +1,11 @@
-## Map Editor README ##
+# Platformer Example
+
+## Platformer Controls
+* Left Arrow Key => Move left
+* Right Arrow Key => Move right
+* Z => Jump
+
+## Map Editor
 To use Map Editor...
 * Select and lock Map gameobject.
 * Select a tile from the selection near the bottom of the inspector.
