@@ -51,6 +51,11 @@ namespace Zeef.TwoDimensional
         /// </summary>
         [HideInInspector] public Vector2 Velocity;
 
+        /// <summary>
+        /// This value is added on top of Velocity when applying translations.
+        /// </summary>
+		[HideInInspector] public Vector2 VelocityOffset;
+
 		// ---
 		// Lifecycle
 
@@ -64,7 +69,7 @@ namespace Zeef.TwoDimensional
 			if (GameManager.IsPaused) 
 				return;
 
-			Collision.Move(Velocity * Time.deltaTime);            
+			Collision.Move((Velocity + VelocityOffset) * Time.deltaTime);            
 		}
 
 		// ---
