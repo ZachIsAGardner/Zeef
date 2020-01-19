@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Zeef.GameManagement;
 
@@ -23,18 +24,20 @@ namespace Zeef.TwoDimensional {
 
 		[SerializeField] int defense = 0;
         // Built in Editor
-        [HideInInspector] public string Weakness;
+        [HideInInspector] public List<string> Weakness = new List<string> { "Any", "Explosion" };
 
 		// ---
 
         private void OnTriggerStay2D(Collider2D other) {
             HitBox2D hitBox = other.GetComponent<HitBox2D>();
-            if (hitBox != null 
-            && (
-                String.IsNullOrWhiteSpace(Weakness) 
-                || Weakness == InteractionTypeConstant.Any 
-                || Weakness == hitBox.InteractionType
-            )) 
+
+            if (hitBox != null && 
+                (
+                    Weakness.IsNullOrEmpty() 
+                    || Weakness.Any(w => w == InteractionTypeConstant.Any)
+                    || Weakness.Any(w => w == hitBox.InteractionType)
+                )
+            )
             {
 			    OnExternalTriggerStay2D(other);
             }
