@@ -20,6 +20,7 @@ Shader "Zeef/Boil"
         _DistortionDamper ("Distortion Damper", Float) = 10
         _DistortionSpreader ("Distortion Spreader", Float) = 50
         _TimeMultiplier ("Time Multiplier", Float) = 3
+        [MaterialToggle] _IsActive ("Is Active", Range(0, 1)) = 1
 
         _MyTime ("My Time", Float) = 0
 
@@ -62,9 +63,12 @@ Shader "Zeef/Boil"
             #pragma multi_compile _ ETC1_EXTERNAL_ALPHA
 
             sampler2D _NoiseTex;
+
             float _DistortionDamper;
             float _DistortionSpreader;
             float _TimeMultiplier;
+            float _IsActive;
+
             float _MyTime;
 
             // Include a bunch of re-usable stuff from another file. 
@@ -72,7 +76,6 @@ Shader "Zeef/Boil"
             #include "UnitySprites.cginc"
 
             // ---
-
 
             // Used in frag
             fixed4 MySampleSpriteTexture (float2 uv)
@@ -144,7 +147,7 @@ Shader "Zeef/Boil"
 
                 fixed4 color = tex2D (
                     _MainTex, 
-                    IN.texcoord + offset / _DistortionDamper
+                    IN.texcoord + ((offset / _DistortionDamper) * _IsActive)
                 ) * IN.color;
                 // Boil End
 

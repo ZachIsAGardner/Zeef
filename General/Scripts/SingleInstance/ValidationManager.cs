@@ -5,14 +5,15 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Zeef {
-
+namespace Zeef 
+{
     [AttributeUsage(AttributeTargets.Field)]
 	public class RequiredAttribute : Attribute { }
 
     // ---
 
-    class ValidationError {
+    class ValidationError 
+    {
 
         public string Error { get; private set; }
         public UnityEngine.Object Subject { get; private set; }
@@ -28,13 +29,16 @@ namespace Zeef {
     /// <summary>
     /// ValidationManager points out potential issues in any given Scene.
     /// <summary>
-    public class ValidationManager : MonoBehaviour {
+    public class ValidationManager : MonoBehaviour 
+    {
 
-        private void Awake() {
+        private void Awake() 
+        {
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode) 
+        {
             LogValidations();
         }
 
@@ -43,7 +47,8 @@ namespace Zeef {
         /// <summary>
         /// Find all fields meant to be set in the inspector that haven't yet been set and warn the user.
         /// </summary>
-        public static void LogValidations() {
+        public static void LogValidations() 
+        {
             List<ValidationError> validations = GetValidationErrors();
 
             foreach (ValidationError validation in validations)
@@ -57,12 +62,13 @@ namespace Zeef {
 
         // ---
         
-        private static List<ValidationError> GetValidationErrors() {
-
+        private static List<ValidationError> GetValidationErrors() 
+        {
             List<ValidationError> validations = new List<ValidationError>();
             List<MonoBehaviour> behaviours = FindObjectsOfType<MonoBehaviour>().ToList();
 
-            foreach (MonoBehaviour behaviour in behaviours) {     
+            foreach (MonoBehaviour behaviour in behaviours) 
+            {     
                 // Get fields
                 List<FieldInfo> fieldInfos = behaviour.GetType()
                     .GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public)
@@ -70,12 +76,30 @@ namespace Zeef {
                     .ToList();
 
                 // Go through all fields and check if they have a value
-                foreach (FieldInfo fieldInfo in fieldInfos) {
+                foreach (FieldInfo fieldInfo in fieldInfos) 
+                {
                     object value = fieldInfo.GetValue(behaviour);
 
-                    if (value == null || value.Equals(null) || string.IsNullOrEmpty(value.ToString())) {
+                    List<string> names = new List<string>() { behaviour.name };
+                    Transform parent = behaviour.transform.parent;
+                    int i = 0;
+                    while (parent != null) 
+                    {
+                        names.Add(parent.name);
+                        parent = parent.parent;
+
+                        i++;
+                        if (i > 20)
+                            break;
+                    }
+                    names.Reverse();
+
+                    string name = String.Join("/", names);
+
+                    if (value == null || value.Equals(null) || string.IsNullOrEmpty(value.ToString())) 
+                    {
                         validations.Add(new ValidationError(
-                            error: $"UnassignedReference: The field '{fieldInfo.Name}' of '{behaviour.GetType().Name}' has not been given a value.",
+                            error: $"UnassignedReference: The field '{fieldInfo.Name}' of '{behaviour.GetType().Name}' on GameObject '{name}' has not been given a value.",
                             subject: behaviour.gameObject
                         ));
                     } 
