@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: BoilUI
   m_Shader: {fileID: 4800000, guid: 7a2752c5a9adf45b2bb044f6a7038432, type: 3}
-  m_ShaderKeywords: ETC1_EXTERNAL_ALPHA UNITY_UI_ALPHACLIP
+  m_ShaderKeywords: ETC1_EXTERNAL_ALPHA UNITY_UI_ALPHACLIP _ISACTIVE_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
@@ -44,7 +44,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 7efb3794bb618498380d684c386e2685, type: 3}
+        m_Texture: {fileID: 2800000, guid: 51a6fc786e264404bbf8bff542b9a8ae, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -63,6 +63,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SpecGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
     - PixelSnap: 0
     - Speed: 1
@@ -77,8 +81,10 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _IsActive: 1
     - _Metallic: 0
     - _Mode: 0
+    - _MyTime: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
@@ -90,6 +96,7 @@ Material:
     - _StencilOp: 0
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
+    - _TimeMultiplier: 3
     - _UVSec: 0
     - _UseUIAlphaClip: 1
     - _ZWrite: 1
