@@ -68,9 +68,9 @@ Material:
     - _BumpScale: 1
     - _Cutoff: 0
     - _DetailNormalMapScale: 1
-    - _DistortionDamper: 90
+    - _DistortionDamper: 70
     - _DistortionMultiplier: 1
-    - _DistortionSpreader: 8
+    - _DistortionSpreader: 4
     - _DstBlend: 0
     - _EnableExternalAlpha: 0
     - _GlossMapScale: 1
