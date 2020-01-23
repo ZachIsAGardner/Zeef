@@ -1,6 +1,6 @@
 # Zeef
 
-![GitHub Logo](/_Documents/Logo.png)
+![Zeef Logo](/_Documents/Logo/Logo.png)
 
 Zachary's Framework (Zeef) is a C# game framework built for Unity.
 
