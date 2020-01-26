@@ -5,35 +5,46 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zeef.GameManagement;
 
-namespace Zeef.TwoDimensional {
-
-	public class Particle : MonoBehaviour  {
-
+namespace Zeef.TwoDimensional 
+{
+	public class Particle : MonoBehaviour  
+	{
 		[Header("Visual Renderers (Pick One)")]
 		[SerializeField] private Image imageComponent;
 		[SerializeField] private SpriteRenderer spriteRenderer;
 		[SerializeField] private MeshRenderer meshRenderer;
 		[SerializeField] private Text textComponent;
 
+		[HideInInspector] public Vector2 Velocity;
+
 		private float lifeTime = 1;
 		private bool fadeOverTime;
 		private bool fadeOnDestroy;
-		private Vector2 vel;
 		private float grav;
 		private Vector3 rotationVel;
 		private Vector3 rotationOffset;
 
 		private Color originalColor;
+
+		// ---
 		
-		public static Particle Initialize(GameObject prefab, float lifeTime, 
-			Vector2? vel = null, bool fadeOverTime = false, 
-			float grav = 0, Transform parent = null, 
-			Vector3 pos = new Vector3(), bool fadeOnDestroy = false, 
-			Vector3? rotationVel = null, Vector3? rotationOffset = null,
-			Color? color = null) {
-			
+		public static Particle Initialize(
+			GameObject prefab, 
+			float lifeTime, 
+			Vector2? velocity = null, 
+			bool fadeOverTime = false, 
+			float grav = 0, 
+			Transform parent = null, 
+			Vector3 pos = new Vector3(), 
+			bool fadeOnDestroy = false, 
+			Vector3? rotationVel = null, 
+			Vector3? rotationOffset = null,
+			Color? color = null
+		) 
+		{
 			// Ensure parent
-			if (parent == null) {
+			if (parent == null) 
+			{
 				GameObject particles = GameObject.FindGameObjectWithTag(TagConstant.ParticlesFolder);
 				if (particles == null) 
 				{
@@ -48,45 +59,50 @@ namespace Zeef.TwoDimensional {
 
 			Particle instance = Instantiate(prefab, pos, Quaternion.identity, parent).GetComponent<Particle>();
 
-			instance.GetComponents();
+			if (instance.spriteRenderer != null)
+				instance.originalColor = instance.spriteRenderer.color;
+			if (instance.meshRenderer != null)
+				instance.originalColor = instance.meshRenderer.material.color;
+			if (instance.textComponent != null)
+				instance.originalColor = instance.textComponent.color;
+			if (instance.imageComponent != null)
+				instance.originalColor = instance.imageComponent.color;
 
-			if (color.HasValue) instance.ChangeColor(color.Value);
+			if (color.HasValue) 
+				instance.ChangeColor(color.Value);
 
 			instance.lifeTime = lifeTime;
 			instance.fadeOverTime = fadeOverTime;
 			instance.fadeOnDestroy = fadeOnDestroy;
-			instance.vel = (vel.HasValue) ? vel.Value : Vector2.zero;
+			instance.Velocity = (velocity.HasValue) ? velocity.Value : Vector2.zero;
 			instance.rotationVel = (rotationVel.HasValue) ? rotationVel.Value : Vector3.zero;
 			instance.grav = grav;
-			if (rotationOffset.HasValue) instance.transform.Rotate(rotationOffset.Value);
+
+			if (rotationOffset.HasValue) 
+				instance.transform.Rotate(rotationOffset.Value);
 
 			instance.StartCoroutine(instance.RunCoroutine());
 
 			return instance;
 		}
 
-		private void GetComponents() {
-			imageComponent = GetComponent<Image>();
-			if (imageComponent != null) originalColor = imageComponent.color;
+		private void ChangeColor(Color color) 
+		{
+			if (imageComponent != null) 
+				imageComponent.color = color;	
 
-			spriteRenderer = GetComponent<SpriteRenderer>();
-			if (spriteRenderer != null) originalColor = spriteRenderer.color;
+			if (spriteRenderer != null) 
+				spriteRenderer.color = color;	
 
-			meshRenderer = GetComponent<MeshRenderer>();
-			if (meshRenderer != null) originalColor = meshRenderer.material.color;
+			if (meshRenderer != null) 
+				meshRenderer.material.color = color;	
 
-			textComponent = GetComponent<Text>();
-			if (textComponent != null) originalColor = textComponent.color;
+			if (textComponent != null) 
+				textComponent.color = color;	
 		}
 
-		private void ChangeColor(Color color) {
-			if (imageComponent != null) imageComponent.color = color;	
-			if (spriteRenderer != null) spriteRenderer.color = color;	
-			if (meshRenderer != null) meshRenderer.material.color = color;	
-			if (textComponent != null) textComponent.color = color;	
-		}
-
-		private void ChangeColor(float alpha) {
+		private void ChangeColor(float alpha) 
+		{
 			if (imageComponent != null) imageComponent.color = 
 				new Color(originalColor.r, originalColor.g, originalColor.b, alpha);	
 
@@ -100,33 +116,50 @@ namespace Zeef.TwoDimensional {
 				new Color(originalColor.r, originalColor.g, originalColor.b, alpha);	
 		}
 
-		private Color CurrentColor() {
-			if (imageComponent != null) return imageComponent.color;
-			if (spriteRenderer != null) return spriteRenderer.color;
-			if (meshRenderer != null) return meshRenderer.material.color;
-			if (textComponent != null) return textComponent.color;
+		private Color CurrentColor() 
+		{
+			if (imageComponent != null) 
+				return imageComponent.color;
+
+			if (spriteRenderer != null) 
+				return spriteRenderer.color;
+
+			if (meshRenderer != null) 
+				return meshRenderer.material.color;
+
+			if (textComponent != null) 
+				return textComponent.color;
+
+
 			throw new Exception("Not visual renderer could be found");
 		}
 
-		private IEnumerator RunCoroutine() {
-			while(lifeTime > 0) {	
-				while(GameManager.IsPaused) yield return null;
+		private IEnumerator RunCoroutine() 
+		{
+			while(lifeTime > 0) 
+			{	
+				while(GameManager.IsPaused) 
+					yield return null;
 
-				if (fadeOverTime) ChangeColor(lifeTime);
+				if (fadeOverTime) 
+					ChangeColor(lifeTime);
 				
-				vel.y -= grav * Time.deltaTime;
-				transform.position += (Vector3)vel * Time.deltaTime;
+				Velocity.y -= grav * Time.deltaTime;
+				transform.position += (Vector3)Velocity * Time.deltaTime;
 				transform.Rotate(rotationVel, Space.Self);
 
 				lifeTime -= 1 * Time.deltaTime;
+
 				yield return null;
 			}
 
-			if (fadeOnDestroy && !fadeOverTime) {
+			if (fadeOnDestroy && !fadeOverTime) 
+			{
 				float fadeTime = 0.25f;
-				while (CurrentColor().a >= 0) {
-					vel.y -= grav * Time.deltaTime;
-					transform.position += (Vector3)vel * Time.deltaTime;
+				while (CurrentColor().a >= 0) 
+				{
+					Velocity.y -= grav * Time.deltaTime;
+					transform.position += (Vector3)Velocity * Time.deltaTime;
 
 					fadeTime -= Time.deltaTime;
 					ChangeColor(fadeTime);
@@ -136,6 +169,6 @@ namespace Zeef.TwoDimensional {
 			}
 
 			Destroy(gameObject);
-		}
-	}
+		} 
+    }
 }

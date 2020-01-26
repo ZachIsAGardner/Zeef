@@ -76,7 +76,7 @@ namespace Zeef.TwoDimensional {
                 Particle.Initialize(
                     prefab: Particle.gameObject, 
                     lifeTime: lifeTime.RandomValue(), 
-                    vel: new Vector2(
+                    velocity: new Vector2(
                         VelX.RandomValue() * Math.Sign(transform.localScale.x),
                         VelY.RandomValue() * Math.Sign(transform.localScale.y)
                     ),
