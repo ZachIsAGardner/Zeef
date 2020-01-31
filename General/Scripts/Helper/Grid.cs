@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Zanitacharin
+namespace Zeef
 {
     public class Grid : MonoBehaviour
     {
