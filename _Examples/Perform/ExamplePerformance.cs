@@ -37,7 +37,7 @@ namespace Zeef.Perform.Example
 						textBoxModel: new TextBoxUIFullModel(
 							text: "There's a few cool things you can do with the Zeef.Perform namespace."
 						),
-						action: () => {
+						startAction: async () => {
 							Debug.Log("You can even execute actions mid performance!");
 						}
 					),

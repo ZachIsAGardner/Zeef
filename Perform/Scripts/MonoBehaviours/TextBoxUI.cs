@@ -30,6 +30,7 @@ namespace Zeef.Perform
 		private bool auto; // Text box closes automatically once it has finished crawling the text
 		private float crawlTime; // Wait time between letters
 		private SoundEffectScriptable tone; // The noise made when the text is crawling
+		private bool closeWhenDone;
 		
 		void Update()
         {
@@ -37,6 +38,12 @@ namespace Zeef.Perform
                 skipToEnd = true;	
 		}
 
+		/// <summary>
+		/// Create a new TextBox.
+		/// <param name="prefab">The prefab to make a copy of.</param>
+		/// <param name="position">The position in which to spawn the new Text Box.</param>
+		/// <param name="model">The model in which to generate the data from.</param>
+		/// </summary>
 		public static TextBoxUI Initialize(
             TextBoxUI prefab,
             Vector2 position,
@@ -51,10 +58,14 @@ namespace Zeef.Perform
 			instance.auto = model.Auto == true;
 			instance.crawlTime = model.CrawlTime ?? 0;
 			instance.tone = model.Tone;
+			instance.closeWhenDone = model.CloseWhenDone == true;
 
 			return instance;
 		}
 
+		/// <summary>
+		/// Provide new model and execute.
+		/// </summary>
 		public async Task ExecuteAsync(TextBoxUIFullModel model)
         {
 			text = model.Text;
@@ -63,22 +74,32 @@ namespace Zeef.Perform
 			auto = model.Auto == true;
 			crawlTime = model.CrawlTime ?? 0;
 			tone = model.Tone;
+			closeWhenDone = model.CloseWhenDone == true;
 	
 			await ExecuteAsync();
 		}
 
+		/// <summary>
+		/// Execute with existing data.
+		/// </summary>
 		public async Task ExecuteAsync()
         {
 			skipToEnd = false;
 
 			maxLineLength = (forceLineLength > 0) ? forceLineLength : 500;
 
-			if (speakerComponent != null) speakerComponent.text = speaker ?? "";
+			if (speakerComponent != null) 
+				speakerComponent.text = speaker ?? "";
 
-			if (crawlTime > 0) await DisplayTextAsync(SplitTextToLines(text, maxLineLength));
-			else textComponent.text = text;	
+			if (crawlTime > 0) 
+				await DisplayTextAsync(SplitTextToLines(text, maxLineLength));
+			else 
+				textComponent.text = text;	
 		}
 
+		/// <summary>
+		/// Close this Text Box.
+		/// </summary>
 		public void Close()
         {
 			Destroy(gameObject);
@@ -109,8 +130,13 @@ namespace Zeef.Perform
 
 			textComponent.text = text;
 
-			if (auto) await new WaitForSeconds(1);
-			else await ControlManager.WaitForInputPressedAsync(ControlManager.Accept);
+			if (auto) 
+				await new WaitForUpdate();
+			else 
+				await ControlManager.WaitForInputPressedAsync(ControlManager.Accept);
+			
+			if (closeWhenDone)
+				Close();
 		}
 
 		// Wait an amount of time based on character

@@ -96,8 +96,9 @@ namespace Zeef.Perform
 
 		private async Task PlaySectionAsync(Section section, Branch branch)
         {
-			// Execute action if there is one
-			if (section.Action != null) section.Action();
+			// Execute StartAction
+			if (section.StartAction != null) 
+				await section.StartAction();
 
 			// Combine branch and section models with priority to section
 			TextBoxUIFullModel model = new TextBoxUIFullModel(
@@ -107,12 +108,14 @@ namespace Zeef.Perform
                     : branch.TextBoxUIPartialModel?.Speaker,
 				auto: section.TextBoxUIModel.Auto ?? branch.TextBoxUIPartialModel?.Auto,
 				tone: section.TextBoxUIModel.Tone ?? branch.TextBoxUIPartialModel?.Tone,
-				crawlTime: section.TextBoxUIModel.CrawlTime ?? branch.TextBoxUIPartialModel?.CrawlTime
+				crawlTime: section.TextBoxUIModel.CrawlTime ?? branch.TextBoxUIPartialModel?.CrawlTime,
+				closeWhenDone: section.TextBoxUIModel.CloseWhenDone ?? branch.TextBoxUIPartialModel?.CloseWhenDone
 			);
 
 			// Create and execute text box
 			if (section.TextBoxUIModel != null)
             {
+				// Create new text box and execute on it.
 				if (textBoxUIInstance == null)
                 {
 					textBoxUIInstance = TextBoxUI.Initialize(
@@ -122,15 +125,22 @@ namespace Zeef.Perform
 					);
 
 					await textBoxUIInstance.ExecuteAsync();
-				} else {
+				} 
+				// Execute model on existing text box.
+				else 
+				{
 					await textBoxUIInstance.ExecuteAsync(model);
 				}
 			}
+
+			// Execute EndAction
+			if (section.EndAction != null) 
+				await section.EndAction();
 		}
 
 		private async Task<Path> GetPathAsync(Branch branch)
         {	
-			await new WaitForSeconds(0.25f);
+			await new WaitForUpdate();
 
 			int attempt = 0;
 			Path selection = null;
