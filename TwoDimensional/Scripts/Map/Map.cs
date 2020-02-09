@@ -21,8 +21,7 @@ namespace Zeef.TwoDimensional
 	}
 
     public class Map : SingleInstance<Map>
-    {
-        
+    {   
         [Required]
         public string PlaceKey = "E";
         [Required]

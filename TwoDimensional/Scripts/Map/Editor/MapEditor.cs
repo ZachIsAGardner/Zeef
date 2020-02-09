@@ -45,11 +45,25 @@ namespace Zeef.TwoDimensional
 
 		private List<LayerColorSet> LayerColorSets { get; set; }
 
+		// ---
+		// ???
+
+		 void OnFocus() {
+			
+		}
+
+		void OnDestroy() {
+			
+		}
+
 		// --- 
 		// Inspector
 
 		void OnEnable()
         {	
+			SceneView.onSceneGUIDelegate -= this.MapOnSceneGUI;
+			SceneView.onSceneGUIDelegate += this.MapOnSceneGUI;
+
 			map = (Map)target; 
 			if (map == null)
                 return;
@@ -60,6 +74,8 @@ namespace Zeef.TwoDimensional
 
 		void OnDisable()
         {
+			SceneView.onSceneGUIDelegate -= this.MapOnSceneGUI;
+
 			if (map == null)
                 return;
 
@@ -189,10 +205,10 @@ namespace Zeef.TwoDimensional
 		// ---
 		// Scene
 
-		void OnSceneGUI()
+		void MapOnSceneGUI(SceneView sceneView)
         {
-			if (EditorWindow.focusedWindow != (SceneView)SceneView.sceneViews[0])
-                return;
+			// if (EditorWindow.focusedWindow != (SceneView)SceneView.sceneViews[0])
+            //     return;
 
 			RenderSceneBoxes();
 			HandleInput();
@@ -206,7 +222,20 @@ namespace Zeef.TwoDimensional
 			GUILayout.Box("Map Edit Mode");
 
 			GUI.color = Color.yellow;
-			if (EditorWindow.focusedWindow != (SceneView)SceneView.sceneViews[0]) GUILayout.Box("Scene view is not focused");
+
+			bool anySceneFocused = false;
+			foreach (var sceneView in SceneView.sceneViews)
+			{
+				if (sceneView == EditorWindow.focusedWindow)
+				{
+					anySceneFocused = true;
+				}
+			}	
+			if (!anySceneFocused) 
+			{
+				GUILayout.Box("Scene view is not focused");
+			}
+
 			if (map.CurrentTile == null)
             { 
 				GUI.color = Color.yellow;
