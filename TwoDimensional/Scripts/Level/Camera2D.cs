@@ -6,20 +6,20 @@ using UnityEngine.UI;
 // ---
 using Zeef.GameManagement;
 
-namespace Zeef.TwoDimensional {
-
-	public class Camera2D : MonoBehaviour {
-
-		[SerializeField] protected Vector3 offset;
-		[SerializeField] private Transform target;
+namespace Zeef.TwoDimensional 
+{
+	public class Camera2D : MonoBehaviour 
+	{
+		public Vector3 Offset;
+		public Transform Target;
 
 		// 0: Never move
 		// 1: Insta snap
 		[Range (0, 1)]
-		[SerializeField] protected float acc = .5f;
+		public float Acceleration = .5f;
 
 		private float normalZoom;
-		public float NormalZoom { get { return normalZoom; }}
+		public float NormalZoom { get => normalZoom; }
 		private bool zooming;
 		private float destinationZoom;
 		private float zoomTime = 0.125f;
@@ -34,71 +34,72 @@ namespace Zeef.TwoDimensional {
 
 		// ---
 
-		void Start () {
+		void Start () 
+		{
 			cam = GetComponent<Camera>();
 
 			normalZoom = cam.orthographicSize;
 
-			if (target == null) GetTarget();
 			GetBoundaries();
 			
 			SceneManager.sceneLoaded += OnSceneLoaded;
 		}
 
-		void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
-			GetTarget();
+		void OnSceneLoaded(Scene scene, LoadSceneMode mode) 
+		{
 			GetBoundaries();
 		}
 
-		void GetTarget() {
-			GameObject player = GameObject.FindGameObjectWithTag(TagConstant.Player);
-			target = (player) ? player.transform : null;
-		}
-
-		void GetBoundaries() {
+		void GetBoundaries() 
+		{
 			GameObject boundsObject = GameObject.FindGameObjectWithTag(TagConstant.CameraBounds);
 
-			if (boundsObject) bounds = boundsObject.GetComponent<BoxCollider2D>().bounds;
-			else bounds = null;	
+			if (boundsObject) 
+				bounds = boundsObject.GetComponent<BoxCollider2D>().bounds;
+			else 
+				bounds = null;	
 		}
 
 		// ---
 		
-		void LateUpdate() {
+		void LateUpdate() 
+		{
 			if (GameManager.IsPaused) return;
 
-			if (target) Move();
-			else GetTarget();
+			if (Target != null) 
+				Move();
 			
 			shakeTime -= 1 * Time.deltaTime;
-			if (shakeTime > 0) Shaking();
+			if (shakeTime > 0) 
+				Shaking();
 			
-			if (zooming) Zooming();
+			if (zooming) 
+				Zooming();
 			
 			CheckBoundaries();
 		}
 
-		public void ChangeTarget(Transform newTarget) {
-			target = newTarget;
-		}
-
 		// ---
 
-		public void ResetZoom(float zoomTime = 0.125f) {
+		public void ResetZoom(float zoomTime = 0.125f) 
+		{
 			this.zoomTime = zoomTime;
 			zooming = true;
 			destinationZoom = normalZoom;
 		}
 
-		public void ChangeZoom(float newZoom, float zoomTime = 0.125f) {
+		public void ChangeZoom(float newZoom, float zoomTime = 0.125f) 
+		{
 			this.zoomTime = zoomTime;
 			zooming = true;
 			destinationZoom = newZoom;
 		}
 
-		void Zooming() {
+		void Zooming() 
+		{
 			cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, destinationZoom, zoomTime);
-			if (Mathf.Abs(cam.orthographicSize - destinationZoom) < 0.01f) {
+			if (Mathf.Abs(cam.orthographicSize - destinationZoom) < 0.01f) 
+			{
 				cam.orthographicSize = destinationZoom;
 				zooming = false;
 			}
@@ -106,15 +107,18 @@ namespace Zeef.TwoDimensional {
 
 		// ---
 
-		public void Shake(float newShakeTime) {
+		public void Shake(float newShakeTime) 
+		{
 			shakeTime = newShakeTime;
 			shakeTick = 0;
 			shakeStart = transform.position;
 		}
 
-		void Shaking() {
+		void Shaking() 
+		{
 			shakeTick += 1 * Time.deltaTime;
-			if (shakeTick >= 0.01f) {
+			if (shakeTick >= 0.01f) 
+			{
 				Vector2 offset;
 				offset.x = (Random.Range(0,2) == 1) ? 10 : -10;
 				offset.y = (Random.Range(0,2) == 1) ? 10 : -10;
@@ -130,47 +134,72 @@ namespace Zeef.TwoDimensional {
 
 		// ---
 
-		public virtual void Move() {
+		public virtual void Move() 
+		{
 			Vector2 moveTo = Vector2.zero;
-			if (acc < 1) {	
-				moveTo.x = Mathf.Lerp(transform.position.x, target.position.x + offset.x, acc); 
-				moveTo.y = Mathf.Lerp(transform.position.y, target.position.y + offset.y, acc); 
-			} else {
-				moveTo.x = target.position.x + offset.x;
-				moveTo.y = target.position.y + offset.y;
+
+			if (Acceleration < 1) 
+			{	
+				moveTo.x = Mathf.Lerp(
+					transform.position.x, 
+					Target.position.x + Offset.x, 
+					Acceleration
+				); 
+
+				moveTo.y = Mathf.Lerp(
+					transform.position.y, 
+					Target.position.y + Offset.y, 
+					Acceleration
+				); 
+			} 
+			else 
+			{
+				moveTo.x = Target.position.x + Offset.x;
+				moveTo.y = Target.position.y + Offset.y;
 			}
+
 			transform.position = new Vector3(moveTo.x, moveTo.y, transform.position.z);
 		}
 
-		void CheckBoundaries() {	
-			if (bounds == null) return;
+		void CheckBoundaries() 
+		{	
+			if (bounds == null) 
+				return;
+
 			CheckHorizontal();
 			CheckVertical();
 		}
 
-		void CheckHorizontal() {
+		void CheckHorizontal() 
+		{
 			float camExtents = cam.orthographicSize * cam.aspect;
 
-			if (camExtents >= bounds.Value.extents.x) {
+			if (camExtents >= bounds.Value.extents.x) 
+			{
 				transform.position = new Vector3(
-					bounds.Value.center.x + offset.x,
+					bounds.Value.center.x + Offset.x,
 					transform.position.y,
 					transform.position.z
 				);
-			} else {
+			} 
+			else 
+			{
 				float camLeft = transform.position.x - camExtents;
 				float camRight = transform.position.x + camExtents;
 
 				float boundsLeft = bounds.Value.center.x - bounds.Value.extents.x;
 				float boundsRight = bounds.Value.center.x + bounds.Value.extents.x;
 
-				if (camLeft < boundsLeft) {
+				if (camLeft < boundsLeft) 
+				{
 					transform.position = new Vector3(
 						boundsLeft + camExtents,
 						transform.position.y, 
 						transform.position.z
 					);
-				} else if (camRight > boundsRight) {
+				} 
+				else if (camRight > boundsRight) 
+				{
 					transform.position = new Vector3(
 						boundsRight - camExtents, 
 						transform.position.y, 
@@ -180,29 +209,36 @@ namespace Zeef.TwoDimensional {
 			}
 		}
 
-		void CheckVertical() {
+		void CheckVertical() 
+		{
 			float camExtents = cam.orthographicSize;
 
-			if (camExtents > bounds.Value.extents.y) {
+			if (camExtents > bounds.Value.extents.y) 
+			{
 				transform.position = new Vector3(
 					transform.position.x,
-					bounds.Value.center.y + offset.y,
+					bounds.Value.center.y + Offset.y,
 					transform.position.z
 				);
-			} else {
+			} 
+			else 
+			{
 				float camBottom = transform.position.y - camExtents;
 				float camTop = transform.position.y + camExtents;
 
 				float boundsBottom = bounds.Value.center.y - bounds.Value.extents.y;
 				float boundsTop = bounds.Value.center.y + bounds.Value.extents.y;
 
-				if (camBottom < boundsBottom) {
+				if (camBottom < boundsBottom) 
+				{
 					transform.position = new Vector3(
 						transform.position.x, 
 						bounds.Value.center.y - bounds.Value.extents.y + camExtents, 
 						transform.position.z
 					);
-				} else if (camTop > boundsTop) {
+				} 
+				else if (camTop > boundsTop) 
+				{
 					transform.position = new Vector3(
 						transform.position.x, 
 						bounds.Value.center.y + bounds.Value.extents.y - camExtents, 

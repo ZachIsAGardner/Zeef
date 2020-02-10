@@ -6,10 +6,10 @@ using UnityEngine.UI;
 // ---
 using Zeef.GameManagement;
 
-namespace Zeef.TwoDimensional {
-
-    public class ParticleCreator : MonoBehaviour {
-        
+namespace Zeef.TwoDimensional 
+{
+    public class ParticleCreator : MonoBehaviour 
+    {    
         [Header("Creator Settings")]
         public Particle Particle;
 
@@ -45,32 +45,51 @@ namespace Zeef.TwoDimensional {
         public FloatRange RotateOffsetY;
         public FloatRange RotateOffsetZ;
 
-        void Start() {
+        void Start() 
+        {
             if (PlayOnStart) 
                 StartCoroutine(RunCoroutine());
         }
 
-        private IEnumerator RunCoroutine() {
-            if (LoopLength > 0) {
-                while (true) yield return StartCoroutine(CreateParticlesCoroutine());
-            } else {
+        public void Execute() 
+        {
+            StartCoroutine(RunCoroutine());
+        }
+
+        private IEnumerator RunCoroutine() 
+        {
+            if (LoopLength > 0) 
+            {
+                while (true) 
+                    yield return StartCoroutine(CreateParticlesCoroutine());
+            } 
+            else 
+            {
                 StartCoroutine(CreateParticlesCoroutine());
-                while (transform.childCount > 0) yield return null;
+                while (transform.childCount > 0) 
+                    yield return null;
             }
 
             Destroy(gameObject);
         }
 
-        public IEnumerator CreateParticlesCoroutine() {
+        public IEnumerator CreateParticlesCoroutine() 
+        {
             int i = 0;
 
-            while (i < Amount.RandomValue()) {
+            while (i < Amount.RandomValue()) 
+            {
                 Vector3 pos = new Vector3(0,0, transform.position.z);
                 BoxCollider2D col = GetComponent<BoxCollider2D>();
-                if (col != null && StartPositionFromBoxCollider2DBounds) {
+                if (col != null && StartPositionFromBoxCollider2DBounds) 
+                {
                     FloatRange x = new FloatRange(col.bounds.min.x, col.bounds.max.x);
                     FloatRange y = new FloatRange(col.bounds.min.y, col.bounds.max.y);
-                    pos = new Vector3(x.RandomValue(), y.RandomValue(), transform.position.z);
+                    pos = new Vector3(
+                        x.RandomValue(), 
+                        y.RandomValue(), 
+                        transform.position.z
+                    );
                 }
 
                 Particle.Initialize(
@@ -98,12 +117,14 @@ namespace Zeef.TwoDimensional {
                     color: Color
                 );
 
-                if (OffsetLength > 0) yield return new WaitForSeconds(OffsetLength);
+                if (OffsetLength > 0) 
+                    yield return new WaitForSeconds(OffsetLength);
                 
                 i++;
             }
 
-            if (LoopLength > 0) yield return new WaitForSeconds(LoopLength); 
+            if (LoopLength > 0) 
+                yield return new WaitForSeconds(LoopLength); 
         }
     }
 }

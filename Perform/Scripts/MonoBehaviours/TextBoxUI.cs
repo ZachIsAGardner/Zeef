@@ -26,6 +26,8 @@ namespace Zeef.Perform
 		private bool skipToEnd;
 		
 		private int maxLineLength; // Max character length for a line of text
+		private int? toneIntervalMax;
+		private int toneInterval;
 
 		private bool auto; // Text box closes automatically once it has finished crawling the text
 		private float crawlTime; // Wait time between letters
@@ -59,6 +61,7 @@ namespace Zeef.Perform
 			instance.crawlTime = model.CrawlTime ?? 0;
 			instance.tone = model.Tone;
 			instance.closeWhenDone = model.CloseWhenDone == true;
+			instance.toneIntervalMax = model.ToneIntervalMax;
 
 			return instance;
 		}
@@ -75,6 +78,7 @@ namespace Zeef.Perform
 			crawlTime = model.CrawlTime ?? 0;
 			tone = model.Tone;
 			closeWhenDone = model.CloseWhenDone == true;
+			toneIntervalMax = model.ToneIntervalMax;
 	
 			await ExecuteAsync();
 		}
@@ -117,11 +121,18 @@ namespace Zeef.Perform
 
 				foreach (char letter in line.ToCharArray())
                 {
-					if (skipToEnd) break;
+					if (skipToEnd) 
+						break;
 					
 					textComponent.text += letter;
+					toneInterval--;
 
-					if (tone != null) AudioManager.PlaySoundEffect(tone);
+					if (tone != null && toneInterval <= 0) 
+					{
+						AudioManager.PlaySoundEffect(tone);
+						toneInterval = toneIntervalMax ?? 0;
+					}
+
 					await WaitAsync(letter);
 				}
 

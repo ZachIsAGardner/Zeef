@@ -4,9 +4,6 @@ using Zeef.Sound;
 
 namespace Zeef.Perform
 {    
-	// This is in a seperate file because for whatever reason providing 
-	// default values to arguments in a constructor will causes issues with 
-	// attaching MonoBehaviours to a GameObject
 	public class TextBoxUIPartialModel
     {
 		public string Speaker { get; private set; }
@@ -14,6 +11,7 @@ namespace Zeef.Perform
 		public SoundEffectScriptable Tone { get; private set; }
 		public float? CrawlTime { get; private set; }
         public bool? CloseWhenDone { get; private set; }
+        public int? ToneIntervalMax { get; private set; }
 
 		public TextBoxUIPartialModel(
             string speaker = "",
@@ -21,13 +19,15 @@ namespace Zeef.Perform
             SoundEffectScriptable tone = null,
             float? crawlTime = null,
             Vector3? position = null,
-            bool? closeWhenDone = false
+            bool? closeWhenDone = false,
+            int? toneIntervalMax = null
         ) {
             Speaker = speaker;
 			Auto = auto;
 			Tone = tone;
 			CrawlTime = crawlTime ?? PerformanceContent.DefaultCrawlTime;
             CloseWhenDone = closeWhenDone;
+            ToneIntervalMax = toneIntervalMax;
 		}
 	}
 
@@ -43,9 +43,10 @@ namespace Zeef.Perform
             SoundEffectScriptable tone = null, 
             float? crawlTime = null, 
             Vector3? position = null,
-            bool? closeWhenDone = false
+            bool? closeWhenDone = false,
+            int? toneIntervalMax = null
         ) 
-            : base(speaker, auto, tone, crawlTime, position, closeWhenDone)
+            : base(speaker, auto, tone, crawlTime, position, closeWhenDone, toneIntervalMax)
         {
 			Text = text;
 		}

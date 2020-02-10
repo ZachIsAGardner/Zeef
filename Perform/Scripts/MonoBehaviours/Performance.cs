@@ -109,7 +109,8 @@ namespace Zeef.Perform
 				auto: section.TextBoxUIModel.Auto ?? branch.TextBoxUIPartialModel?.Auto,
 				tone: section.TextBoxUIModel.Tone ?? branch.TextBoxUIPartialModel?.Tone,
 				crawlTime: section.TextBoxUIModel.CrawlTime ?? branch.TextBoxUIPartialModel?.CrawlTime,
-				closeWhenDone: section.TextBoxUIModel.CloseWhenDone ?? branch.TextBoxUIPartialModel?.CloseWhenDone
+				closeWhenDone: section.TextBoxUIModel.CloseWhenDone ?? branch.TextBoxUIPartialModel?.CloseWhenDone,
+				toneIntervalMax: section.TextBoxUIModel.ToneIntervalMax ?? branch.TextBoxUIPartialModel?.ToneIntervalMax
 			);
 
 			// Create and execute text box
