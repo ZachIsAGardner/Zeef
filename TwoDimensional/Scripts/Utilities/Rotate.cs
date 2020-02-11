@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Rotate : MonoBehaviour {
+namespace Zeef.TwoDimensional 
+{
+	public class Rotate : MonoBehaviour 
+	{
+		public Vector3 Eulers;
 
-	[SerializeField] Vector3 eulers;
-
-	void Update () {
-		transform.Rotate(eulers * Time.deltaTime);		
+		void Update () 
+		{
+			transform.Rotate(Eulers * Time.deltaTime);		
+		}
 	}
 }

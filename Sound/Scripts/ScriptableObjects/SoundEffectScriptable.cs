@@ -10,5 +10,8 @@ namespace Zeef.Sound {
 
 		[Range(0, 1)]
 		public float Volume = 1;
+
+		[Range(-3, 3)]
+		public float Pitch = 1;
 	}
 }

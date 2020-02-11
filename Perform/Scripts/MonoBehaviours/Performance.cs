@@ -42,7 +42,9 @@ namespace Zeef.Perform
 		// Start performance
 		public async Task ExecuteAsync()
         {
-			if (Performing) return;
+			if (Performing) 
+				return;
+				
 			Performing = true;
 
 			OnBeforePerformanceStart();

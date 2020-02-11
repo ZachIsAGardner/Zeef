@@ -210,6 +210,8 @@ namespace Zeef.Sound
 				audioSource.transform.SetParent(GetInstance().transform);
 			}
 
+			audioSource.pitch = sfx.Pitch;
+
 			// Play clip.
 			audioSource.PlayOneShot(sfx.Clip, sfx.Volume * SoundEffectVolume);
 
@@ -219,6 +221,8 @@ namespace Zeef.Sound
 			// If we had to create a GameObject, we need to destroy it.
 			if (!wasAudioSourceProvided)
 				Destroy(audioSource.gameObject);
+			else
+				audioSource.pitch = 1;
 		}
 	}
 }
