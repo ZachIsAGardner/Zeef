@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using Zeef.GameManagement;
 
 namespace Zeef.Menu
 {
@@ -11,12 +12,18 @@ namespace Zeef.Menu
     {
         public static HorizontalMenuSelectUI Initialize(
             HorizontalMenuSelectUI prefab,
-            RectTransform parent,
             List<MenuItemUIModel> models,
             bool cancelable = false
         )
         {
-            HorizontalMenuSelectUI instance = Instantiate(prefab, parent).GetComponentWithError<HorizontalMenuSelectUI>();
+            return prefab._Initialize(prefab, models, cancelable) as HorizontalMenuSelectUI;
+        }
+
+        protected override LinearMenuSelect _Initialize(LinearMenuSelect prefab, List<MenuItemUIModel> models, bool cancelable = false)
+        {
+            HorizontalMenuSelectUI instance = GameManager
+                .SpawnCanvasElement(prefab.gameObject, 5)
+                .GetComponentWithError<HorizontalMenuSelectUI>();
 
             instance.menuItems = new List<MenuItemUI>();
             instance.cancelable = cancelable;

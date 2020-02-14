@@ -52,7 +52,10 @@ namespace Zeef.Perform
             TextBoxUIFullModel model
         )
         {
-			TextBoxUI instance = GameManager.SpawnCanvasElement(prefab.gameObject).GetComponentWithError<TextBoxUI>();
+			TextBoxUI instance = GameManager.SpawnCanvasElement(
+				prefab.gameObject,
+				4
+			).GetComponentWithError<TextBoxUI>();
 
 			instance.text = model.Text;
 			instance.speaker = model.Speaker;

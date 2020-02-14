@@ -143,33 +143,46 @@ namespace Zeef.GameManagement
 
         /// <summary>
         /// Spawns a copy of the provided prefab inside the DynamicCanvasFolder GameObject.
+		/// <param name="prefab">The GameObject to create a copy of.</param>
+		/// <param name="hierarchy">The sorting layer to place the prerab instance into. Higher numbers have priority of lower ones.</param>
         /// </summary>
-        public static GameObject SpawnCanvasElement(GameObject prefab)
+        public static GameObject SpawnCanvasElement(GameObject prefab, int hierarchy = 0)
         {
-			GameObject folder = GameObject.FindGameObjectWithTag(TagConstant.DynamicCanvasFolder);
-			
-			if (folder == null)
-            {
-                // Create new folder
-                folder = new GameObject("_DynamicCanvasFolder");
+			List<GameObject> folders = new List<GameObject>();
 
-                folder.AddComponent<RectTransform>();
-                folder.GetComponent<RectTransform>().SetParent(SceneCanvas.GetComponent<RectTransform>());
+			int i = 0;
+			while(i <= hierarchy)
+			{
+				string name = $"_DynamicCanvasFolder_{i}";
+				GameObject folder = GameObject.Find(name);
 
-                folder.GetComponent<RectTransform>().offsetMin = new Vector2(0, 0);
-                folder.GetComponent<RectTransform>().offsetMax = new Vector2(0, 0);
-                folder.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
-                folder.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
+				// Create new folder
+				if (folder == null)
+				{
+					folder = new GameObject(name);
 
-                folder.GetComponent<RectTransform>().localScale = Vector3.one;
+					folder.AddComponent<RectTransform>();
+					folder.GetComponent<RectTransform>().SetParent(SceneCanvas.GetComponent<RectTransform>());
 
-                // Update folder fields
-                folder.tag = TagConstant.DynamicCanvasFolder;
-			}
+					folder.GetComponent<RectTransform>().offsetMin = new Vector2(0, 0);
+					folder.GetComponent<RectTransform>().offsetMax = new Vector2(0, 0);
+					folder.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
+					folder.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
+
+					folder.GetComponent<RectTransform>().localScale = Vector3.one;
+
+					// Update folder fields
+					folder.tag = TagConstant.DynamicCanvasFolder;
+				}
+				
+				folders.Add(folder);
+
+				i++;
+			}	
 
             return Instantiate(
                 original: prefab,
-                parent: folder.GetComponent<RectTransform>()
+                parent: folders[hierarchy].GetComponent<RectTransform>()
             );
 		}
 
