@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using Zeef.GameManagement;
 // ---
 using Zeef.Menu;
 
@@ -51,7 +52,7 @@ namespace Zeef.Perform
 
 			AdditionalSetup();	
 
-			border = Instantiate(PerformanceContent.Border, FindObjectOfType<Canvas>().transform);
+			border = GameManager.SpawnCanvasElement(PerformanceContent.Border);
 			await DigestBranchAsync(BranchStart());
 		}
 		

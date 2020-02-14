@@ -14,12 +14,6 @@ namespace Zeef.GameManagement
 	public partial class GameManager : SingleInstance<GameManager>
     {	
 		/// <summary>
-		/// Special actions are only available in dev mode.
-		/// </summary>
-		public static bool IsDev { get => GetInstance().isDev; }
-        [SerializeField] private bool isDev = true;
-
-		/// <summary>
 		/// The main canvas that persists between scenes.
 		/// </summary>
 		public static Canvas Canvas { get => GetInstance().canvas; }
@@ -30,8 +24,6 @@ namespace Zeef.GameManagement
 		[SerializeField] private float transitionTime = 1;
 
 		[SerializeField] private Color transitionColor = Color.black;
-
-        [SerializeField] private RectTransform emptyCanvasElement;
 
 		// -
 
@@ -46,17 +38,10 @@ namespace Zeef.GameManagement
         /// </summary>
         public static Canvas SceneCanvas => GameObject.FindGameObjectWithTag(TagConstant.SceneCanvas).GetComponent<Canvas>();
 		
-		/// <summary>
-		/// The state of the game. Certain behaviours will act differenly depending on the state.
-		///
-		/// Possible states are Play, Pause, Cutscene, and Loading
-		/// </summary>
-		public static GameStateConstant GameState
-        {
-            get => GetInstance().gameState;
-            set => GetInstance().gameState = value;
-        }
-		private GameStateConstant gameState;
+		public static bool IsLoading { get; private set; }
+		public static bool IsPaused { get; set; }
+		public static bool IsPlaying { get => GetInstance().isPlaying; }
+		protected virtual bool isPlaying => !IsLoading && !IsPaused;
 
 		protected string lastLoadedScene;
 
@@ -68,7 +53,6 @@ namespace Zeef.GameManagement
 		protected override void Awake()
         {
 			base.Awake();
-			gameState = GameStateConstant.Play;
 			DontDestroyOnLoad(gameObject);
 
 			Application.targetFrameRate = 60;			
@@ -166,8 +150,6 @@ namespace Zeef.GameManagement
 			
 			if (folder == null)
             {
-                //folder = Instantiate(GetInstance().emptyCanvasElement.gameObject, SceneCanvas.GetComponent<RectTransform>());
-
                 // Create new folder
                 folder = new GameObject("_DynamicCanvasFolder");
 
@@ -201,7 +183,7 @@ namespace Zeef.GameManagement
 				GetInstance().lastLoadedScene = scene;
 				GetInstance().scenePackage = package;
 
-				GetInstance().gameState = GameStateConstant.Loading;
+				IsLoading = true;
 				await new WaitForUpdate();
 
 				ScreenTransition screenTransition = ScreenTransition.Initialize(
@@ -218,7 +200,7 @@ namespace Zeef.GameManagement
 
 				Destroy(screenTransition.gameObject);
 
-				GetInstance().gameState = GameStateConstant.Play;
+				IsLoading = false;
 			} else {
 				SceneManager.LoadScene(scene, loadMode);
 			}
@@ -232,16 +214,5 @@ namespace Zeef.GameManagement
 			if (BeforeLeaveScene != null) 
 				BeforeLeaveScene(this, EventArgs.Empty);
 		}
-
-		// ---
-		// GameState
-
-		public static bool IsPaused { get => GetInstance().gameState.Name == GameStateConstant.Pause.Name; }
-		
-		public static bool IsPlaying { get => GetInstance().gameState.Name == GameStateConstant.Play.Name; }
-		
-		public static bool IsInCutscene { get => GetInstance().gameState.Name == GameStateConstant.Cutscene.Name; }
-		
-		public static bool IsLoading { get => GetInstance().gameState.Name == GameStateConstant.Loading.Name; }
 	}
 }

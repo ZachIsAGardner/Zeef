@@ -4,14 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zeef.GameManagement;
 
-namespace Zeef.Menu {
-    
-    public class BarUI : MonoBehaviour {
-
+namespace Zeef.Menu 
+{
+    public class BarUI : MonoBehaviour 
+    {
         [SerializeField] Image barTop;
         [SerializeField] Image barLoss;
 
-        public static BarUI Initialize(BarUI prefab, Transform parent, float percentage) {
+        public static BarUI Initialize(BarUI prefab, Transform parent, float percentage) 
+        {
             BarUI instance = Instantiate(prefab, parent).GetComponent<BarUI>();
             
             instance.barLoss.rectTransform.sizeDelta = instance.barTop.rectTransform.sizeDelta = new Vector2(
@@ -22,7 +23,8 @@ namespace Zeef.Menu {
             return instance;
         }
 
-        public virtual void UpdateDisplay(float percentage) {
+        public virtual void UpdateDisplay(float percentage) 
+        {
             barTop.rectTransform.sizeDelta = barLoss.rectTransform.sizeDelta = new Vector2(
                 GetComponent<RectTransform>().sizeDelta.x * percentage, 
                 barTop.rectTransform.sizeDelta.y
@@ -31,7 +33,8 @@ namespace Zeef.Menu {
 
         // Duration: how long the freeze is after bar top is set and 
         // how long it takes for loss to catch up
-        public virtual async Task UpdateDisplayAsync(float percentage, float duration = 0.25f) {
+        public virtual async Task UpdateDisplayAsync(float percentage, float duration = 0.25f) 
+        {
 
             // If we're already where we need to be, dont bother
             if (barTop.rectTransform.sizeDelta.x == GetComponent<RectTransform>().sizeDelta.x * percentage) return;
@@ -56,7 +59,8 @@ namespace Zeef.Menu {
             await new WaitForSeconds(duration);
 
             // Move loss bar over time
-            while (Mathf.Abs(barTop.rectTransform.sizeDelta.x - barLoss.rectTransform.sizeDelta.x) > 1) {
+            while (Mathf.Abs(barTop.rectTransform.sizeDelta.x - barLoss.rectTransform.sizeDelta.x) > 1) 
+            {
                 while(!GameManager.IsPlaying) await new WaitForUpdate();
                 if (barLoss == null) return;
 
