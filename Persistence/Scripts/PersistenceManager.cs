@@ -16,32 +16,41 @@ namespace Zeef.Persistence {
 
 		// ---
 
-        public static void Save(object saveData) {
-			using (FileStream file = File.Create(Application.persistentDataPath + "/" + FileName)) {
+        public static void Save(object saveData) 
+		{
+			using (FileStream file = File.Create(Application.persistentDataPath + "/" + FileName)) 
+			{
 				BinaryFormatter bf = new BinaryFormatter();
 				bf.Serialize(file, saveData);
 			}
 		}
 
-		public static void Delete() {
+		public static void Delete() 
+		{
 			if (DataExists()) 
 				File.Delete(Application.persistentDataPath + "/" + FileName);
 		}
 	
-		public static T Load<T>() where T : class {			
-			if (!DataExists()) throw new Exception($"There is no data with the filename {FileName} to load.");
+		public static T Load<T>() where T : class 
+		{			
+			if (!DataExists()) 
+				throw new Exception($"There is no data with the filename {FileName} to load.");
 
-			using (FileStream file = File.Open(Application.persistentDataPath + "/" + FileName, FileMode.Open)) {
+			using (FileStream file = File.Open(Application.persistentDataPath + "/" + FileName, FileMode.Open)) 
+			{
 				BinaryFormatter bf = new BinaryFormatter();
 				T saveData = (T)bf.Deserialize(file);
 				return saveData;
 			}
 		}
 
-		public static T TryLoad<T>() where T : class {
-			if (!DataExists()) return null;
+		public static T TryLoad<T>() where T : class 
+		{
+			if (!DataExists()) 
+				return null;
 
-			using (FileStream file = File.Open(Application.persistentDataPath + "/" + FileName, FileMode.Open)) {
+			using (FileStream file = File.Open(Application.persistentDataPath + "/" + FileName, FileMode.Open)) 
+			{
 				BinaryFormatter bf = new BinaryFormatter();
 				T saveData = (T)bf.Deserialize(file);
 				return saveData;

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zeef.GameManagement;
 
 namespace Zeef.TwoDimensional
 {
@@ -42,6 +43,9 @@ namespace Zeef.TwoDimensional
 
         private void Update() 
         {
+            if (GameManager.IsPaused)
+                return;
+                
             gameObject.GetComponent<Renderer>().material.SetFloat("_DistortionDamper", DistortionDamper);
             gameObject.GetComponent<Renderer>().material.SetFloat("_DistortionSpreader", DistortionSpreader);
             gameObject.GetComponent<Renderer>().material.SetFloat("_TimeMultiplier", TimeMultiplier);
