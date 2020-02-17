@@ -873,7 +873,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d775516beab54df893a0f9f98c40191, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eulers: {x: 0, y: 0, z: 50}
+  Eulers: {x: 0, y: 0, z: 70}
 --- !u!222 &1286716016
 CanvasRenderer:
   m_ObjectHideFlags: 0

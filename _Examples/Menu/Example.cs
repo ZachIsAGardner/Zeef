@@ -39,7 +39,7 @@ namespace Zeef.Menu.Example
 				new TestData("Dog Theif", 501),
 				new TestData("Dirty Woman", 7),
 				new TestData("Lazy Girl", 0),
-				new TestData("Cowboy Man", 0)
+				new TestData("Cowboy Dan", 0)
 			};
 
 			RectTransform canvas = FindObjectOfType<Canvas>().GetComponent<RectTransform>();
@@ -51,9 +51,10 @@ namespace Zeef.Menu.Example
         {
 			List<MenuItemUIModel> models = datas.Select(d => new MenuItemUIModel(d, d.Name)).ToList();
 
-			TestData selected = (TestData)await PagedVerticalMenuSelectUI
-				.Initialize(pagedVerticalMenuSelectPrefab, parent, models, 5)
-				.GetSelectionAsync();
+			PagedVerticalMenuSelectUI menuInstance = PagedVerticalMenuSelectUI.Initialize(pagedVerticalMenuSelectPrefab, parent, models, 5);
+			TestData selected = (TestData)(await menuInstance.GetSelectionAsync(focus: 0, pageFocus: 0));
+
+			menuInstance.Close();
 
 			await BroadcastSelectionAsync(selected, parent);
 		}

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,8 +8,9 @@ namespace Zeef.Menu
 {
     public class MenuItemUI : SelectableUIElement
     {
-        [SerializeField] Text textComponent;
+        public Text textComponent;
         public object Data { get; set; }
+        public Action<MenuItemUI> ContextAction { get; set; }
 
         public static MenuItemUI Initialize(MenuItemUI prefab, RectTransform parent, MenuItemUIModel model)
         {
@@ -17,6 +19,7 @@ namespace Zeef.Menu
             instance.textComponent.text = model.Text;
             if (model.Color != null) instance.textComponent.color = model.Color.Value;
             instance.Data = model.Data;
+            instance.ContextAction = model.ContextAction;
 
             return instance;
         }
@@ -25,6 +28,7 @@ namespace Zeef.Menu
         {
             ImageComponent.color = Color.white;
         }
+
         public override void UnHighlight()
         {
             ImageComponent.color = Color.clear;

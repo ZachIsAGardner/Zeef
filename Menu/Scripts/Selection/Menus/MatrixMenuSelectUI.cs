@@ -16,8 +16,12 @@ namespace Zeef.Menu
         private List<List<MenuItemUI>> menuItems;
         private bool cancelable;
 
-        public static MatrixMenuSelectUI Initialize
-            (MatrixMenuSelectUI prefab, RectTransform parent, List<List<MenuItemUIModel>> models, bool cancelable = false)
+        public static MatrixMenuSelectUI Initialize(
+            MatrixMenuSelectUI prefab, 
+            RectTransform parent, 
+            List<List<MenuItemUIModel>> models, 
+            bool cancelable = false
+        )
         {
             MatrixMenuSelectUI instance = Instantiate(prefab, parent).GetComponentWithError<MatrixMenuSelectUI>();
 
@@ -56,7 +60,12 @@ namespace Zeef.Menu
 
         public async Task<object> GetSelectionAsync(Func<bool> isCancelled = null)
         {
-            Coordinates focus = new Coordinates();
+            return await GetSelectionAsync(isCancelled);
+        }
+        
+        public async Task<object> GetSelectionAsync(Func<bool> isCancelled = null, Coordinates focus = null)
+        {
+            focus = focus ?? new Coordinates();
 
             foreach (List<MenuItemUI> row in menuItems) 
                 foreach(MenuItemUI item in row)
@@ -92,12 +101,10 @@ namespace Zeef.Menu
                 
                 if (ControlManager.GetInputPressed(ControlManager.Accept))
                 { 
-                    Close();
                     return menuItems[focus.Row][focus.Col].Data;
                 }
                 if (ControlManager.GetInputPressed(ControlManager.Deny) && cancelable)
                 { 
-                    Close();
                     return null;
                 }
 

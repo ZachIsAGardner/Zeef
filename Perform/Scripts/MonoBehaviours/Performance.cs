@@ -89,6 +89,7 @@ namespace Zeef.Perform
 				Path path = await GetPathAsync(branch);
 				if (path.SideEffect != null)
                     path.SideEffect();
+				
 				await DigestBranchAsync(path.Branch);
 			}
             else
@@ -147,10 +148,11 @@ namespace Zeef.Perform
 			await new WaitForUpdate();
 
 			int attempt = 0;
+			LinearMenuSelect menuSelectInstance = null;
 			Path selection = null;
 			while (selection == null)
             {
-                LinearMenuSelect menuSelectInstance = LinearMenuSelect.Initialize(
+                menuSelectInstance = LinearMenuSelect.Initialize(
                     prefab: branch?.PerformanceModel?.ResponseBoxPrefab ?? PerformanceContent.ResponseBoxPrefab,
                     models: branch.Paths
                         .Select(p => new MenuItemUIModel(p, p.Text))
@@ -164,6 +166,8 @@ namespace Zeef.Perform
 				attempt += 1;
 				if (attempt > 10) break;
 			}
+
+			menuSelectInstance.Close();
 
 			return selection;
 		}

@@ -44,16 +44,16 @@ namespace Zeef.Menu
                 pageIdx++;
             }
 
-
             return instance;
         }
 
         public async Task<object> GetSelectionAsync(Func<bool> isCancelled = null)
         {
+            return await GetSelectionAsync(isCancelled);
+        }
 
-            int focus = 0; // Which item is highligted on the page
-            int pageFocus = 0; // which page is highlighted
-
+        public async Task<object> GetSelectionAsync(Func<bool> isCancelled = null, int focus = 0, int pageFocus = 0)
+        {
             pages[pageFocus].gameObject.SetActive(true);
             pageCountComponent.text = $"{pageFocus + 1}/{pages.Count}";
 
@@ -88,12 +88,10 @@ namespace Zeef.Menu
                 
                 if (ControlManager.GetInputPressed(ControlManager.Accept))
                 { 
-                    Close();
                     return pages[pageFocus].MenuItems[focus].Data;
                 }
                 if (ControlManager.GetInputPressed(ControlManager.Deny) && cancelable)
                 { 
-                    Close();
                     return null;
                 }
 

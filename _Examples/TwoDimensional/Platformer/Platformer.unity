@@ -22478,9 +22478,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7323b1901b8f4e16b6f963beefdbc76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offset: {x: 0, y: 0, z: 0}
-  target: {fileID: 1621721815895487334}
-  acc: 1
+  Offset: {x: 0, y: 0, z: 0}
+  Target: {fileID: 1621721815895487334}
+  Acceleration: 0.5
 --- !u!1 &1488058470423697168
 GameObject:
   m_ObjectHideFlags: 0
@@ -22524,11 +22524,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a6210e072d2d46bb916ead80f067869, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isDev: 1
   canvas: {fileID: 1634950954}
   transitionTime: 1
   transitionColor: {r: 0, g: 0, b: 0, a: 1}
-  emptyCanvasElement: {fileID: 0}
 --- !u!4 &1621721815895487334 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8000522960986726848, guid: 029f4d7adaeb441f48bf2a5e462ca75a,

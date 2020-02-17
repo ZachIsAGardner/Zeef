@@ -31,7 +31,13 @@ namespace Zeef.Menu
             bool cancelable = false
         );
 
+        public abstract void Execute(
+            List<MenuItemUIModel> models
+        );
+
         public abstract Task<object> GetSelectionAsync(Func<bool> isCancelled = null);
+
+        public abstract void Cancel();
 
         public abstract void Close();
     }
