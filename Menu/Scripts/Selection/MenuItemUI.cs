@@ -11,15 +11,18 @@ namespace Zeef.Menu
         public Text textComponent;
         public object Data { get; set; }
         public Action<MenuItemUI> ContextAction { get; set; }
+        public string SelectSound { get; set; }
 
         public static MenuItemUI Initialize(MenuItemUI prefab, RectTransform parent, MenuItemUIModel model)
         {
             MenuItemUI instance = Instantiate(prefab, parent).GetComponentWithError<MenuItemUI>();
 
             instance.textComponent.text = model.Text;
-            if (model.Color != null) instance.textComponent.color = model.Color.Value;
+            if (model.Color != null) 
+                instance.textComponent.color = model.Color.Value;
             instance.Data = model.Data;
             instance.ContextAction = model.ContextAction;
+            instance.SelectSound = model.SelectSound;
 
             return instance;
         }

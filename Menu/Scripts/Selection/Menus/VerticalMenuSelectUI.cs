@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using Zeef.GameManagement;
+using Zeef.Sound;
 
 namespace Zeef.Menu
 {
@@ -17,10 +18,13 @@ namespace Zeef.Menu
         public static VerticalMenuSelectUI Initialize(
             VerticalMenuSelectUI prefab,
             List<MenuItemUIModel> models,
-            bool cancelable = false
+            bool cancelable = false,
+            string moveSound = null,
+            string selectSound = null,
+            string cancelSound = null
         )
         {
-            return prefab._Initialize(prefab, models, cancelable) as VerticalMenuSelectUI;
+            return prefab._Initialize(prefab, models, cancelable, moveSound, selectSound, cancelSound) as VerticalMenuSelectUI;
         }
     
         public override void Execute(List<MenuItemUIModel> models)
@@ -28,13 +32,24 @@ namespace Zeef.Menu
             CreateMenuItems(models, this);
         }
 
-        protected override LinearMenuSelect _Initialize(LinearMenuSelect prefab, List<MenuItemUIModel> models, bool cancelable = false)
+        protected override LinearMenuSelect _Initialize(
+            LinearMenuSelect prefab, 
+            List<MenuItemUIModel> models, 
+            bool cancelable = false,
+            string moveSound = null,
+            string selectSound = null,
+            string cancelSound = null
+        )
         {
             VerticalMenuSelectUI instance = GameManager
                 .SpawnCanvasElement(prefab.gameObject, 5)
                 .GetComponentWithError<VerticalMenuSelectUI>();
 
             instance.cancelable = cancelable;
+
+            instance.moveSound = moveSound;
+            instance.selectSound = selectSound;
+            instance.cancelSound = cancelSound;
 
             CreateMenuItems(models, instance);
 
@@ -72,45 +87,68 @@ namespace Zeef.Menu
         {       
             focus = startFocus ?? focus;
 
-            foreach (MenuItemUI item in menuItems) item.UnHighlight();
+            foreach (MenuItemUI item in menuItems) 
+                item.UnHighlight();
+
             menuItems[focus].Highlight();
                     
             while (true)
             {
                 int oldFocus = focus;
 
+                // Handle player input
                 if (ControlManager.GetInputPressed(ControlManager.Up) || ControlManager.GetAxisPressed(ControlManager.Vertical, true))
                     focus--;
                 if (ControlManager.GetInputPressed(ControlManager.Down) || ControlManager.GetAxisPressed(ControlManager.Vertical, false))
                     focus++;
 
+                // Cap focus
                 if (focus < 0)
                     focus = 0;
                 if (focus >= menuItems.Count)
                     focus = menuItems.Count - 1; 
 
+                // Handle moved selection
                 if (focus != oldFocus)
                 {
-                    foreach (MenuItemUI item in menuItems) item.UnHighlight();
+                    foreach (MenuItemUI item in menuItems) 
+                        item.UnHighlight();
+                        
                     menuItems[focus].Highlight();
+
+                    if (!string.IsNullOrWhiteSpace(moveSound))
+                        AudioManager.PlaySoundEffect(moveSound);
+                    
                 }
 
+                // Execute context action
                 if (menuItems[focus].ContextAction != null)
                     menuItems[focus].ContextAction(menuItems[focus]);
                 
+                // Return selected option
                 if (ControlManager.GetInputPressed(ControlManager.Accept))
-                { 
+                {
+                    // Play select sound
+                    if (!string.IsNullOrWhiteSpace(menuItems[focus].SelectSound))
+                        AudioManager.PlaySoundEffect(menuItems[focus].SelectSound);
+                    else if (!string.IsNullOrWhiteSpace(selectSound))
+                        AudioManager.PlaySoundEffect(selectSound);
+
                     return menuItems[focus].Data;
                 }
-
-                if (ControlManager.GetInputPressed(ControlManager.Deny) && cancelable || queueCancel)
+                
+                // Cancel
+                if (
+                    (ControlManager.GetInputPressed(ControlManager.Deny) && cancelable || queueCancel) 
+                    || (isCancelled != null && isCancelled())
+                )
                 {
+                    if (!string.IsNullOrWhiteSpace(cancelSound))
+                        AudioManager.PlaySoundEffect(cancelSound);
+
                     return null;
                 }
-
-                if (isCancelled != null && isCancelled())
-                    return null;
-
+                
                 await new WaitForUpdate();
             }
         }
