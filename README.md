@@ -21,7 +21,7 @@ With basic setup now completed, you can use all of Zeef's functionality. Feel fr
 
 
 ##### Examples
-* [Platformer](https://github.com/ZachIsAGardner/Zeef/tree/master/_Examples/TwoDimensional/MapEditor)
+* [Platformer](https://github.com/ZachIsAGardner/Zeef/tree/master/_Examples/TwoDimensional/Platformer)
 * [GameManagement](https://github.com/ZachIsAGardner/Zeef/tree/master/_Examples/GameManagement)
 * [Menu](https://github.com/ZachIsAGardner/Zeef/tree/master/_Examples/Menu)
 * [Perform](https://github.com/ZachIsAGardner/Zeef/tree/master/_Examples/Perform)
