@@ -45,12 +45,12 @@ namespace Zeef.TwoDimensional
 			// Ensure parent
 			if (parent == null) 
 			{
-				GameObject particles = GameObject.FindGameObjectWithTag(TagConstant.ParticlesFolder);
+				GameObject particles = GameObject.FindGameObjectWithTag("ParticlesFolder");
 				if (particles == null) 
 				{
 					particles = new GameObject();
 					particles.name = "_Particles";
-					particles.tag = TagConstant.ParticlesFolder;
+					particles.tag = "ParticlesFolder";
 
 					parent = particles.transform;
 				}

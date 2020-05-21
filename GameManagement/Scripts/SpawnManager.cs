@@ -16,12 +16,12 @@ namespace Zeef.GameManagement
         {
 			GameObject actor =  new GameObject();
 
-            GameObject folder = GameObject.FindGameObjectWithTag(TagConstant.DynamicFolder);
+            GameObject folder = GameObject.FindGameObjectWithTag("DynamicFolder");
 
             if (folder == null)
             {
                 folder = new GameObject("_DyanamicFolder");
-                folder.tag = TagConstant.DynamicFolder;
+                folder.tag = "DynamicFolder";
             }
 
 			actor.gameObject.transform.parent = folder.transform;
@@ -35,12 +35,12 @@ namespace Zeef.GameManagement
 		/// </summary>
 		public static GameObject Spawn(GameObject prefab, Vector3 position)
         {
-			GameObject folder = GameObject.FindGameObjectWithTag(TagConstant.DynamicFolder);
+			GameObject folder = GameObject.FindGameObjectWithTag("DynamicFolder");
 			
 			if (folder == null)
             {
 				folder = new GameObject("_DyanamicFolder");
-				folder.tag = TagConstant.DynamicFolder;
+				folder.tag = "DynamicFolder";
 			}
 
 			return Instantiate(

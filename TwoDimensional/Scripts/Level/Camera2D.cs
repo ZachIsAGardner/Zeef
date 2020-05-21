@@ -52,7 +52,7 @@ namespace Zeef.TwoDimensional
 
 		void GetBoundaries() 
 		{
-			GameObject boundsObject = GameObject.FindGameObjectWithTag(TagConstant.CameraBounds);
+			GameObject boundsObject = GameObject.FindGameObjectWithTag("CameraBounds");
 
 			if (boundsObject) 
 				bounds = boundsObject.GetComponent<BoxCollider2D>().bounds;
