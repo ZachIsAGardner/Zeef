@@ -20,11 +20,10 @@ namespace Zeef.TwoDimensional.Example
 
     public class TestPlayer : MovingObject2D
     {
-        [SerializeField] 
-        private float gravity = 2;
-
-        [SerializeField] 
-        private float jumpVelocity = 5;
+        public float MoveSpeed = 1;
+        public float Acceleration = 0.01f;
+        public float Gravity = 2;
+        public float JumpVelocity = 5;
 
         [HideInInspector] 
         public TestPlayerStatus Status = TestPlayerStatus.Idling;
@@ -50,13 +49,18 @@ namespace Zeef.TwoDimensional.Example
             // Reset if fell.
             if (transform.position.y < -20)
             {
-                Velocity = Vector2.zero;
-                transform.position = startPosition;
+                Respawn();
             }
 
             UpdateAnimationState();
             UpdateInput();
             UpdateMovement();
+        }
+
+        public void Respawn() 
+        {
+            Velocity = Vector2.zero;
+            transform.position = startPosition;
         }
 
         void UpdateAnimationState() 
@@ -112,15 +116,15 @@ namespace Zeef.TwoDimensional.Example
                 );
             }
             
-            Velocity.x = Velocity.x.MoveOverTime(moveSpeed * input.Direction.x, acc);
+            Velocity.x = Velocity.x.MoveOverTime(MoveSpeed * input.Direction.x, Acceleration);
 
             if (Collision.Collisions.Down) 
                 Velocity.y = 0;
 
-            Velocity.y -= gravity * Time.deltaTime;
+            Velocity.y -= Gravity * Time.deltaTime;
 
             if (Collision.Collisions.Down && ControlManager.GetInputPressed(ControlManager.Accept))
-                Velocity.y = jumpVelocity;
+                Velocity.y = JumpVelocity;
         }
     }
 }

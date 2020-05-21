@@ -30,9 +30,7 @@ namespace Zeef.TwoDimensional
 	// Makes it so objects can live and die
 	public class LivingObject : MonoBehaviour 
 	{
-		[SerializeField] int maxHealth = 1;
-		public int MaxHealth { get { return maxHealth; } }
-
+		public int MaxHealth = 1;
 		public int Health = 1;
 
 		[SerializeField] float invincibilityDuration = 0.5f;
@@ -97,8 +95,8 @@ namespace Zeef.TwoDimensional
 		public async virtual Task GainHealthAsync(int amount) 
 		{
 			Health += amount;
-			if (Health > maxHealth)
-				Health = maxHealth;
+			if (Health > MaxHealth)
+				Health = MaxHealth;
 
 			OnAfterGainHealth(amount);
 		}

@@ -14,33 +14,6 @@ namespace Zeef.TwoDimensional
 	[RequireComponent(typeof(Collision2D))]
 	public abstract class MovingObject2D : MonoBehaviour
 	{
-		// Stats
-
-		[Header("Moving Object 2D Settings")]
-
-		/// <summary>
-		/// Velocity will be capped if exceding this vector.
-		/// </summary>
-		[SerializeField] protected Vector2 velMax = new Vector2(100, 100);
-
-		[Range (0, 1)]
-		[SerializeField] protected float acc = .01f;
-		/// <summary>
-		/// Float controlling the duration between current velocity and the desired velicity.
-		/// 0: instant.
-		/// 1: never.
-		/// </summary>
-		public float Acc { get { return acc; }}
-
-		[SerializeField] protected float moveSpeed = 5;
-		/// <summary>
-		/// 0: instant.
-		/// 1: never.
-		/// </summary>
-		public float MoveSpeed { get { return moveSpeed; }}
-
-		// ---
-
 		/// <summary>
 		/// Contains info about any current collisions.
 		/// </summary>
@@ -70,18 +43,6 @@ namespace Zeef.TwoDimensional
 				return;
 
 			Collision.Move((Velocity + VelocityOffset) * Time.deltaTime);            
-		}
-
-		// ---
-		// Collision and Velocity
-
-		private void LimitVelocity() 
-		{
-			if (Mathf.Abs(Velocity.x) > Mathf.Abs(velMax.x)) 
-				Velocity.x = velMax.x * -Mathf.Sign(velMax.x);
-			
-			if (Mathf.Abs(Velocity.y) > Mathf.Abs(velMax.y)) 
-				Velocity.y = velMax.y * Mathf.Sign(Velocity.y);	
 		}
 
 		// ---

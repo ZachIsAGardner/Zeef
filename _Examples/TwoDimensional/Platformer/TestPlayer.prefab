@@ -29,7 +29,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8000522960986726879}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -2.1310887, y: 4.2573214, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -209,13 +209,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55b3587405834461faefeb299ad45c69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velMax: {x: 100, y: 100}
-  acc: 0.00001
-  moveSpeed: 12.5
   Velocity: {x: 0, y: 0}
   VelocityOffset: {x: 0, y: 0}
-  gravity: 60
-  jumpVelocity: 26.5
+  MoveSpeed: 16
+  Acceleration: 0.01
+  Gravity: 55
+  JumpVelocity: 30
   Status: 0
 --- !u!114 &8000522960986726855
 MonoBehaviour:
@@ -277,6 +276,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
