@@ -5,47 +5,46 @@ using System.Linq;
 using UnityEngine;
 using Zeef.GameManagement;
 
-namespace Zeef.TwoDimensional {
-
-    public class ExternalTriggerStay2DEventArgs {
+namespace Zeef.TwoDimensional 
+{
+    public class ExternalTriggerStay2DEventArgs 
+    {
         public Collider2D Other { get; private set; }
         public int Defense { get; private set; }
 
-        public ExternalTriggerStay2DEventArgs(Collider2D other, int defense) {
+        public ExternalTriggerStay2DEventArgs(Collider2D other, int defense) 
+        {
             Other = other;
             Defense = defense;
         }
     }
 
 	[RequireComponent(typeof(BoxCollider2D))]
-	public class HurtBox2D : MonoBehaviour {
-
+	public class HurtBox2D : MonoBehaviour 
+    {
         public event EventHandler<ExternalTriggerStay2DEventArgs> ExternalTriggerStay2D;
 
-		[SerializeField] int defense = 0;
-        // Built in Editor
-        [HideInInspector] public List<string> Weakness = new List<string> { "Any", "Explosion" };
+        public int Defense = 0;
+        public List<string> Weaknesses = new List<string> { };
 
 		// ---
 
         private void OnTriggerStay2D(Collider2D other) {
             HitBox2D hitBox = other.GetComponent<HitBox2D>();
 
-            if (hitBox != null && 
-                (
-                    Weakness.IsNullOrEmpty() 
-                    || Weakness.Any(w => w == InteractionTypeConstant.Any)
-                    || Weakness.Any(w => w == hitBox.InteractionType)
-                )
-            )
+            if (hitBox != null && (Weaknesses.IsNullOrEmpty() 
+                || Weaknesses.Any(w => String.IsNullOrWhiteSpace(w))
+                || Weaknesses.Any(w => hitBox.InteractionTypes.Any(i => i.ToLower() == w.ToLower()))
+            ))
             {
 			    OnExternalTriggerStay2D(other);
             }
 		}
 
-        private void OnExternalTriggerStay2D(Collider2D other) {
+        private void OnExternalTriggerStay2D(Collider2D other) 
+        {
             if (ExternalTriggerStay2D != null) 
-				ExternalTriggerStay2D(this, new ExternalTriggerStay2DEventArgs(other, defense));
+				ExternalTriggerStay2D(this, new ExternalTriggerStay2DEventArgs(other, Defense));
         }
 	}
 }

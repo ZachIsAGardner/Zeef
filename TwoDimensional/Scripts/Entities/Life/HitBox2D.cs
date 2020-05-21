@@ -4,23 +4,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zeef.GameManagement;
 
-namespace Zeef.TwoDimensional {
-
-	public class LandedHitArgs {
+namespace Zeef.TwoDimensional 
+{
+	public class LandedHitArgs 
+	{
 		public GameObject Victim { get; private set; }
 
-		public LandedHitArgs(GameObject victim) {
+		public LandedHitArgs(GameObject victim) 
+		{
 			Victim = victim;
 		}
 	}
 
-	public class HitBox2D : MonoBehaviour {
-
-		[SerializeField] int damage = 1;
-		public int Damage { get { return damage; } }
-
-		[SerializeField] public GameObject Owner;
-		[HideInInspector] public string InteractionType;
+	public class HitBox2D : MonoBehaviour 
+	{
+		public int Damage;
+		public GameObject Owner;
+		public List<string> InteractionTypes;
 
 		// Parented hitboxes are attached to owner
 		// ex)
@@ -33,10 +33,14 @@ namespace Zeef.TwoDimensional {
 
 		// ---
 
-		public static HitBox2D Initialize(HitBox2D prefab, 
+		/// <summary>
+		/// Instantiate a copy of a HitBox2D prefab.
+		/// </summary>
+		public static HitBox2D Initialize(
+			HitBox2D prefab, 
 			GameObject owner, Vector2 position, 
 			Vector2 size, bool isParented, 
-			bool isSquare = true, string interactionType = InteractionTypeConstant.Any) 
+			List<string> interactionTypes) 
 		{
 			HitBox2D instance = SpawnManager.Spawn(prefab.gameObject, position).GetComponent<HitBox2D>();
 
@@ -44,15 +48,19 @@ namespace Zeef.TwoDimensional {
 			instance.transform.position = position;
 			instance.transform.localScale = size;
 			instance.Owner = owner;
-			instance.InteractionType = interactionType;
+			instance.InteractionTypes = interactionTypes;
 
 			return instance;
 		}
 
-		public static HitBox2D Initialize(GameObject owner, int damage, 
+		/// <summary>
+		/// Create a new GameObject and attach a HitBox2D component to it.
+		/// </summary>
+		public static HitBox2D Initialize(
+			GameObject owner, int damage, 
 			Vector2 position, Vector2 size, 
-			bool isParented, bool isSquare = true, 
-			string interactionType = InteractionTypeConstant.Any) 
+			bool isParented, List<string> interactionTypes = null,
+			bool isSquare = true) 
 		{
 			HitBox2D instance = SpawnManager.Spawn(position)
 				.AddComponent<DrawBoxCollider2D>().gameObject
@@ -73,8 +81,8 @@ namespace Zeef.TwoDimensional {
 			instance.transform.position = position;
 			instance.transform.localScale = size;
 			instance.Owner = owner;
-			instance.damage = damage;
-			instance.InteractionType = interactionType;
+			instance.Damage = damage;
+			instance.InteractionTypes = interactionTypes;
 
 			return instance;
 		}
@@ -82,7 +90,8 @@ namespace Zeef.TwoDimensional {
 		// ---
 		// Events
 
-		public virtual void OnAfterLandedHit(GameObject victim) {
+		public virtual void OnAfterLandedHit(GameObject victim) 
+		{
 			if (AfterLandedHit != null) 
 				AfterLandedHit(this, new LandedHitArgs(victim));
 		}
