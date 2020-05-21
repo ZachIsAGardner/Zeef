@@ -66,7 +66,7 @@ namespace Zeef.TwoDimensional
 
 		protected virtual void Update () 
 		{
-			if (GameManager.IsPaused) 
+			if (!GameState.IsPlaying) 
 				return;
 
 			Collision.Move((Velocity + VelocityOffset) * Time.deltaTime);            

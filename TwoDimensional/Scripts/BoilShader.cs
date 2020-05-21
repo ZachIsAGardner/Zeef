@@ -43,7 +43,7 @@ namespace Zeef.TwoDimensional
 
         private void Update() 
         {
-            if (GameManager.IsPaused)
+            if (!GameState.IsPlaying)
                 return;
                 
             gameObject.GetComponent<Renderer>().material.SetFloat("_DistortionDamper", DistortionDamper);

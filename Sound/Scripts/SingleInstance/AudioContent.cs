@@ -13,9 +13,9 @@ namespace Zeef.Sound {
 		[SerializeField] private List<SoundEffectScriptable> soundEffectScriptables;
 						
 		public static SongScriptable GetSong(string name) => 
-			GetInstance().songScriptables.First(s => s.name == name);
+			Instance.songScriptables.First(s => s.name == name);
 		
 		public static SoundEffectScriptable GetSoundEffect(string name) =>
-			GetInstance().soundEffectScriptables.First(s => s.name == name);	
+			Instance.soundEffectScriptables.First(s => s.name == name);	
 	}
 }

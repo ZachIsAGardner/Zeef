@@ -38,7 +38,7 @@ namespace Zeef.TwoDimensional {
 			Vector2 size, bool isParented, 
 			bool isSquare = true, string interactionType = InteractionTypeConstant.Any) 
 		{
-			HitBox2D instance = GameManager.Spawn(prefab.gameObject, position).GetComponent<HitBox2D>();
+			HitBox2D instance = SpawnManager.Spawn(prefab.gameObject, position).GetComponent<HitBox2D>();
 
 			if (isParented) instance.transform.parent = owner.transform;
 			instance.transform.position = position;
@@ -54,7 +54,7 @@ namespace Zeef.TwoDimensional {
 			bool isParented, bool isSquare = true, 
 			string interactionType = InteractionTypeConstant.Any) 
 		{
-			HitBox2D instance = GameManager.Spawn(position)
+			HitBox2D instance = SpawnManager.Spawn(position)
 				.AddComponent<DrawBoxCollider2D>().gameObject
 				.AddComponent<HitBox2D>();
 

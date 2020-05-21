@@ -35,14 +35,13 @@ namespace Zeef.Menu
         // how long it takes for loss to catch up
         public virtual async Task UpdateDisplayAsync(float percentage, float duration = 0.25f) 
         {
-
             // If we're already where we need to be, dont bother
             if (barTop.rectTransform.sizeDelta.x == GetComponent<RectTransform>().sizeDelta.x * percentage) return;
             
             // Set top to white and pause for a moment
             Color topColor = barTop.color;
             barTop.color = Color.white;
-            while(!GameManager.IsPlaying) await new WaitForUpdate();
+            while (!GameState.IsPlaying) await new WaitForUpdate();
             await new WaitForSeconds(0.1f);
 
             // Set loss to old top size
@@ -55,13 +54,13 @@ namespace Zeef.Menu
             );
             barTop.color = topColor;
 
-            while(!GameManager.IsPlaying) await new WaitForUpdate();
+            while (!GameState.IsPlaying) await new WaitForUpdate();
             await new WaitForSeconds(duration);
 
             // Move loss bar over time
             while (Mathf.Abs(barTop.rectTransform.sizeDelta.x - barLoss.rectTransform.sizeDelta.x) > 1) 
             {
-                while(!GameManager.IsPlaying) await new WaitForUpdate();
+                while(!GameState.IsPlaying) await new WaitForUpdate();
                 if (barLoss == null) return;
 
                 float time = Time.deltaTime / duration;

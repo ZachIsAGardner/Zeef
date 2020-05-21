@@ -27,7 +27,7 @@ namespace Zeef.GameManagement.Example
         {
 			await ControlManager.WaitForAnyInputAsync();
 			
-			await GameManager.LoadSceneAsync(
+			await SceneLoader.LoadSceneAsync(
 				scene: sceneToLoad,
 				package: new GameManagementExample2Package("Hi")
 			);

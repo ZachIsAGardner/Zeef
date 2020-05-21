@@ -16,7 +16,7 @@ namespace Zeef.TwoDimensional
 
         void Update()
         {
-            animator.enabled = !GameManager.IsPaused;
+            animator.enabled = GameState.IsPlaying;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Zeef.Persistence {
 
         [Required]
         [SerializeField] string fileName = "save_data.dat";
-        public static string FileName { get { return GetInstance().fileName; } } 
+        public static string FileName { get { return Instance.fileName; } } 
 
 		// ---
 

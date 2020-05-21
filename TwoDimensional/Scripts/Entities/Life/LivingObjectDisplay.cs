@@ -70,14 +70,14 @@ namespace Zeef.TwoDimensional {
 
         private void OnBeforeDie(object source, EventArgs args) {
             if (explosionPrefab != null && this != null)
-                GameManager.Spawn(explosionPrefab, this.transform.position + explosionOffset);
+                SpawnManager.Spawn(explosionPrefab, this.transform.position + explosionOffset);
         }
 
         private async Task BlinkAsync() {
             bool visible = true;
 
 			while(!exitBlink) {
-                while (!GameManager.IsPlaying) {
+                while (!GameState.IsPlaying) {
                     ResetColors();
                     await new WaitForUpdate();
                 }

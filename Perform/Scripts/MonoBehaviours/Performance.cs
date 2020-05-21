@@ -52,7 +52,7 @@ namespace Zeef.Perform
 
 			AdditionalSetup();	
 
-			border = GameManager.SpawnCanvasElement(PerformanceContent.Border);
+			border = SpawnManager.SpawnCanvasElement(PerformanceContent.Border);
 			await DigestBranchAsync(BranchStart());
 		}
 		

@@ -13,11 +13,11 @@ namespace Zeef.Sound
 		[SerializeField] private float musicVolume = 0.5f;
 		public static float MusicVolume 
 		{ 
-			get => GetInstance().musicVolume; 
+			get => Instance.musicVolume; 
 			set 
 			{
-				GetInstance().musicVolume = value; 
-				GetInstance().audioSource.volume = value * GetInstance().currentSong.Volume;
+				Instance.musicVolume = value; 
+				Instance.audioSource.volume = value * Instance.currentSong.Volume;
 			} 
 		}
 
@@ -25,8 +25,8 @@ namespace Zeef.Sound
 		[SerializeField] private float soundEffectVolume = 1;
 		public static float SoundEffectVolume 
 		{ 
-			get => GetInstance().soundEffectVolume; 
-			set => GetInstance().soundEffectVolume = value; 
+			get => Instance.soundEffectVolume; 
+			set => Instance.soundEffectVolume = value; 
 		}
 
 		private AudioSource audioSource;
@@ -53,34 +53,34 @@ namespace Zeef.Sound
 		public static void ChangeSong(SongScriptable song)
         {
 			// Stop if were already playing that song
-			if (song == GetInstance().currentSong) return;
+			if (song == Instance.currentSong) return;
 
-			GetInstance().audioSource.pitch = 1;
+			Instance.audioSource.pitch = 1;
 
-			GetInstance().currentSong = song;
+			Instance.currentSong = song;
 
-			GetInstance().StopAllCoroutines();
+			Instance.StopAllCoroutines();
 
-			GetInstance().audioSource.Stop();
+			Instance.audioSource.Stop();
 
 			if (song == null) return;
 
-			GetInstance().audioSource.clip = song.Clip;
-			GetInstance().audioSource.Play();
+			Instance.audioSource.clip = song.Clip;
+			Instance.audioSource.Play();
 
-			GetInstance().audioSource.volume = MusicVolume * song.Volume;
+			Instance.audioSource.volume = MusicVolume * song.Volume;
 
-			GetInstance().StartCoroutine(LoopSongCoroutine(song));
+			Instance.StartCoroutine(LoopSongCoroutine(song));
 		}
 
 		private static IEnumerator LoopSongCoroutine(SongScriptable song)
         {
 			while (true)
             {
-				if ((song.LoopTime.End > 0 && GetInstance().audioSource.time > song.LoopTime.End) 
-				    || (GetInstance().audioSource.time > GetInstance().audioSource.clip.length - 0.025f))
+				if ((song.LoopTime.End > 0 && Instance.audioSource.time > song.LoopTime.End) 
+				    || (Instance.audioSource.time > Instance.audioSource.clip.length - 0.025f))
                 {
-					GetInstance().audioSource.time = song.LoopTime.Start;
+					Instance.audioSource.time = song.LoopTime.Start;
 				}
 				
 				yield return null;
@@ -93,9 +93,9 @@ namespace Zeef.Sound
 		public static void ChangeMusicPitch(float pitch, float time = 1)
         {
 			if (time == 0 || time == 1)
-				GetInstance().audioSource.pitch = pitch;
+				Instance.audioSource.pitch = pitch;
 			else
-				GetInstance().StartCoroutine(SlideMusicPitchCoroutine(pitch, time));
+				Instance.StartCoroutine(SlideMusicPitchCoroutine(pitch, time));
 		}
 
 		private static IEnumerator SlideMusicPitchCoroutine(float pitch, float time)
@@ -104,10 +104,10 @@ namespace Zeef.Sound
 
 			while(true)
             {
-				GetInstance().audioSource.pitch =  Mathf.Lerp(GetInstance().audioSource.pitch, pitch, time);
-				if (Mathf.Abs(GetInstance().audioSource.pitch - pitch) < 0.1f)
+				Instance.audioSource.pitch =  Mathf.Lerp(Instance.audioSource.pitch, pitch, time);
+				if (Mathf.Abs(Instance.audioSource.pitch - pitch) < 0.1f)
 				{
-					GetInstance().audioSource.pitch = pitch;
+					Instance.audioSource.pitch = pitch;
 					break;
 				}
 				
@@ -121,8 +121,8 @@ namespace Zeef.Sound
 		public static void ChangeMusicVolume(float volume, float time = 0)
 		{
 			// Stop current coroutine if exists.
-			if (GetInstance().volumeSlideCoroutineInstance != null)
-				GetInstance().StopCoroutine(GetInstance().volumeSlideCoroutineInstance);
+			if (Instance.volumeSlideCoroutineInstance != null)
+				Instance.StopCoroutine(Instance.volumeSlideCoroutineInstance);
 
 			if (time == 0 || time == 1)
 			{
@@ -130,8 +130,8 @@ namespace Zeef.Sound
 			}
 			else
 			{
-				GetInstance().volumeSlideCoroutineInstance = 
-					GetInstance().StartCoroutine(SlideMusicVolumeCoroutine(volume, time));
+				Instance.volumeSlideCoroutineInstance = 
+					Instance.StartCoroutine(SlideMusicVolumeCoroutine(volume, time));
 			}
 		}
 
@@ -176,7 +176,7 @@ namespace Zeef.Sound
 		/// </summary>
 		public static void PlaySoundEffect(SoundEffectScriptable sfx, AudioSource audioSource = null)
 		{
-			GetInstance().StartCoroutine(PlaySoundEffectCoroutine(sfx, audioSource));
+			Instance.StartCoroutine(PlaySoundEffectCoroutine(sfx, audioSource));
 		}
 
 		/// <summary>
@@ -207,7 +207,7 @@ namespace Zeef.Sound
 			if (!wasAudioSourceProvided)
 			{
 				audioSource = new GameObject().AddComponent<AudioSource>();
-				audioSource.transform.SetParent(GetInstance().transform);
+				audioSource.transform.SetParent(Instance.transform);
 			}
 
 			audioSource.pitch = sfx.Pitch;

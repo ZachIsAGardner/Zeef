@@ -138,7 +138,7 @@ namespace Zeef.TwoDimensional
 		{
 			while(lifeTime > 0) 
 			{	
-				while(GameManager.IsPaused) 
+				while (!GameState.IsPlaying) 
 					yield return null;
 
 				if (fadeOverTime) 

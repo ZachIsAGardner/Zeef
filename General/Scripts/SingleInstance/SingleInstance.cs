@@ -11,17 +11,19 @@ namespace Zeef
 	///</summary>
 	public class SingleInstance<T> : MonoBehaviour
     {
-		protected static T instance;
+		private static T instance;
 
-        /// <summary>
-        /// Attempt to get single instance of MonoBehaviour. Throws an error if no instance is found.
-        /// </summary>
-		protected static T GetInstance()
-        {
-			if (instance == null) 
-				throw new Exception($"No {typeof(T).Name} exists. Yet one was requested for.");
-			else 
+		protected static T Instance
+		{
+			get
+			{
+				if (instance == null) 
+				{
+					Debug.Log($"No {typeof(T).Name} exists. Yet one was requested for.");
+				}
+
 				return instance;
+			}
 		}
 
 		protected virtual void Awake()

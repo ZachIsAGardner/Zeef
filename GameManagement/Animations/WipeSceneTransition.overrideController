@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: WipeSceneTransition
+  m_Controller: {fileID: 9100000, guid: 780bdef9fba5c4f16aab4638dbdca1d9, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 9405c7591f9404a64bc960098185876d, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 6621d34caebe7417abfa0b986ef59fa1, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 2b0021b8daa124f5593e18e645296f6b, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: aece6bebe58064934b6d793a063bfdc0, type: 2}

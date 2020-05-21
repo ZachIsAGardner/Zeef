@@ -40,7 +40,7 @@ namespace Zeef.Menu
             string cancelSound = null
         )
         {
-            HorizontalMenuSelectUI instance = GameManager
+            HorizontalMenuSelectUI instance = SpawnManager
                 .SpawnCanvasElement(prefab.gameObject, 5)
                 .GetComponentWithError<HorizontalMenuSelectUI>();
 

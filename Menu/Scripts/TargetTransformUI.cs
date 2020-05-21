@@ -11,7 +11,7 @@ namespace Zeef.Menu
 
         public static TargetTransformUI Initialize(TargetTransformUI prefab, Transform target) 
         {
-			TargetTransformUI instance = GameManager.SpawnCanvasElement(prefab.gameObject).GetComponent<TargetTransformUI>();
+			TargetTransformUI instance = SpawnManager.SpawnCanvasElement(prefab.gameObject).GetComponent<TargetTransformUI>();
 
             instance.GetComponent<RectTransform>().position = Camera.main.WorldToScreenPoint(target.position);
 

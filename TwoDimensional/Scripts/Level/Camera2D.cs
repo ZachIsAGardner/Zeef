@@ -64,7 +64,7 @@ namespace Zeef.TwoDimensional
 		
 		void LateUpdate() 
 		{
-			if (GameManager.IsPaused) return;
+			if (!GameState.IsPlaying) return;
 
 			if (Target != null) 
 				Move();

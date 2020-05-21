@@ -34,49 +34,49 @@ namespace Zeef
     {
         // Directions
         [SerializeField] private List<string> up = new List<string>() { "up" };
-        public static List<string> Up { get { return GetInstance().up; } }
+        public static List<string> Up { get { return Instance.up; } }
 
         [SerializeField] private List<string> down = new List<string>() { "down" };
-        public static List<string> Down { get { return GetInstance().down; } }
+        public static List<string> Down { get { return Instance.down; } }
 
         [SerializeField] private List<string> left = new List<string>() { "left" };
-        public static List<string> Left { get { return GetInstance().left; } }
+        public static List<string> Left { get { return Instance.left; } }
 
         [SerializeField] private List<string> right = new List<string>() { "right" };
-        public static List<string> Right { get { return GetInstance().right; } }
+        public static List<string> Right { get { return Instance.right; } }
 
         // Axises
         [SerializeField] private List<string> horizontal = new List<string>() { "Horizontal" };
-        public static List<string> Horizontal { get { return GetInstance().horizontal; } }
+        public static List<string> Horizontal { get { return Instance.horizontal; } }
 
         [SerializeField] private List<string> vertical = new List<string>() { "Vertical" };
-        public static List<string> Vertical { get { return GetInstance().vertical; } }
+        public static List<string> Vertical { get { return Instance.vertical; } }
 
         [SerializeField] private List<string> horizontal2 = new List<string>() { "Horizontal2" };
-        public static List<string> Horizontal2 { get { return GetInstance().horizontal2; } }
+        public static List<string> Horizontal2 { get { return Instance.horizontal2; } }
 
         [SerializeField] private List<string> vertical2 = new List<string>() { "Vertical2" };
-        public static List<string> Vertical2 { get { return GetInstance().vertical2; } }
+        public static List<string> Vertical2 { get { return Instance.vertical2; } }
 
         // Face Buttons
         [SerializeField] private List<string> accept = new List<string>() { "z" };
-        public static List<string> Accept { get { return GetInstance().accept; } }
+        public static List<string> Accept { get { return Instance.accept; } }
 
         [SerializeField] private List<string> deny = new List<string>() { "x" };
-        public static List<string> Deny { get { return GetInstance().deny; } }
+        public static List<string> Deny { get { return Instance.deny; } }
 
         [SerializeField] private List<string> special = new List<string>() { "c" };
-        public static List<string> Special { get { return GetInstance().special; } }
+        public static List<string> Special { get { return Instance.special; } }
 
         [SerializeField] private List<string> special2 = new List<string>() { "v" };
-        public static List<string> Special2 { get { return GetInstance().special2; } }
+        public static List<string> Special2 { get { return Instance.special2; } }
 
         // Middle
         [SerializeField] private List<string> start = new List<string>() { "enter" };
-        public static List<string> Start { get { return GetInstance().start; } }
+        public static List<string> Start { get { return Instance.start; } }
 
         [SerializeField] private List<string> select = new List<string>() { "enter" };
-        public static List<string> Select { get { return GetInstance().select; } }
+        public static List<string> Select { get { return Instance.select; } }
 
         // 0: Super sensitive
         // 1: Never trigger
