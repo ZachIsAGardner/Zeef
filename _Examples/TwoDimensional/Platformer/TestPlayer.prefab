@@ -15,6 +15,9 @@ GameObject:
   - component: {fileID: 8000522960986726850}
   - component: {fileID: 8000522960986726849}
   - component: {fileID: 8000522960986726855}
+  - component: {fileID: 158720022}
+  - component: {fileID: 158720023}
+  - component: {fileID: 158720024}
   m_Layer: 0
   m_Name: TestPlayer
   m_TagString: Untagged
@@ -194,7 +197,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   layerMask:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 256
   skin: 0.1
   rayCount: 4
 --- !u!114 &8000522960986726849
@@ -229,6 +232,52 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Color: {r: 0, g: 0.083200455, b: 1, a: 0.5}
+--- !u!114 &158720022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8000522960986726879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3385d71ff6ecb403b9944f3ab2993f13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Defense: 0
+  Weaknesses: []
+--- !u!114 &158720023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8000522960986726879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3796e282a22b9454bbc87cc8eec83894, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxHealth: 2
+  Health: 2
+  invincibilityDuration: 0.5
+  freezeDuration: 0.25
+  weakPoints:
+  - {fileID: 158720022}
+--- !u!114 &158720024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8000522960986726879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a1e795d95e4d467db3694aca66c05e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  explosionPrefab: {fileID: 0}
+  explosionOffset: {x: 0, y: 0, z: -10}
 --- !u!1 &8756706698772602423
 GameObject:
   m_ObjectHideFlags: 0
