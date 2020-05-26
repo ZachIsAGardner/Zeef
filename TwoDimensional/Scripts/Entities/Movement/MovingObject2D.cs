@@ -12,7 +12,7 @@ namespace Zeef.TwoDimensional
 	[RequireComponent(typeof(Rigidbody2D))]
 	[RequireComponent(typeof(BoxCollider2D))]
 	[RequireComponent(typeof(Collision2D))]
-	public abstract class MovingObject2D : MonoBehaviour
+	public class MovingObject2D : MonoBehaviour
 	{
 		/// <summary>
 		/// Contains info about any current collisions.
