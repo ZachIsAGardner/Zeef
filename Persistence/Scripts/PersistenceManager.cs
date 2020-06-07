@@ -3,13 +3,13 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
-namespace Zeef.Persistence {
-
+namespace Zeef.Persistence 
+{
 	/// <summary>
 	/// PersistenceManager handles interactions with save-data.
 	/// </summary>
-    public class PersistenceManager : SingleInstance<PersistenceManager> {
-
+    public class PersistenceManager : SingleInstance<PersistenceManager> 
+	{
         [Required]
         [SerializeField] string fileName = "save_data.dat";
         public static string FileName { get { return Instance.fileName; } } 

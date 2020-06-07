@@ -32,48 +32,5 @@ namespace Zeef
             Vector2 heading = target - vector2;
             return heading.sqrMagnitude;
         }
-
-        /// <summary>
-        /// Returns the general direction as an enum from this Vector2 to the provided target.
-        /// </summary>
-        public static List<DirectionsEnum> GeneralDirection(this Vector2 vector2, Vector2 target)
-        {
-            List<DirectionsEnum> result = new List<DirectionsEnum>();
-            if (target.x < vector2.x)
-                result.Add(DirectionsEnum.Left);
-            else
-                result.Add(DirectionsEnum.Right);
-
-            if (target.y < vector2.y)
-                result.Add(DirectionsEnum.Down);
-            else
-                result.Add(DirectionsEnum.Up);
-
-            return result;
-        }
-
-        /// <summary>
-        /// Returns whether or not this Vector2 is to the left of the provided target.
-        /// </summary>
-        public static bool IsLeftOf(this Vector2 vector2, Vector2 target)
-            => vector2.x < target.x;
-
-        /// <summary>
-        /// Returns whether or not this Vector2 is to the right of the provided target.
-        /// </summary>
-        public static bool IsRightOf(this Vector2 vector2, Vector2 target)
-            => vector2.x > target.x;
-
-        /// <summary>
-        /// Returns whether or not this Vector2 is above of the provided target.
-        /// </summary>
-        public static bool IsAbove(this Vector2 vector2, Vector2 target)
-            => vector2.y > target.y;
-
-        /// <summary>
-        /// Returns whether or not this Vector2 is below of the provided target.
-        /// </summary>
-        public static bool IsBelow(this Vector2 vector2, Vector2 target)
-            => vector2.y < target.y;
     }
 }

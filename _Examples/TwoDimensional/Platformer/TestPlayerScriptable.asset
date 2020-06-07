@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cff0799eecdb54f5ea5502425c02185e, type: 3}
-  m_Name: TestPlayer
+  m_Name: TestPlayerScriptable
   m_EditorClassIdentifier: 
   Sprites:
   - {fileID: 21300000, guid: 12bf65ece529e4184b2f29a7d3faee8d, type: 3}

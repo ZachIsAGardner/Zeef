@@ -18,7 +18,7 @@ namespace Zeef.TwoDimensional.Example
         public Vector2 Direction;
     }
 
-    public class TestPlayer : MovingObject2D
+    public class TestPlayer : MonoBehaviour
     {
         public float MoveSpeed = 1;
         public float Acceleration = 0.01f;
@@ -29,61 +29,106 @@ namespace Zeef.TwoDimensional.Example
         public TestPlayerStatus Status = TestPlayerStatus.Idling;
 
         private SpriteRenderer spriteRenderer;
+        private MovingObject2D movingObject;
+        private AnimatedSprite animatedSprite;
+
         private TestPlayerInput input;
         private Vector2 startPosition;
 
         // --
 
-        protected override void Start()
+        protected void Start()
         {
-            base.Start();
             startPosition = transform.position;
 
             spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            movingObject = GetComponentInChildren<MovingObject2D>();
+            animatedSprite = GetComponentInChildren<AnimatedSprite>();
         }
 
-        protected override void Update()
+        protected void Update()
         {
-            base.Update();
-
             // Reset if fell.
             if (transform.position.y < -20)
             {
                 Respawn();
             }
 
-            UpdateAnimationState();
+            UpdateStatus();
+            UpdateAnimation();
             UpdateInput();
             UpdateMovement();
         }
 
         public void Respawn() 
         {
-            Velocity = Vector2.zero;
+            movingObject.Velocity = Vector2.zero;
             transform.position = startPosition;
         }
 
-        void UpdateAnimationState() 
+        void UpdateStatus() 
         {
-            if (Velocity.y > 0 && !Collision.Collisions.Down)
+            if (movingObject.Velocity.y > 0 && !movingObject.Collision.Collisions.Down)
             {
                 Status = TestPlayerStatus.Jumping;
                 return;
             }
 
-            if (Velocity.y < 0 && !Collision.Collisions.Down)
+            if (movingObject.Velocity.y < 0 && !movingObject.Collision.Collisions.Down)
             {
                 Status = TestPlayerStatus.Falling;
                 return;
             }
 
-            if ((Velocity.x > 0.05f || Velocity.x <= -0.05f) && input.Direction.x != 0)
+            if ((movingObject.Velocity.x > 0.05f || movingObject.Velocity.x <= -0.05f) && input.Direction.x != 0)
             {
                 Status = TestPlayerStatus.Running;
                 return;
             }
                 
             Status = TestPlayerStatus.Idling;
+        }
+
+        void UpdateAnimation() 
+        {
+            switch (Status)
+            {
+                case TestPlayerStatus.Idling:    
+                    animatedSprite.State = new AnimationState(
+                        name: "Idling",
+                        range: new IntegerRange(0,0),
+                        loop: true
+                    );
+                    break;
+                
+                case TestPlayerStatus.Running:    
+                    animatedSprite.State = new AnimationState(
+                        name: "Running",
+                        range: new IntegerRange(1,4),
+                        loop: true,
+                        speed: 1.35f
+                    );
+                    break;
+
+                case TestPlayerStatus.Jumping:    
+                    animatedSprite.State = new AnimationState(
+                        name: "Jumping",
+                        range: new IntegerRange(5,5),
+                        loop: true
+                    );
+                    break;
+
+                case TestPlayerStatus.Falling:    
+                    animatedSprite.State = new AnimationState(
+                        name: "Falling",
+                        range: new IntegerRange(6,6),
+                        loop: true
+                    );
+                    break;
+
+                default:
+                    throw new System.Exception("Invalid Animation State");
+            } 
         }
 
         void UpdateInput() 
@@ -116,15 +161,15 @@ namespace Zeef.TwoDimensional.Example
                 );
             }
             
-            Velocity.x = Velocity.x.MoveOverTime(MoveSpeed * input.Direction.x, Acceleration);
+            movingObject.Velocity.x = movingObject.Velocity.x.MoveOverTime(MoveSpeed * input.Direction.x, Acceleration);
 
-            if (Collision.Collisions.Down) 
-                Velocity.y = 0;
+            if (movingObject.Collision.Collisions.Down) 
+                movingObject.Velocity.y = 0;
 
-            Velocity.y -= Gravity * Time.deltaTime;
+            movingObject.Velocity.y -= Gravity * Time.deltaTime;
 
-            if (Collision.Collisions.Down && ControlManager.GetInputPressed(ControlManager.Accept))
-                Velocity.y = JumpVelocity;
+            if (movingObject.Collision.Collisions.Down && ControlManager.GetInputPressed(ControlManager.Accept))
+                movingObject.Velocity.y = JumpVelocity;
         }
     }
 }
