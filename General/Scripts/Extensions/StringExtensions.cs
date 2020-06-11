@@ -6,19 +6,23 @@ using UnityEngine;
 
 namespace Zeef {
 
-    public enum MatchSpecificityEnum {
+    public enum MatchSpecificityEnum 
+    {
         CaseSensitive,
         CaseInsensitive
     }
 
-    public static class StringExtensions {
-
-        public static string Prepend(this string str, string prependStr) {
+    public static class StringExtensions 
+    {
+        public static string Prepend(this string str, string prependStr) 
+        {
             return prependStr + str;
         }
 
-        public static bool Matches(this string me, string comparator, MatchSpecificityEnum specifity = MatchSpecificityEnum.CaseInsensitive) {
-            switch (specifity) {
+        public static bool Matches(this string me, string comparator, MatchSpecificityEnum specifity = MatchSpecificityEnum.CaseInsensitive) 
+        {
+            switch (specifity) 
+            {
                 case MatchSpecificityEnum.CaseInsensitive:
                     return me.ToLower() == comparator.ToLower();
 
@@ -32,26 +36,32 @@ namespace Zeef {
 
         // [Apples, Oranges, Condoms]
         // "Apples, Oranges, and Condoms"
-        public static string Andify(this List<string> list) {
+        public static string Andify(this List<string> list) 
+        {
             return Ify(list, "and");
         }
-        public static string Andify(this string[] arr) {
+        public static string Andify(this string[] arr) 
+        {
             return Ify(arr.ToList(), "and");
         }
-        public static string Andify(this IEnumerable<string> enumerable) {
+        public static string Andify(this IEnumerable<string> enumerable) 
+        {
             return Ify(enumerable.ToList(), "and");
         }
 
         // [Love, Pizza, Death]
         // "Love, Pizza, or Death"
-        public static string Orify(this List<string> list) {
+        public static string Orify(this List<string> list) 
+        {
             return Ify(list, "or");
         }
-        public static string Orify(this string[] arr) {
+        public static string Orify(this string[] arr) 
+        {
             return Ify(arr.ToList(), "or");
         }
 
-        private static string Ify(List<string> list, string connector) {
+        private static string Ify(List<string> list, string connector) 
+        {
             string result = string.Join(", ", list.ToArray());
             int last = result.LastIndexOf(',');
             

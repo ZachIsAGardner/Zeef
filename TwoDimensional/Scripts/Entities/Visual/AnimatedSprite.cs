@@ -52,7 +52,7 @@ namespace Zeef.TwoDimensional
 
 	// ---
 
-	public abstract class AnimatedSprite<T> : MonoBehaviour
+	public class AnimatedSprite : MonoBehaviour
     {
 		// References
 		[Header("Visual Renderers (Pick one)")]
@@ -60,27 +60,21 @@ namespace Zeef.TwoDimensional
 		[SerializeField] protected Image imageRenderer;
 		[SerializeField] protected MeshRenderer meshRenderer;
 
-		[Header("Other")]
-		[Required]
-		[SerializeField] protected T advisor;
-
 		// Art
 		[Required]
 		[SerializeField] private SpritesScriptable spritesScriptable;
-		private Sprite[] sprites = new Sprite[]{};
+		private Sprite[] sprites = new Sprite[]{ };
 
 		public bool IsPaused { get; set; }
 
-		public AnimationState State { get; private set; }
+		public AnimationState State;
+		private AnimationState oldState;
 
 		// Frame Rate
 		private float tick;
 		private float ticksPerFrame = 0.12f;
 
 		private int spriteIndex;
-
-		// Abstract
-		protected abstract AnimationState GetAnimationState();
 
 		// ---
 
@@ -99,23 +93,16 @@ namespace Zeef.TwoDimensional
 
 		void Update()
         {
-			if (!GameState.IsPlaying || sprites.IsNullOrEmpty() || IsPaused)
+			if (!GameState.IsPlaying || sprites.IsNullOrEmpty() || IsPaused || State == null)
                 return;
 
-			AnimationState newState = GetAnimationState();
-			if (State == null || newState.Name != State.Name)
+			if (oldState == null || oldState.Name != State.Name)
             {
-				State = newState;
 				spriteIndex = State.Range.Min;
 				tick = 0;
 
 				ExecuteAnimationState();
-			}
-
-			// Update state without restarting
-			if (State != null && newState.Name == State.Name)
-            {
-				State = newState;
+				oldState = State;
 			}
 
 			Animate();

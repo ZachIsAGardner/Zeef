@@ -1,18 +1,21 @@
 using System;
 
-namespace Zeef {
-
+namespace Zeef 
+{
     [Serializable]
-    public class FloatRange {
+    public class FloatRange 
+    {
         public float Min;
         public float Max;
 
-        public FloatRange(float min, float max) {
+        public FloatRange(float min, float max) 
+        {
             this.Min = min;
             this.Max = max;
         }
 
-        public float RandomValue() {
+        public float RandomValue() 
+        {
             return UnityEngine.Random.Range(Min, Max);
         }
     }

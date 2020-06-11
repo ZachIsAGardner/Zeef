@@ -14,7 +14,6 @@ namespace Zeef
 
     class ValidationError 
     {
-
         public string Error { get; private set; }
         public UnityEngine.Object Subject { get; private set; }
 
@@ -31,7 +30,6 @@ namespace Zeef
     /// <summary>
     public class ValidationManager : MonoBehaviour 
     {
-
         private void Awake() 
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
@@ -105,6 +103,7 @@ namespace Zeef
                     } 
                 }
             }
+            
             return validations;
         }	
     }

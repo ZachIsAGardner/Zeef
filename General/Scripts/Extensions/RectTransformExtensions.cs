@@ -1,17 +1,19 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Zeef {
-    
-    public static class RectTransformExtensions {
-
+namespace Zeef 
+{
+    public static class RectTransformExtensions 
+    {
         // Gets a ui elements anchored position relative to the canvas
-        public static Vector2 AnchoredPositionCanvas(this RectTransform trans) {
+        public static Vector2 AnchoredPositionCanvas(this RectTransform trans) 
+        {
             Vector2 result = trans.anchoredPosition + GetOffsetFromPivot(trans);
 
             RectTransform parent = trans.parent.GetComponent<RectTransform>();
             int i = 0;
-            while (true) {
+            while (true) 
+            {
                 if (parent.GetComponent<Canvas>() || i > 30) break;
                 
                 i++;
@@ -23,7 +25,8 @@ namespace Zeef {
         }
 
         // Only looks at anchor max
-        private static Vector2 GetOffsetFromPivot(RectTransform trans) {
+        private static Vector2 GetOffsetFromPivot(RectTransform trans) 
+        {
             // offset x
 
             float halfWidth = trans.rect.width / 2;
@@ -55,12 +58,14 @@ namespace Zeef {
             return new Vector2(offsetX, offsetY);
         }
 
-
-        public static IEnumerator MoveTo(this RectTransform trans, Vector2 destination, float smoothing = 10) {
+        public static IEnumerator MoveTo(this RectTransform trans, Vector2 destination, float smoothing = 10) 
+        {
             bool complete = false;
 
-            while (!complete) {
-                if (Vector2.Distance(trans.anchoredPosition, destination) < 0.05f) {
+            while (!complete) 
+            {
+                if (Vector2.Distance(trans.anchoredPosition, destination) < 0.05f) 
+                {
                     complete = true;
                 }
 
@@ -69,12 +74,15 @@ namespace Zeef {
                 yield return null;
             }
         }
-        public static IEnumerator MoveTo(this RectTransform trans, RectTransform target, Canvas canvas, float smoothing = 10, Vector2 offset = new Vector2()) {
+        
+        public static IEnumerator MoveTo(this RectTransform trans, RectTransform target, Canvas canvas, float smoothing = 10, Vector2 offset = new Vector2()) 
+        {
             bool complete = false;
         
             Vector2 destination = AnchoredPositionCanvas(target) + offset;
 
-            while (!complete) {
+            while (!complete) 
+            {
                 if (Vector2.Distance(trans.anchoredPosition, destination) < 0.05f) 
                     complete = true;
                 
@@ -83,6 +91,5 @@ namespace Zeef {
                 yield return null;
             }
         }
-
     }
 }
