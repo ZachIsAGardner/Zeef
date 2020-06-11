@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Zeef.Sound {
-
+namespace Zeef.Sound 
+{
 	[CreateAssetMenu(menuName="Scriptables/Sound Effect")]
-	public class SoundEffectScriptable : ScriptableObject {		
-		public AudioClip Clip;
+	public class SoundEffectScriptable : ScriptableObject 
+	{		
+		public List<AudioClip> Clips = new List<AudioClip>();
 
 		[Range(0, 1)]
 		public float Volume = 1;

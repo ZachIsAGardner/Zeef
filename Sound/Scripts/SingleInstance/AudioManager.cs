@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -33,6 +34,8 @@ namespace Zeef.Sound
 		private SongScriptable currentSong;
 
 		private Coroutine volumeSlideCoroutineInstance;
+
+		private Dictionary<string, string> playedSoundEffects = new Dictionary<string, string>();
 
 		protected override void Awake()
         {
@@ -213,10 +216,36 @@ namespace Zeef.Sound
 			audioSource.pitch = sfx.Pitch;
 
 			// Play clip.
-			audioSource.PlayOneShot(sfx.Clip, sfx.Volume * SoundEffectVolume);
+			AudioClip clip = null;
+
+			// Multiple variants
+			if (sfx.Clips.Count > 1) 
+			{
+				// If there are multiple variants, we don't want to play the same one twice in a row.
+				string lastPlayedVariant = "";
+				Instance.playedSoundEffects.TryGetValue(sfx.name, out lastPlayedVariant);
+				if (!String.IsNullOrWhiteSpace(lastPlayedVariant))
+				{
+					clip = sfx.Clips.Where(c => c.name != lastPlayedVariant).ToList().Random();
+					Instance.playedSoundEffects.Remove(sfx.name);
+				}
+				else 
+				{
+					clip = sfx.Clips.Random();
+				}
+
+				Instance.playedSoundEffects.Add(sfx.name, clip.name);
+			}
+			// Just one
+			else 
+			{
+				clip = sfx.Clips[0];
+			}
+
+			audioSource.PlayOneShot(clip, sfx.Volume * SoundEffectVolume);
 
 			// Wait for length of clip.
-			yield return new WaitForSeconds(sfx.Clip.length);
+			yield return new WaitForSeconds(clip.length);
 
 			// If we had to create a GameObject, we need to destroy it.
 			if (!wasAudioSourceProvided)
