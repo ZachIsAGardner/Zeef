@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zeef.GameManagement;
@@ -15,29 +16,48 @@ namespace Zeef.Perform
 	public class TextBoxUI : MonoBehaviour
     {
 		[SerializeField] private Text textComponent;
+		[SerializeField] private TextMeshProUGUI textProComponent;
+
+		private string displayedText = "";
+
 		[SerializeField] private Text speakerComponent;
+		[SerializeField] private TextMeshProUGUI speakerProComponent;
+
 		// TODO: Figure out how to get line length from 
 		// text component, rather than just guess and checking
 		[SerializeField] private int forceLineLength = -1;
 
-		private string text; // Text to be displayed
-		private string speaker; // Speaker to be displayed
+		/// <summary>
+		/// Whether or not the text box is currently crawling text.
+		/// </summary>
+		public bool IsActive { get; private set; }
 
 		private bool skipToEnd;
-		
 		private int maxLineLength; // Max character length for a line of text
-		private int? toneIntervalMax;
 		private int toneInterval;
 
-		private bool auto; // Text box closes automatically once it has finished crawling the text
-		private float crawlTime; // Wait time between letters
-		private SoundEffectScriptable tone; // The noise made when the text is crawling
-		private bool closeWhenDone;
+		[TextArea(3,100)]
+		public string Text; // Text to be displayed
+		public string Speaker; // Speaker to be displayed
+
+		public int ToneIntervalMax = 3;
+
+		public bool Auto; // Text box closes automatically once it has finished crawling the text
+		public float CrawlTime; // Wait time between letters
+		public SoundEffectScriptable Tone; // The noise made when the text is crawling
+		public bool CloseWhenDone;
+
+		protected virtual void TextFinishedCrawling() { }
 		
 		void Update()
         {
 			if (ControlManager.GetInputPressed(ControlManager.Accept))
                 skipToEnd = true;	
+
+			if (textProComponent)
+				textProComponent.text = displayedText;
+			else if (textComponent)
+				textProComponent.text = displayedText;
 		}
 
 		/// <summary>
@@ -52,19 +72,28 @@ namespace Zeef.Perform
             TextBoxUIFullModel model
         )
         {
-			TextBoxUI instance = SpawnManager.SpawnCanvasElement(
-				prefab.gameObject,
-				4
-			).GetComponentWithError<TextBoxUI>();
+			TextBoxUI instance = SpawnManager.SpawnCanvasElement(prefab.gameObject, 4).GetComponentWithError<TextBoxUI>();
 
-			instance.text = model.Text;
-			instance.speaker = model.Speaker;
+			if (model.Text != null)
+				instance.Text = model.Text;
 
-			instance.auto = model.Auto == true;
-			instance.crawlTime = model.CrawlTime ?? 0;
-			instance.tone = model.Tone;
-			instance.closeWhenDone = model.CloseWhenDone == true;
-			instance.toneIntervalMax = model.ToneIntervalMax;
+			if (model.Speaker != null)
+				instance.Speaker = model.Speaker ?? instance.Speaker;
+
+			if (model.Auto != null)
+				instance.Auto = model.Auto == true;
+			
+			if (model.CrawlTime != null)
+				instance.CrawlTime = model.CrawlTime ?? instance.CrawlTime;
+
+			if (model.Tone != null)
+				instance.Tone = model.Tone;
+
+			if (model.CloseWhenDone != null)
+				instance.CloseWhenDone = model.CloseWhenDone == true;
+
+			if (model.ToneIntervalMax != null)
+				instance.ToneIntervalMax = model.ToneIntervalMax.Value;
 
 			return instance;
 		}
@@ -74,14 +103,26 @@ namespace Zeef.Perform
 		/// </summary>
 		public async Task ExecuteAsync(TextBoxUIFullModel model)
         {
-			text = model.Text;
-			speaker = model.Speaker;
+			if (model.Text != null)
+				Text = model.Text;
 
-			auto = model.Auto == true;
-			crawlTime = model.CrawlTime ?? 0;
-			tone = model.Tone;
-			closeWhenDone = model.CloseWhenDone == true;
-			toneIntervalMax = model.ToneIntervalMax;
+			if (model.Speaker != null)
+				Speaker = model.Speaker;
+
+			if (model.Auto != null)
+				Auto = model.Auto == true;
+			
+			if (model.CrawlTime != null)
+				CrawlTime = model.CrawlTime.Value;
+
+			if (model.Tone)
+				Tone = model.Tone;
+
+			if (model.CloseWhenDone != null)
+				CloseWhenDone = model.CloseWhenDone == true;
+
+			if (model.ToneIntervalMax != null)
+				ToneIntervalMax = model.ToneIntervalMax.Value;
 	
 			await ExecuteAsync();
 		}
@@ -93,15 +134,15 @@ namespace Zeef.Perform
         {
 			skipToEnd = false;
 
-			maxLineLength = (forceLineLength > 0) ? forceLineLength : 500;
+			if (speakerProComponent != null) 
+				speakerProComponent.text = Speaker ?? "";
+			else if (speakerComponent != null)
+				speakerComponent.text = Speaker ?? "";
 
-			if (speakerComponent != null) 
-				speakerComponent.text = speaker ?? "";
-
-			if (crawlTime > 0) 
-				await DisplayTextAsync(SplitTextToLines(text, maxLineLength));
+			if (CrawlTime > 0) 
+				await DisplayTextAsync(new List<string>() { Text });
 			else 
-				textComponent.text = text;	
+				displayedText = Text;	
 		}
 
 		/// <summary>
@@ -116,7 +157,8 @@ namespace Zeef.Perform
 
 		private async Task DisplayTextAsync(List<string> lines)
         {
-			textComponent.text = "";
+			IsActive = true;
+			displayedText = "";
 		
 			foreach (string line in lines)
             {
@@ -127,29 +169,31 @@ namespace Zeef.Perform
 					if (skipToEnd) 
 						break;
 					
-					textComponent.text += letter;
+					displayedText += letter;
 					toneInterval--;
 
-					if (tone != null && toneInterval <= 0) 
+					if (Tone != null && toneInterval <= 0) 
 					{
-						AudioManager.PlaySoundEffect(tone);
-						toneInterval = toneIntervalMax ?? 0;
+						AudioManager.PlaySoundEffect(Tone);
+						toneInterval = ToneIntervalMax;
 					}
 
 					await WaitAsync(letter);
 				}
 
-				textComponent.text += "\n";
+				displayedText += "\n";
 			}
 
-			textComponent.text = text;
+			TextFinishedCrawling();
+			IsActive = false;
+			displayedText = Text;
 
-			if (auto) 
+			if (Auto) 
 				await new WaitForUpdate();
 			else 
 				await ControlManager.WaitForInputPressedAsync(ControlManager.Accept);
 			
-			if (closeWhenDone)
+			if (CloseWhenDone)
 				Close();
 		}
 
@@ -162,16 +206,16 @@ namespace Zeef.Perform
 				case '?':
 				case '!':
 				case ':':
-					yield return new WaitForSeconds(crawlTime * 5.5f);
+					yield return new WaitForSeconds(CrawlTime * 5.5f);
 					break;
 				case ',':
 				case ';':
-					yield return new WaitForSeconds(crawlTime * 3f);
+					yield return new WaitForSeconds(CrawlTime * 3f);
 					break;
 				case ' ':
 					break;
 				default:
-					yield return new WaitForSeconds(crawlTime);
+					yield return new WaitForSeconds(CrawlTime);
 					break;
 			}
 		}

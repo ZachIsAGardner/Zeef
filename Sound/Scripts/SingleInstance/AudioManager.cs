@@ -237,9 +237,13 @@ namespace Zeef.Sound
 				Instance.playedSoundEffects.Add(sfx.name, clip.name);
 			}
 			// Just one
-			else 
+			else if (sfx.Clips.Count == 1)
 			{
 				clip = sfx.Clips[0];
+			}
+			else
+			{
+				yield break;
 			}
 
 			audioSource.PlayOneShot(clip, sfx.Volume * SoundEffectVolume);
