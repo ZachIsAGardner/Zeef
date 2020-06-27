@@ -59,7 +59,8 @@ namespace Zeef.TwoDimensional
 			if (weakPoints == null)
 				return;
 				
-			foreach (HurtBox2D hurtBox in weakPoints) {
+			foreach (HurtBox2D hurtBox in weakPoints) 
+			{
 				hurtBox.ExternalTriggerStay2D += OnExternalTriggerStay2D;
 			}
 		}

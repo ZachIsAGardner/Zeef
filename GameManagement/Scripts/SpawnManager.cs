@@ -5,9 +5,10 @@ namespace Zeef.GameManagement
 {
 	public class SpawnManager : SingleInstance<SpawnManager>
     {	
-        private Canvas dynamicCanvas;
         [SerializeField]
         private Canvas dynamicCanvasPrefab;
+
+        private Canvas dynamicCanvasInstance;
         
 		/// <summary>
 		/// Spawns an empty GameObject inside the _DynamicFolder GameObject.
@@ -16,12 +17,11 @@ namespace Zeef.GameManagement
         {
 			GameObject actor =  new GameObject();
 
-            GameObject folder = GameObject.FindGameObjectWithTag("DynamicFolder");
+            GameObject folder = GameObject.Find("_DynamicFolder");
 
             if (folder == null)
             {
-                folder = new GameObject("_DyanamicFolder");
-                folder.tag = "DynamicFolder";
+                folder = new GameObject("_DynamicFolder");
             }
 
 			actor.gameObject.transform.parent = folder.transform;
@@ -35,12 +35,11 @@ namespace Zeef.GameManagement
 		/// </summary>
 		public static GameObject Spawn(GameObject prefab, Vector3 position)
         {
-			GameObject folder = GameObject.FindGameObjectWithTag("DynamicFolder");
+			GameObject folder = GameObject.Find("_DynamicFolder");
 			
 			if (folder == null)
             {
-				folder = new GameObject("_DyanamicFolder");
-				folder.tag = "DynamicFolder";
+				folder = new GameObject("_DynamicFolder");
 			}
 
 			return Instantiate(
@@ -95,15 +94,15 @@ namespace Zeef.GameManagement
 				// Create new folder
 				if (folder == null)
 				{
-                    if (Instance.dynamicCanvas == null) {
-                        Instance.dynamicCanvas = Instantiate(Instance.dynamicCanvasPrefab);
-                        Instance.dynamicCanvas.name = "DyanamicCanvas";
+                    if (Instance.dynamicCanvasInstance == null) {
+                        Instance.dynamicCanvasInstance = Instantiate(Instance.dynamicCanvasPrefab);
+                        Instance.dynamicCanvasInstance.name = "DynamicCanvas";
                     }
                     
 					folder = new GameObject(name);
 					folder.AddComponent<RectTransform>();
 
-					folder.GetComponent<RectTransform>().SetParent(Instance.dynamicCanvas.GetComponent<RectTransform>());
+					folder.GetComponent<RectTransform>().SetParent(Instance.dynamicCanvasInstance.GetComponent<RectTransform>());
 
 					folder.GetComponent<RectTransform>().offsetMin = new Vector2(0, 0);
 					folder.GetComponent<RectTransform>().offsetMax = new Vector2(0, 0);
