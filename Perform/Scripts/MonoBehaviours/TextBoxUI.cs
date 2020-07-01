@@ -32,7 +32,7 @@ namespace Zeef.Perform
 		/// </summary>
 		public bool IsActive { get; private set; }
 
-		private bool skipToEnd;
+		public bool SkipToEnd;
 		private int maxLineLength; // Max character length for a line of text
 		private int toneInterval;
 
@@ -46,13 +46,14 @@ namespace Zeef.Perform
 		public float CrawlTime; // Wait time between letters
 		public SoundEffectScriptable Tone; // The noise made when the text is crawling
 		public bool CloseWhenDone;
+		public List<string> ProceedInputs = new List<string>() { "z" };
 
 		protected virtual void TextFinishedCrawling() { }
 		
 		void Update()
         {
-			if (ControlManager.GetInputPressed(ControlManager.Accept))
-                skipToEnd = true;	
+			if (ControlManager.GetInputPressed(ProceedInputs))
+                SkipToEnd = true;	
 
 			if (textProComponent)
 				textProComponent.text = displayedText;
@@ -95,6 +96,9 @@ namespace Zeef.Perform
 			if (model.ToneIntervalMax != null)
 				instance.ToneIntervalMax = model.ToneIntervalMax.Value;
 
+			if (model.ProceedInputs != null)
+				instance.ProceedInputs = model.ProceedInputs;
+
 			return instance;
 		}
 
@@ -123,6 +127,9 @@ namespace Zeef.Perform
 
 			if (model.ToneIntervalMax != null)
 				ToneIntervalMax = model.ToneIntervalMax.Value;
+
+			if (model.ProceedInputs != null)
+				ProceedInputs = model.ProceedInputs;
 	
 			await ExecuteAsync();
 		}
@@ -132,7 +139,7 @@ namespace Zeef.Perform
 		/// </summary>
 		public async Task ExecuteAsync()
         {
-			skipToEnd = false;
+			SkipToEnd = false;
 
 			if (speakerProComponent != null) 
 				speakerProComponent.text = Speaker ?? "";
@@ -162,11 +169,11 @@ namespace Zeef.Perform
 		
 			foreach (string line in lines)
             {
-				if (skipToEnd) break;
+				if (SkipToEnd) break;
 
 				foreach (char letter in line.ToCharArray())
                 {
-					if (skipToEnd) 
+					if (SkipToEnd) 
 						break;
 					
 					displayedText += letter;
@@ -191,10 +198,12 @@ namespace Zeef.Perform
 			if (Auto) 
 				await new WaitForUpdate();
 			else 
-				await ControlManager.WaitForInputPressedAsync(ControlManager.Accept);
+				await ControlManager.WaitForInputPressedAsync(ProceedInputs);
 			
 			if (CloseWhenDone)
+			{
 				Close();
+			}
 		}
 
 		// Wait an amount of time based on character

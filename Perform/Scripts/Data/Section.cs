@@ -7,11 +7,12 @@ using Zeef.Sound;
 
 namespace Zeef.Perform
 {
+	[System.Serializable]
 	public class Section
     {
-		public TextBoxUIFullModel TextBoxUIModel { get; set; }
-		public Func<Task> StartAction { get; set; }
-		public Func<Task> EndAction { get; set; }
+		public TextBoxUIFullModel TextBoxUIModel;
+		public Func<Task> StartAction;
+		public Func<Task> EndAction;
 		
 		/// <summary>
 		/// An individual Section of a Rranch of a Performance.

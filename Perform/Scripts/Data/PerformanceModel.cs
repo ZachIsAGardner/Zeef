@@ -8,10 +8,11 @@ using Zeef.Menu;
 
 namespace Zeef.Perform
 {
+    [System.Serializable]
     public class PerformanceModel
     {
-        public TextBoxUI TextBoxPrefab { get; private set; }
-        public LinearMenuSelect ResponseBoxPrefab { get; private set; }
+        public TextBoxUI TextBoxPrefab;
+        public LinearMenuSelect ResponseBoxPrefab;
 
         public PerformanceModel() { }
         public PerformanceModel(TextBoxUI textBoxPrefab = null, LinearMenuSelect responseBoxPrefab = null)
